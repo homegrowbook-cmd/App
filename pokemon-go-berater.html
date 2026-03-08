@@ -197,23 +197,18 @@
 
   /* ── TABLE ──────────────────────────────────────────────── */
   .table-wrap {
-    overflow-x: auto;
+    overflow: auto;
     border-radius: 12px;
     border: 1px solid var(--border);
     background: var(--surface);
+    max-height: 62vh;
+    min-height: 280px;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
     min-width: 520px;
-  }
-
-  thead {
-    position: sticky;
-    top: 58px;
-    z-index: 5;
-    background: var(--bg3);
   }
 
   thead th {
@@ -227,6 +222,10 @@
     border-bottom: 1px solid var(--border2);
     white-space: nowrap;
     user-select: none;
+    position: sticky;
+    top: 0;
+    background: var(--bg3);
+    z-index: 5;
   }
 
   thead th.sortable { cursor: pointer; }
@@ -706,6 +705,89 @@
     .rank-sprite { width: 40px; height: 40px; }
   }
 
+  /* ── META TEAM SELECTOR ─────────────────────────────────── */
+  .meta-teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .meta-team-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s, background 0.15s;
+  }
+  .meta-team-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .meta-team-card.selected { border-color: var(--accent2); background: rgba(90,97,232,0.08); }
+
+  .meta-team-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .meta-team-emoji { font-size: 22px; line-height: 1; }
+  .meta-team-name {
+    font-family: 'Bangers', cursive;
+    font-size: 19px;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .meta-team-desc {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .meta-team-members {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .meta-mini-info { text-align: center; }
+  .meta-mini-sprite {
+    width: 44px;
+    height: 44px;
+    image-rendering: pixelated;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+  .meta-mini-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text2);
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .meta-team-sep { color: var(--text3); font-size: 18px; padding: 0 2px; }
+
+  .team-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .team-detail-emoji { font-size: 28px; line-height: 1; }
+  .team-detail-title {
+    font-family: 'Bangers', cursive;
+    font-size: 26px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+  }
+  .team-detail-league {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
   /* ── SCROLLBAR ──────────────────────────────────────────── */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -744,7 +826,7 @@
       <span class="icon">🔮</span> Typen
     </button>
     <button class="nav-btn" onclick="show('team-tab')">
-      <span class="icon">🏆</span> Mein Team
+      <span class="icon">🏆</span> Teams
     </button>
     <button class="nav-btn" onclick="show('ranking-tab')">
       <span class="icon">📊</span> Liga-Rangliste
@@ -845,58 +927,23 @@
     <div class="types-grid" id="types-grid"></div>
   </section>
 
-  <!-- ── TAB 4: MY TEAM ────────────────────────────────────── -->
+  <!-- ── TAB 4: TEAMS ─────────────────────────────────────── -->
   <section id="team-tab" class="tab">
     <div class="page-header">
-      <h1>🏆 Mein Superliga-Team</h1>
-      <p>Optimiertes Team für die Superliga (≤ 1500 WP)</p>
+      <h1>🏆 Meta-Teams</h1>
+      <p>Empfohlene Top-Teams für jede Liga – wähle eine Liga und klicke ein Team für Details</p>
     </div>
 
-    <div class="team-grid" id="team-grid"></div>
-
-    <div class="synergy-section">
-      <div class="synergy-title">🔗 Team-Synergie</div>
-      <div class="synergy-subtitle">Welches Teammitglied kontert welche Typen?</div>
-
-      <div class="synergy-wrap">
-        <table class="synergy-table">
-          <thead>
-            <tr>
-              <th>Pokémon</th>
-              <th>Konter gegen</th>
-              <th>Schwach gegen</th>
-            </tr>
-          </thead>
-          <tbody id="synergy-tbody"></tbody>
-        </table>
-      </div>
-
-      <div class="strategy-box">
-        <h3>📋 Team-Strategie</h3>
-        <p>
-          <strong>Azumarill</strong> ist der Anker des Teams. Mit <em>Bubble + Play Rough + Ice Beam</em> deckt es
-          Fighting-, Dragon-, Dark-, Ground- und Grass-Typen ab. Die optimalen IVs <em>0/15/15</em> erlauben maximale
-          WP unterhalb der 1500er-Grenze mit maximaler Verteidigung und Ausdauer.
-        </p>
-        <p>
-          <strong>Togedemaru</strong> fungiert als Überraschungs-Switch. Mit <em>Thunder Shock + Wild Charge + Fell Stinger</em>
-          trifft es Water-, Flying- und Steel-Typen hart und baut durch Fell Stinger einen Angriffs-Buff auf.
-          Die IVs <em>0/15/15</em> maximieren die Ausdauer bei niedriger CP-Grenze.
-        </p>
-        <p>
-          <strong>Clodsire</strong> ist der Abschluss des Teams. Als Poison/Ground-Typ immun gegen Electric-Attacken
-          deckt es Steel-, Fire- und Rock-Typen ab. Mit <em>Poison Sting + Sludge Bomb + Earthquake</em>
-          ist es ein starker Closer. Die IVs <em>0/13/15</em> erlauben maximale WP unter 1500.
-        </p>
-        <p>
-          <strong>Kernsynergie:</strong> Azumarill verliert gegen Steel und Electric →
-          Clodsire kontert Electric (immun), Togedemaru widersteht Steel-Attacken (eigener Steel-Typ)
-          und erzwingt günstige Matchups durch Fell Stinger-Buff. Clodsire verliert gegen Ground, Water, Psychic →
-          Azumarill und Togedemaru schaffen dort Gegengewichte. Das Team ist breit aufgestellt
-          mit minimalen gemeinsamen Schwächen.
-        </p>
+    <div class="controls-row">
+      <div class="pills" id="team-league-pills">
+        <button class="pill active" onclick="setTeamLeague('gl')">🌿 Superliga (≤1500)</button>
+        <button class="pill" onclick="setTeamLeague('ul')">💎 Hyperliga (≤2500)</button>
+        <button class="pill" onclick="setTeamLeague('ml')">👑 Meisterliga</button>
       </div>
     </div>
+
+    <div id="team-selector" class="meta-teams-grid"></div>
+    <div id="team-detail"></div>
   </section>
 
   <!-- ── TAB 5: LIGA-RANGLISTE ─────────────────────────────── -->
@@ -933,6 +980,8 @@ let mvSearch  = '';
 let pkSearch  = '';
 let typeSearch = '';
 let activeLeague = 'gl';
+let activeTeamLeague = 'gl';
+let selectedTeamId   = null;
 // ── MOVES DATA ─────────────────────────────────────────────────────────────
 const MOVES = [
   // FAST MOVES
@@ -2199,33 +2248,378 @@ const TYPES = [
   {name:'Fairy',    emoji:'✨', color:'#7a0c44', strong:['Fighting','Dragon','Dark'],                  weak:['Poison','Steel'],                   immune:[]},
 ];
 
-// ── MY TEAM DATA ───────────────────────────────────────────────────────────
-const MY_TEAM = [
-  {
-    num: 184,
-    name: 'Azumarill',
-    types: ['water','fairy'],
-    ivs: '0 / 15 / 15',
-    role: 'Anker / Opener',
-    tip: 'Eröffnet gegen Dark-, Dragon- und Fighting-Typen. Bubble generiert schnell Energie für Play Rough. Mit Ice Beam trifft es Grass- und Dragon-Konter.'
-  },
-  {
-    num: 777,
-    name: 'Togedemaru',
-    types: ['electric','steel'],
-    ivs: '0 / 15 / 15',
-    role: 'Switch / Überraschung',
-    tip: 'Ideal als zweiter Switch. Fell Stinger baut Angriffs-Buff auf. Immun gegen Poison-Typen durch Steel-Typ. Konter Water- und Flying-Matchups für Azumarill.'
-  },
-  {
-    num: 979,
-    name: 'Clodsire',
-    types: ['poison','ground'],
-    ivs: '0 / 13 / 15',
-    role: 'Closer / Abschluss',
-    tip: 'Immun gegen Electric-Attacken. Sludge Bomb + Earthquake bieten breite Abdeckung. Schlägt Steel- und Poison-Konter. Stark als letztes Pokémon im Kampf.'
-  }
-];
+// ── META TEAMS DATA ────────────────────────────────────────────────────────
+const META_TEAMS = {
+  gl: [
+    {
+      id: 'gl-1',
+      name: 'Classic Core',
+      emoji: '🏅',
+      desc: 'Das bewährteste Superliga-Team – maximale Matchup-Abdeckung und Stabilität',
+      members: [
+        {
+          num: 184, name: 'Azumarill', types: ['water','fairy'],
+          ivs: '0/15/15', role: 'Anker / Opener',
+          fast: 'Bubble', charge1: 'Play Rough', charge2: 'Ice Beam',
+          counters: ['Fighting','Dragon','Dark','Ground','Rock'],
+          weakTo: ['Grass','Electric','Poison'],
+          tip: 'Superliga-Anker #1. Eröffnet sicher gegen Dark, Dragon, Fighting. Bubble generiert sehr schnell Energie für Play Rough. Ice Beam schlägt Grass- und Dragon-Konter.'
+        },
+        {
+          num: 308, name: 'Medicham', types: ['fighting','psychic'],
+          ivs: '1/14/14', role: 'Sweeper',
+          fast: 'Counter', charge1: 'Ice Punch', charge2: 'Psychic',
+          counters: ['Normal','Ice','Rock','Dark','Steel'],
+          weakTo: ['Flying','Psychic','Fairy'],
+          tip: 'Mächtigster Sweeper der GL. Counter hat top Energie-Effizienz und hohe Kraft. Ice Punch deckt Grass- und Flying-Typen ab. Psychic für Poison-Coverage.'
+        },
+        {
+          num: 304, name: 'Bastiodon', types: ['rock','steel'],
+          ivs: '0/15/15', role: 'Defender / Closer',
+          fast: 'Smack Down', charge1: 'Stone Edge', charge2: 'Flamethrower',
+          counters: ['Fire','Ice','Flying','Bug','Fairy'],
+          weakTo: ['Water','Fighting','Ground'],
+          tip: 'Defensivster Pick der GL. Extrem hohe Ausdauer und Verteidigung. Schlägt Fairy und Flying hart. Langsame Energiegenerierung – als Closer ideal.'
+        }
+      ],
+      strategy: 'Azumarill eröffnet und setzt frühen Druck. Medicham kommt als Sweeper herein, wenn der Gegner seine Shields verbraucht hat. Bastiodon tankt als finales Pokémon fast alle Angriffe. Die drei decken gemeinsam fast jede Typ-Kombination ab.'
+    },
+    {
+      id: 'gl-2',
+      name: 'Gen 9 Powerhouse',
+      emoji: '⚔️',
+      desc: 'Das stärkste aktuelle Meta-Team aus Generation 9 – Annihilape als Schlüssel',
+      members: [
+        {
+          num: 978, name: 'Annihilape', types: ['fighting','ghost'],
+          ivs: '0/15/15', role: 'Sweeper / Lead',
+          fast: 'Counter', charge1: 'Close Combat', charge2: 'Night Slash',
+          counters: ['Normal','Ice','Rock','Dark','Steel','Psychic','Ghost'],
+          weakTo: ['Flying','Psychic','Ghost','Fairy'],
+          tip: 'Counter + Ghost-Immunität macht Annihilape zum Top-Sweeper seit Gen 9. Night Slash erzwingt Shields günstig. Close Combat macht massiven Schaden gegen Steel und Ice.'
+        },
+        {
+          num: 959, name: 'Tinkaton', types: ['fairy','steel'],
+          ivs: '0/15/15', role: 'Anchor / Tank',
+          fast: 'Charm', charge1: 'Play Rough', charge2: 'Flash Cannon',
+          counters: ['Fighting','Dragon','Dark','Ice','Rock','Fairy'],
+          weakTo: ['Fire','Ground'],
+          tip: 'Charm ist eine der stärksten Fast Attacks überhaupt. Immun gegen Dragon und Poison. Flash Cannon deckt Steel-Konter ab. Extrem resistent gegen viele Typen.'
+        },
+        {
+          num: 979, name: 'Clodsire', types: ['poison','ground'],
+          ivs: '0/13/15', role: 'Closer',
+          fast: 'Poison Sting', charge1: 'Sludge Bomb', charge2: 'Earthquake',
+          counters: ['Electric','Steel','Fire','Rock','Poison','Fairy'],
+          weakTo: ['Ground','Water','Psychic','Ice'],
+          tip: 'Immun gegen Electric. Sludge Bomb + Earthquake bieten breite Typ-Abdeckung. Schlägt Steel und Fire. Optimale IVs erlauben maximale WP unter 1500.'
+        }
+      ],
+      strategy: 'Annihilape eröffnet aggressiv und erzwingt frühe Shields. Tinkaton ist der Anker gegen Dragon, Dark und Fighting. Clodsire schließt als Closer ab und kontert Electric- und Poison-Typen die das Team bedrohen.'
+    },
+    {
+      id: 'gl-3',
+      name: 'Ice & Steel Wall',
+      emoji: '❄️',
+      desc: 'Verteidigungsstarkes Team mit maximaler Ausdauer und Shield-Druck',
+      members: [
+        {
+          num: 365, name: 'Walrein', types: ['ice','water'],
+          ivs: '0/15/15', role: 'Lead / Sweeper',
+          fast: 'Powder Snow', charge1: 'Icicle Spear', charge2: 'Earthquake',
+          counters: ['Grass','Ground','Flying','Dragon','Fire'],
+          weakTo: ['Fighting','Rock','Electric','Grass'],
+          tip: 'Powder Snow generiert massiv Energie. Icicle Spear als günstige 1-Bar-Attack erzwingt frühe Shields. Earthquake überrascht Steel-Konter. Bester Ice-Lead der GL.'
+        },
+        {
+          num: 379, name: 'Registeel', types: ['steel'],
+          ivs: '0/14/15', role: 'Safe Switch',
+          fast: 'Lock-On', charge1: 'Flash Cannon', charge2: 'Focus Blast',
+          counters: ['Ice','Rock','Fairy','Poison','Normal'],
+          weakTo: ['Fire','Fighting','Ground'],
+          tip: 'Bester Steel-Typ der GL. Lock-On generiert sehr schnell Energie. Extrem hohe Ausdauer. Focus Blast als finaler Schlag mit massivem Schaden.'
+        },
+        {
+          num: 302, name: 'Sableye', types: ['dark','ghost'],
+          ivs: '0/15/15', role: 'Flex / Closer',
+          fast: 'Shadow Claw', charge1: 'Foul Play', charge2: 'Return',
+          counters: ['Psychic','Ghost','Normal','Fighting'],
+          weakTo: ['Fairy'],
+          tip: 'Einzige Schwäche: Fairy. Immun gegen Normal und Fighting. Shadow Claw generiert gut Energie. Return (Elite TM) ist extrem stark bei Purified-Pokémon.'
+        }
+      ],
+      strategy: 'Walrein lead setzt mit Icicle Spear frühen Shield-Druck. Registeel ist der sichere, universelle Safe Switch. Sableye als Closer ist kaum zu kontern – nur eine einzige Schwäche (Fairy) und doppelte Immunität.'
+    },
+    {
+      id: 'gl-4',
+      name: 'Flying Menace',
+      emoji: '🦅',
+      desc: 'Schnelles Energie-Team mit Incinerate und Dragon Breath – aggressiver Stil',
+      members: [
+        {
+          num: 334, name: 'Altaria', types: ['dragon','flying'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Dragon Breath', charge1: 'Sky Attack', charge2: 'Moonblast',
+          counters: ['Grass','Fighting','Bug','Ground','Dragon'],
+          weakTo: ['Ice','Rock','Dragon','Fairy'],
+          tip: 'Dragon Breath ist eine der besten Fast Attacks. Sky Attack (Elite TM) erzwingt Shields. Moonblast schlägt Dragon-Konter und Fairy. Sehr vielseitig.'
+        },
+        {
+          num: 741, name: 'Talonflame', types: ['fire','flying'],
+          ivs: '0/15/15', role: 'Sweeper',
+          fast: 'Incinerate', charge1: 'Brave Bird', charge2: 'Flame Charge',
+          counters: ['Grass','Fighting','Bug','Steel','Ice'],
+          weakTo: ['Rock','Water','Electric'],
+          tip: 'Incinerate generiert extrem schnell Energie. Brave Bird macht massiven Flying-Schaden. Flame Charge baut Angriffs-Buff auf und ist günstig einzusetzen.'
+        },
+        {
+          num: 598, name: 'Ferrothorn', types: ['grass','steel'],
+          ivs: '0/15/15', role: 'Tank / Anchor',
+          fast: 'Bullet Seed', charge1: 'Power Whip', charge2: 'Flash Cannon',
+          counters: ['Water','Rock','Ground','Ice','Fairy','Poison'],
+          weakTo: ['Fire','Fighting'],
+          tip: 'Bullet Seed generiert sehr schnell Energie. Power Whip mit hohem Schaden. Flash Cannon für Steel-STAB. Immun gegen Poison. Konter Water und Rock.'
+        }
+      ],
+      strategy: 'Altaria lead mit Dragon Breath erzeugt Druck auf viele Typen. Talonflame kommt als aggressiver Sweeper herein und nutzt Incinerate für schnelle Shields. Ferrothorn tankt Water- und Rock-Angriffe, die Altaria und Talonflame bedrohen.'
+    }
+  ],
+  ul: [
+    {
+      id: 'ul-1',
+      name: 'Season Classic',
+      emoji: '💎',
+      desc: 'Das bewährteste Hyperliga-Team – perfekte Balance aus Offense und Defense',
+      members: [
+        {
+          num: 365, name: 'Walrein', types: ['ice','water'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Powder Snow', charge1: 'Icicle Spear', charge2: 'Earthquake',
+          counters: ['Grass','Ground','Flying','Dragon','Fire'],
+          weakTo: ['Fighting','Rock','Electric','Grass'],
+          tip: '#1 UL Lead. Powder Snow + Icicle Spear generiert massiv Shield-Druck. Earthquake überrascht Steel-Konter. Sehr hohe Ausdauer bei optimalen IVs.'
+        },
+        {
+          num: 379, name: 'Registeel', types: ['steel'],
+          ivs: '0/14/15', role: 'Safe Switch',
+          fast: 'Lock-On', charge1: 'Flash Cannon', charge2: 'Focus Blast',
+          counters: ['Ice','Rock','Fairy','Poison','Normal'],
+          weakTo: ['Fire','Fighting','Ground'],
+          tip: 'Top Steel Safe Switch UL. Lock-On generiert sehr schnell Energie. Flash Cannon stark gegen Fairy und Ice. Focus Blast ist extrem mächtig gegen Steel-Konter.'
+        },
+        {
+          num: 488, name: 'Cresselia', types: ['psychic'],
+          ivs: '0/15/15', role: 'Anchor / Closer',
+          fast: 'Psycho Cut', charge1: 'Moonblast', charge2: 'Grass Knot',
+          counters: ['Fighting','Poison','Dragon','Water','Ground'],
+          weakTo: ['Bug','Ghost','Dark'],
+          tip: 'Bester Psychic-Typ der UL. Extreme Ausdauer. Moonblast gegen Dark-Konter. Grass Knot für Water/Ground-Coverage. Kaum zu besiegen wenn sie erst im Spiel ist.'
+        }
+      ],
+      strategy: 'Walrein lead setzt frühen Shield-Druck mit Icicle Spear. Registeel ist der universelle Safe Switch der fast alles tankt. Cresselia als Anchor tankt mit extremer Ausdauer und schließt ab.'
+    },
+    {
+      id: 'ul-2',
+      name: 'Swamp Power',
+      emoji: '💧',
+      desc: 'Community Day Team mit starken Kanto-Klassikern und breiter Coverage',
+      members: [
+        {
+          num: 259, name: 'Swampert', types: ['water','ground'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Mud Shot', charge1: 'Hydro Cannon', charge2: 'Earthquake',
+          counters: ['Fire','Electric','Steel','Rock','Poison'],
+          weakTo: ['Grass'],
+          tip: 'Hydro Cannon (Community Day) ist extrem stark. Mud Shot generiert sehr schnell Energie. Nur eine Schwäche: Grass. Earthquake für Ground-Coverage gegen Steel.'
+        },
+        {
+          num: 741, name: 'Talonflame', types: ['fire','flying'],
+          ivs: '0/15/15', role: 'Sweeper',
+          fast: 'Incinerate', charge1: 'Brave Bird', charge2: 'Flame Charge',
+          counters: ['Grass','Fighting','Bug','Steel','Ice'],
+          weakTo: ['Rock','Water','Electric'],
+          tip: 'Top UL Closer. Incinerate generiert extrem schnell Energie. Brave Bird für massive Flying-Coverage. Deckt perfekt die Grass-Schwäche von Swampert ab.'
+        },
+        {
+          num: 788, name: 'Tapu Fini', types: ['water','fairy'],
+          ivs: '0/15/15', role: 'Anchor',
+          fast: 'Waterfall', charge1: 'Hydro Cannon', charge2: 'Moonblast',
+          counters: ['Fighting','Dragon','Dark','Fire','Rock','Ground'],
+          weakTo: ['Grass','Electric','Poison'],
+          tip: 'Stärkstes Water/Fairy Pick der UL. Hydro Cannon (Community Day) unglaublich stark. Moonblast für Fairy-Coverage gegen Dragon und Dark. Top Anchor.'
+        }
+      ],
+      strategy: 'Swampert lead kontert Steel, Fire und Electric sicher. Talonflame als Sweeper deckt die Grass-Schwäche von Swampert ab und bringt schnelle Energie. Tapu Fini als Anchor bietet Water + Fairy Coverage und schließt ab.'
+    },
+    {
+      id: 'ul-3',
+      name: 'Bug & Glide',
+      emoji: '🐛',
+      desc: 'Energie-dominantes Team mit Volt Switch und schnellen Shield-Entscheidungen',
+      members: [
+        {
+          num: 596, name: 'Galvantula', types: ['bug','electric'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Volt Switch', charge1: 'Bug Buzz', charge2: 'Lunge',
+          counters: ['Water','Flying','Grass','Psychic','Dark'],
+          weakTo: ['Fire','Flying','Rock'],
+          tip: 'Volt Switch ist die beste Energie-Attack im PvP. Bug Buzz + Lunge erzwingen sehr schnell Shield-Entscheidungen. Lunge senkt den Angriff des Gegners.'
+        },
+        {
+          num: 472, name: 'Gliscor', types: ['ground','flying'],
+          ivs: '0/15/15', role: 'Flex Switch',
+          fast: 'Wing Attack', charge1: 'Earthquake', charge2: 'Night Slash',
+          counters: ['Electric','Poison','Rock','Fighting','Bug','Ghost'],
+          weakTo: ['Ice','Water'],
+          tip: 'Einzigartige Ground/Flying-Kombi. Immun gegen Ground und Electric. Night Slash als günstige Shield-Bait. Earthquake für massiven Ground-Schaden.'
+        },
+        {
+          num: 788, name: 'Tapu Fini', types: ['water','fairy'],
+          ivs: '0/15/15', role: 'Anchor',
+          fast: 'Waterfall', charge1: 'Hydro Cannon', charge2: 'Moonblast',
+          counters: ['Fighting','Dragon','Dark','Fire','Rock','Ground'],
+          weakTo: ['Grass','Electric','Poison'],
+          tip: 'Schließt Matchups gegen Fighting und Dragon. Exzellente Ausdauer als Anchor. Hydro Cannon ist extrem stark. Moonblast als Fairy-Coverage.'
+        }
+      ],
+      strategy: 'Galvantula lead nutzt Volt Switch für sehr schnelle Energie und frühen Shield-Druck. Gliscor als Flex Switch für unerwartete Matchups. Tapu Fini sichert das Endspiel mit Water + Fairy Coverage.'
+    },
+    {
+      id: 'ul-4',
+      name: 'Origin Force',
+      emoji: '👻',
+      desc: 'Giratina-basiertes Team mit Ghost-Dominanz und Steel-Unterstützung',
+      members: [
+        {
+          num: 487, name: 'Giratina', types: ['ghost','dragon'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Shadow Claw', charge1: 'Shadow Ball', charge2: 'Ominous Wind',
+          counters: ['Psychic','Ghost','Dragon','Normal','Fighting'],
+          weakTo: ['Ice','Dragon','Dark','Ghost','Fairy'],
+          tip: 'Bester Ghost-Typ der UL. Shadow Claw generiert schnell Energie. Shadow Ball ist extrem mächtig. Ominous Wind als kostengünstige Shield-Bait mit möglichem Buff.'
+        },
+        {
+          num: 376, name: 'Metagross', types: ['steel','psychic'],
+          ivs: '0/15/15', role: 'Safe Switch',
+          fast: 'Bullet Punch', charge1: 'Meteor Mash', charge2: 'Earthquake',
+          counters: ['Ice','Rock','Fairy','Poison','Fighting','Psychic'],
+          weakTo: ['Fire','Ground','Ghost','Dark'],
+          tip: 'Meteor Mash (Community Day) ist der stärkste Steel-Move. Earthquake für Ground-Coverage. Immun gegen Poison. Sehr hohe Ausdauer als Switch.'
+        },
+        {
+          num: 488, name: 'Cresselia', types: ['psychic'],
+          ivs: '0/15/15', role: 'Anchor',
+          fast: 'Psycho Cut', charge1: 'Moonblast', charge2: 'Grass Knot',
+          counters: ['Fighting','Poison','Dragon','Water','Ground'],
+          weakTo: ['Bug','Ghost','Dark'],
+          tip: 'Tankt Dark-Angriffe die Giratina bedrohen. Moonblast gegen Dragon-Konter. Extreme Ausdauer als Anchor. Grass Knot für Water/Ground-Coverage.'
+        }
+      ],
+      strategy: 'Giratina lead dominiert Ghost/Dragon-Matchups und ist immun gegen Normal und Fighting. Metagross kommt als Steel Safe Switch und tankt Fairy-Attacken. Cresselia schließt als Anchor ab und tankt was übrig bleibt.'
+    }
+  ],
+  ml: [
+    {
+      id: 'ml-1',
+      name: 'Legendary Core',
+      emoji: '👑',
+      desc: 'Die Top-3 Legenden der Meisterliga – maximale Kraft ohne CP-Limit',
+      members: [
+        {
+          num: 483, name: 'Dialga', types: ['steel','dragon'],
+          ivs: '15/15/15', role: 'Lead #1',
+          fast: 'Dragon Breath', charge1: 'Iron Head', charge2: 'Draco Meteor',
+          counters: ['Ice','Rock','Fairy','Poison','Normal','Flying'],
+          weakTo: ['Fighting','Ground'],
+          tip: '#1 ML Lead. Dragon Breath mit top Effizienz. Iron Head günstig für Shield-Druck. Draco Meteor als finaler Schlag. Nur 2 Schwächen: Fighting und Ground.'
+        },
+        {
+          num: 383, name: 'Groudon', types: ['ground'],
+          ivs: '15/15/15', role: 'Ground King',
+          fast: 'Mud Shot', charge1: 'Precipice Blades', charge2: 'Fire Punch',
+          counters: ['Electric','Steel','Fire','Rock','Poison'],
+          weakTo: ['Water','Grass','Ice'],
+          tip: 'Precipice Blades ist der stärkste Ground-Move. Mud Shot generiert sehr schnell Energie. Fire Punch für Grass-Konter. Konter Steel und Electric sicher.'
+        },
+        {
+          num: 382, name: 'Kyogre', types: ['water'],
+          ivs: '15/15/15', role: 'Water King',
+          fast: 'Waterfall', charge1: 'Surf', charge2: 'Origin Pulse',
+          counters: ['Fire','Ground','Rock','Steel'],
+          weakTo: ['Grass','Electric'],
+          tip: 'Bester Water-Typ der ML. Origin Pulse ist enorm mächtig. Surf als günstigere Alternative für Shield-Druck. Kontert Groudon-Konter perfekt.'
+        }
+      ],
+      strategy: 'Dialga lead ist fast universell stabil. Groudon kontert Steel und Electric perfekt. Kyogre kontert Ground-Typen die Dialga und Groudon bedrohen. Das klassische "Primal Duo" mit Steel-Unterstützung ist eines der stärksten ML-Teams.'
+    },
+    {
+      id: 'ml-2',
+      name: 'Fairy Kingdom',
+      emoji: '✨',
+      desc: 'Fairy-dominiertes Team – konter Dragon und Dark und gewinne die Meisterliga',
+      members: [
+        {
+          num: 888, name: 'Zacian', types: ['fairy'],
+          ivs: '15/15/15', role: 'Lead',
+          fast: 'Snarl', charge1: 'Play Rough', charge2: 'Close Combat',
+          counters: ['Fighting','Dragon','Dark','Ice','Rock'],
+          weakTo: ['Poison','Steel'],
+          tip: 'Top Fairy ML. Snarl generiert schnell Energie. Play Rough als starke Fairy-Hauptattacke. Close Combat überraschend stark gegen Steel-Konter. Nur 2 Schwächen.'
+        },
+        {
+          num: 717, name: 'Yveltal', types: ['dark','flying'],
+          ivs: '15/15/15', role: 'Safe Switch',
+          fast: 'Snarl', charge1: 'Dark Pulse', charge2: 'Oblivion Wing',
+          counters: ['Psychic','Ghost','Grass','Fighting','Bug'],
+          weakTo: ['Rock','Electric','Ice','Fairy'],
+          tip: 'Bester Dark/Flying ML. Immun gegen Ground. Oblivion Wing heilt HP und macht Schaden. Snarl mit schneller Energiegenerierung. Stark gegen Psychic und Ghost.'
+        },
+        {
+          num: 483, name: 'Dialga', types: ['steel','dragon'],
+          ivs: '15/15/15', role: 'Anchor',
+          fast: 'Dragon Breath', charge1: 'Iron Head', charge2: 'Draco Meteor',
+          counters: ['Ice','Rock','Fairy','Poison','Normal','Flying'],
+          weakTo: ['Fighting','Ground'],
+          tip: 'Steel-Immunität gegen Poison. Kontert Fighting-Typen die Zacian bedrohen. Iron Head als günstige Shield-Attack. Draco Meteor als mächtiger Finisher.'
+        }
+      ],
+      strategy: 'Zacian lead setzt Fairy-Druck und schlägt Dragon + Dark. Yveltal ist der universelle Safe Switch gegen Psychic und Ghost. Dialga als Steel-Anchor schließt ab und kontert Poison-Typen die Fairy bedrohen.'
+    },
+    {
+      id: 'ml-3',
+      name: 'Dragon Fury',
+      emoji: '🐉',
+      desc: 'Dragon-Power mit Mewtwo als Ass – maximale Offensive, minimale Schwächen',
+      members: [
+        {
+          num: 484, name: 'Palkia', types: ['water','dragon'],
+          ivs: '15/15/15', role: 'Dragon Lead',
+          fast: 'Dragon Tail', charge1: 'Aqua Tail', charge2: 'Draco Meteor',
+          counters: ['Fire','Ground','Rock','Dragon','Flying'],
+          weakTo: ['Dragon','Fairy'],
+          tip: 'Nur 2 Schwächen (Dragon, Fairy). Dragon Tail generiert viel Energie. Aqua Tail als günstige Shield-Option. Draco Meteor als finaler Schlag. Sehr offensiv.'
+        },
+        {
+          num: 150, name: 'Mewtwo', types: ['psychic'],
+          ivs: '15/15/15', role: 'Ace',
+          fast: 'Psycho Cut', charge1: 'Psystrike', charge2: 'Shadow Ball',
+          counters: ['Fighting','Poison','Grass','Dragon','Ghost'],
+          weakTo: ['Bug','Ghost','Dark'],
+          tip: 'Die Legende der Legenden. Psystrike (Elite TM) unglaublich stark. Shadow Ball für Ghost-Coverage. Psycho Cut generiert schnell Energie. Kann fast jedes Pokémon schlagen.'
+        },
+        {
+          num: 250, name: 'Ho-Oh', types: ['fire','flying'],
+          ivs: '15/15/15', role: 'Closer',
+          fast: 'Incinerate', charge1: 'Brave Bird', charge2: 'Sacred Fire',
+          counters: ['Grass','Fighting','Bug','Steel','Ice'],
+          weakTo: ['Rock','Water','Electric'],
+          tip: 'Incinerate generiert extrem schnell Energie. Sacred Fire (Exclusive) ist sehr mächtig. Brave Bird für massive Flying-Coverage. Starker Closer gegen Ice und Grass.'
+        }
+      ],
+      strategy: 'Palkia lead nutzt Dragon Tail für schnelle Energie und deckt viele Matchups ab. Mewtwo kommt als Ace-Karte herein wenn Shields verbraucht sind. Ho-Oh schließt als Fire/Flying-Closer ab und deckt Ice-Typen die Palkia kontern.'
+    }
+  ]
+};
 
 // ── HELPER FUNCTIONS ───────────────────────────────────────────────────────
 function getTypeColor(typeName) {
@@ -2518,24 +2912,67 @@ function renderTypes() {
 }
 
 // ── TAB 4: TEAM ────────────────────────────────────────────────────────────
+function setTeamLeague(league) {
+  activeTeamLeague = league;
+  selectedTeamId   = null;
+  document.querySelectorAll('#team-league-pills .pill').forEach((p, i) => {
+    p.classList.toggle('active', ['gl','ul','ml'][i] === league);
+  });
+  renderTeam();
+}
+
+function selectTeam(teamId) {
+  selectedTeamId = selectedTeamId === teamId ? null : teamId;
+  renderTeam();
+}
+
 function renderTeam() {
-  // Main team cards
-  const teamGrid = document.getElementById('team-grid');
-  teamGrid.innerHTML = MY_TEAM.map(member => {
-    const pkData = POKEMON.find(p => p.num === member.num);
-    if (!pkData) return '';
+  const teams = META_TEAMS[activeTeamLeague] || [];
+
+  // Render team selector cards
+  const selector = document.getElementById('team-selector');
+  selector.innerHTML = teams.map(team => {
+    const isSelected = team.id === selectedTeamId;
+    const memberHtml = team.members.map((m, i) => {
+      const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${m.num}.png`;
+      return `${i > 0 ? '<span class="meta-team-sep">+</span>' : ''}
+        <div class="meta-mini-info">
+          <img class="meta-mini-sprite" src="${spriteUrl}" alt="${m.name}" onerror="this.style.display='none'">
+          <div class="meta-mini-name">${m.name}</div>
+        </div>`;
+    }).join('');
+    return `
+    <div class="meta-team-card${isSelected ? ' selected' : ''}" onclick="selectTeam('${team.id}')">
+      <div class="meta-team-header">
+        <span class="meta-team-emoji">${team.emoji}</span>
+        <span class="meta-team-name">${team.name}</span>
+      </div>
+      <div class="meta-team-desc">${team.desc}</div>
+      <div class="meta-team-members">${memberHtml}</div>
+    </div>`;
+  }).join('');
+
+  // Render detail view
+  const detail = document.getElementById('team-detail');
+  if (!selectedTeamId) {
+    detail.innerHTML = `
+      <div class="empty-state">
+        <div class="emoji">👆</div>
+        <p>Team auswählen um Details zu sehen</p>
+      </div>`;
+    return;
+  }
+
+  const team = teams.find(t => t.id === selectedTeamId);
+  if (!team) { detail.innerHTML = ''; return; }
+
+  // Team member cards
+  const teamCardsHtml = team.members.map(member => {
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${member.num}.png`;
     const typesBadges = member.types.map(t => typeBadge(t)).join('');
-
-    // Get pvp moves
-    const bestFast   = pkData.pvp.f.replace(/\*/g,'').trim();
-    const bestCharge1 = pkData.pvp.c1.replace(/\*/g,'').trim();
-    const bestCharge2 = pkData.pvp.c2.replace(/\*/g,'').trim();
-
-    const mvFast   = getMoveData(pkData.pvp.f);
-    const mvCharge1 = getMoveData(pkData.pvp.c1);
-    const mvCharge2 = getMoveData(pkData.pvp.c2);
-
+    const mvFast    = getMoveData(member.fast);
+    const mvCharge1 = getMoveData(member.charge1);
+    const mvCharge2 = getMoveData(member.charge2);
     return `
     <div class="team-card">
       <img class="team-sprite" src="${spriteUrl}" alt="${member.name}" onerror="this.style.display='none'">
@@ -2549,65 +2986,70 @@ function renderTeam() {
         <div class="team-move-row">
           <span class="team-move-label">Schnell</span>
           ${mvFast ? typeBadge(mvFast.type) : ''}
-          <span>${bestFast}</span>
-          ${pkData.pvp.f.includes('*') ? '<span style="color:var(--gold);font-size:11px;margin-left:2px">✦</span>' : ''}
+          <span>${member.fast}</span>
         </div>
         <div class="team-move-row">
           <span class="team-move-label">Ladung 1</span>
           ${mvCharge1 ? typeBadge(mvCharge1.type) : ''}
-          <span>${bestCharge1}</span>
-          ${pkData.pvp.c1.includes('*') ? '<span style="color:var(--gold);font-size:11px;margin-left:2px">✦</span>' : ''}
+          <span>${member.charge1}</span>
         </div>
         <div class="team-move-row">
           <span class="team-move-label">Ladung 2</span>
           ${mvCharge2 ? typeBadge(mvCharge2.type) : ''}
-          <span>${bestCharge2}</span>
-          ${pkData.pvp.c2.includes('*') ? '<span style="color:var(--gold);font-size:11px;margin-left:2px">✦</span>' : ''}
+          <span>${member.charge2}</span>
         </div>
       </div>
       <div class="team-tip">💡 ${member.tip}</div>
     </div>`;
   }).join('');
 
-  // Synergy table
-  const synergyData = [
-    {
-      num: 184,
-      name: 'Azumarill',
-      counters: ['Fighting','Dragon','Dark','Ground','Rock'],
-      weakTo: ['Grass','Electric','Poison']
-    },
-    {
-      num: 777,
-      name: 'Togedemaru',
-      counters: ['Water','Flying','Ice','Rock','Fairy'],
-      weakTo: ['Fire','Fighting','Ground']
-    },
-    {
-      num: 979,
-      name: 'Clodsire',
-      counters: ['Electric','Steel','Fire','Rock','Poison'],
-      weakTo: ['Ground','Water','Psychic','Ice']
-    }
-  ];
-
-  const tbody = document.getElementById('synergy-tbody');
-  tbody.innerHTML = synergyData.map(s => {
-    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${s.num}.png`;
-    const counterBadges = s.counters.map(t => typeBadge(t)).join('');
-    const weakBadges = s.weakTo.map(t => typeBadge(t)).join('');
+  // Synergy table rows
+  const synergyRows = team.members.map(member => {
+    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${member.num}.png`;
+    const counterBadges = member.counters.map(t => typeBadge(t)).join('');
+    const weakBadges    = member.weakTo.map(t => typeBadge(t)).join('');
     return `
     <tr>
       <td>
         <div class="syn-member">
-          <img class="syn-mini-sprite" src="${spriteUrl}" alt="${s.name}" onerror="this.style.display='none'">
-          ${s.name}
+          <img class="syn-mini-sprite" src="${spriteUrl}" alt="${member.name}" onerror="this.style.display='none'">
+          ${member.name}
         </div>
       </td>
       <td><div class="syn-cover">${counterBadges}</div></td>
       <td><div class="syn-cover">${weakBadges}</div></td>
     </tr>`;
   }).join('');
+
+  detail.innerHTML = `
+    <div class="team-detail-header">
+      <span class="team-detail-emoji">${team.emoji}</span>
+      <div>
+        <div class="team-detail-title">${team.name}</div>
+        <div class="team-detail-league">${team.desc}</div>
+      </div>
+    </div>
+    <div class="team-grid">${teamCardsHtml}</div>
+    <div class="synergy-section">
+      <div class="synergy-title">🔗 Team-Synergie</div>
+      <div class="synergy-subtitle">Welches Teammitglied kontert welche Typen?</div>
+      <div class="synergy-wrap">
+        <table class="synergy-table">
+          <thead>
+            <tr>
+              <th>Pokémon</th>
+              <th>Konter gegen</th>
+              <th>Schwach gegen</th>
+            </tr>
+          </thead>
+          <tbody>${synergyRows}</tbody>
+        </table>
+      </div>
+      <div class="strategy-box">
+        <h3>📋 Team-Strategie</h3>
+        <p>${team.strategy}</p>
+      </div>
+    </div>`;
 }
 
 // ── TAB 5: LIGA-RANGLISTE ──────────────────────────────────────────────────
