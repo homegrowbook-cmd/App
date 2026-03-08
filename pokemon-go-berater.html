@@ -79,7 +79,6 @@
     gap: 8px;
     height: 58px;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
   .nav-inner::-webkit-scrollbar { display: none; }
@@ -1089,6 +1088,21 @@
     width: 100%;
     margin-top: 6px;
   }
+  .calc-copy-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+    width: auto;
+  }
+  kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: monospace;
+    color: var(--text2);
+  }
   .calc-btn:hover { background: var(--accent); transform: translateY(-1px); }
   .calc-btn:active { transform: translateY(0); }
   .calc-result {
@@ -1887,13 +1901,14 @@
         <div class="calc-card-title">💡 Notes</div>
         <div class="calc-card-desc" style="margin-bottom:0">
           <strong>CP Calculator:</strong> Base stats for all Pokémon can be found on
-          <a href="https://pvpoke.com" target="_blank" rel="noopener" style="color:var(--accent)">PVPoke</a> oder
+          <a href="https://pvpoke.com" target="_blank" rel="noopener" style="color:var(--accent)">PVPoke</a> or
           <a href="https://pokemongohub.net" target="_blank" rel="noopener" style="color:var(--accent)">GO Hub</a>.
           Tip: Select a Pokémon in IV Rank – the base stats will be automatically transferred to the CP Calculator.<br><br>
           <strong>IV Rank:</strong> Rank 1 = 15/15/15 is rarely optimal! For Great League, 0/15/15 or similar is often better,
           as a lower Attack IV allows a Pokémon to be played under the CP cap at a higher level.
           The rank is based on the stat product at optimal level.<br><br>
-          <strong>✦</strong> = Community Day / Elite TM Move &nbsp;&nbsp; <strong>★</strong> = Empfohlenes PvP-Moveset
+          <strong>✦</strong> = Community Day / Elite TM Move &nbsp;&nbsp; <strong>★</strong> = Recommended PvP Moveset<br><br>
+          <strong>⌨️ Keyboard Shortcuts:</strong> Press keys <kbd>1</kbd>–<kbd>7</kbd> to quickly switch between tabs (Home, Moves, Pokémon, Types, Teams, Rankings, Calculator).
         </div>
       </div>
     </div>
@@ -4669,7 +4684,7 @@ function calcIVRank() {
       Optimal Level: <strong>${myResult.level}</strong> · Stat Product: <strong>${Math.round(mySP).toLocaleString('en-US')}</strong><br>
       Best IVs: ${bestIVs.atk}/${bestIVs.def}/${bestIVs.sta} (Level ${bestLevel}) · ${pct}% of maximum
     </span>
-    <button class="calc-btn" style="margin-top:8px;padding:6px 14px;font-size:13px" onclick="navigator.clipboard?.writeText('${shareText.replace(/'/g, "\\'")}').then(()=>this.textContent='✅ Copied!').catch(()=>this.textContent='❌ Copy failed'); return false;">📋 Copy Result</button>`;
+    <button class="calc-btn calc-copy-btn" data-share="${shareText.replace(/"/g,'&quot;')}" onclick="copyIVResult(this)">📋 Copy Result</button>`;
   result.classList.remove('hidden');
 }
 
@@ -4680,6 +4695,14 @@ document.addEventListener('keydown', e => {
   const shortcuts = { '1': 'home-tab', '2': 'moves-tab', '3': 'pokemon-tab', '4': 'types-tab', '5': 'team-tab', '6': 'ranking-tab', '7': 'calc-tab' };
   if (shortcuts[e.key]) { e.preventDefault(); show(shortcuts[e.key]); }
 });
+
+// ── COPY IV RESULT ────────────────────────────────────────────────────────
+function copyIVResult(btn) {
+  const text = btn.dataset.share || '';
+  navigator.clipboard?.writeText(text)
+    .then(() => { btn.textContent = '✅ Copied!'; setTimeout(() => { btn.textContent = '📋 Copy Result'; }, 2000); })
+    .catch(() => { btn.textContent = '❌ Copy failed'; setTimeout(() => { btn.textContent = '📋 Copy Result'; }, 2000); });
+}
 
 function buildGenTabs() {
   // Gen I–IX pills are static HTML; 'Alle' pill is pre-activated in HTML
