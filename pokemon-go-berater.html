@@ -618,6 +618,94 @@
   .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
   .empty-state p { font-size: 15px; }
 
+  /* ── LIGA-RANGLISTE ─────────────────────────────────────── */
+  .rank-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tier-section { margin-bottom: 24px; }
+  .tier-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+    padding: 4px 14px 4px 10px;
+    border-radius: 10px;
+  }
+  .tier-s  { background: rgba(245,200,66,0.18);  color: var(--gold); }
+  .tier-a  { background: rgba(124,131,245,0.18); color: var(--accent); }
+  .tier-b  { background: rgba(76,175,122,0.18);  color: var(--green); }
+  .tier-c  { background: rgba(159,163,199,0.18); color: var(--text2); }
+
+  .rank-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    transition: border-color 0.15s;
+  }
+  .rank-row:hover { border-color: var(--border2); }
+
+  .rank-sprite {
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .rank-info { flex: 1; min-width: 0; }
+  .rank-name {
+    font-family: 'Bangers', cursive;
+    font-size: 17px;
+    letter-spacing: 0.8px;
+    color: var(--text);
+  }
+  .rank-types { display: flex; gap: 3px; flex-wrap: wrap; margin: 3px 0 4px; }
+  .rank-moves { font-size: 12px; color: var(--text2); }
+  .rank-moves strong { color: var(--text); font-weight: 600; }
+
+  .rank-tier-badge {
+    font-family: 'Bangers', cursive;
+    font-size: 20px;
+    letter-spacing: 1px;
+    padding: 2px 10px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .rtb-s  { background: rgba(245,200,66,0.18);  color: var(--gold); }
+  .rtb-a  { background: rgba(124,131,245,0.18); color: var(--accent); }
+  .rtb-b  { background: rgba(76,175,122,0.18);  color: var(--green); }
+  .rtb-c  { background: rgba(159,163,199,0.18); color: var(--text2); }
+
+  .rank-note {
+    font-size: 11px;
+    color: var(--gold);
+    margin-top: 3px;
+  }
+
+  .source-note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--text3);
+    text-align: center;
+  }
+  .source-note a { color: var(--accent); text-decoration: none; }
+  .source-note a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    .rank-row { padding: 8px 10px; }
+    .rank-sprite { width: 40px; height: 40px; }
+  }
+
   /* ── SCROLLBAR ──────────────────────────────────────────── */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -657,6 +745,9 @@
     </button>
     <button class="nav-btn" onclick="show('team-tab')">
       <span class="icon">🏆</span> Mein Team
+    </button>
+    <button class="nav-btn" onclick="show('ranking-tab')">
+      <span class="icon">📊</span> Liga-Rangliste
     </button>
   </div>
 </nav>
@@ -807,6 +898,30 @@
       </div>
     </div>
   </section>
+
+  <!-- ── TAB 5: LIGA-RANGLISTE ─────────────────────────────── -->
+  <section id="ranking-tab" class="tab">
+    <div class="page-header">
+      <h1>📊 Liga-Rangliste</h1>
+      <p>Top Pokémon für Superliga, Hyperliga und Meisterliga – basierend auf PVPoke & GamePress</p>
+    </div>
+
+    <div class="controls-row">
+      <div class="pills" id="league-pills">
+        <button class="pill active" onclick="setLeague('gl')">🌿 Superliga (≤1500)</button>
+        <button class="pill" onclick="setLeague('ul')">💎 Hyperliga (≤2500)</button>
+        <button class="pill" onclick="setLeague('ml')">👑 Meisterliga</button>
+      </div>
+    </div>
+
+    <div id="ranking-grid" class="rank-grid"></div>
+
+    <div class="source-note">
+      Quellen: <a href="https://pvpoke.com" target="_blank" rel="noopener">PVPoke</a> ·
+      <a href="https://gamepress.gg/pokemongo" target="_blank" rel="noopener">GamePress</a> ·
+      <a href="https://pokemongohub.net" target="_blank" rel="noopener">GO Hub</a>
+    </div>
+  </section>
 </main>
 
 <script>
@@ -817,7 +932,7 @@ let activeGen = 'all';
 let mvSearch  = '';
 let pkSearch  = '';
 let typeSearch = '';
-
+let activeLeague = 'gl';
 // ── MOVES DATA ─────────────────────────────────────────────────────────────
 const MOVES = [
   // FAST MOVES
@@ -1840,7 +1955,7 @@ const POKEMON = [
   {num:774, name:'Minior', gen:7, types:['rock','flying'], fast:['Smack Down','Air Slash'], charge:['Stone Edge','Hurricane','Rock Slide'], pvp:{f:'Air Slash', c1:'Stone Edge', c2:'Rock Slide'}},
   {num:775, name:'Komala', gen:7, types:['normal'], fast:['Quick Attack','Tackle'], charge:['Body Slam','Hyper Beam','Return'], pvp:{f:'Quick Attack', c1:'Body Slam', c2:'Hyper Beam'}},
   {num:776, name:'Turtonator', gen:7, types:['fire','dragon'], fast:['Fire Spin','Dragon Tail'], charge:['Overheat','Draco Meteor','Fire Blast'], pvp:{f:'Dragon Tail', c1:'Draco Meteor', c2:'Fire Blast'}},
-  {num:777, name:'Togedemaru', gen:7, types:['electric','steel'], fast:['Volt Switch','Bullet Punch'], charge:['Wild Charge','Iron Head','Thunderbolt'], pvp:{f:'Volt Switch', c1:'Wild Charge', c2:'Iron Head'}},
+  {num:777, name:'Togedemaru', gen:7, types:['electric','steel'], fast:['Thunder Shock','Volt Switch','Bullet Punch'], charge:['Wild Charge','Fell Stinger','Iron Head','Thunderbolt'], pvp:{f:'Thunder Shock', c1:'Wild Charge', c2:'Fell Stinger'}},
   {num:778, name:'Mimikyu', gen:7, types:['ghost','fairy'], fast:['Shadow Claw','Charm'], charge:['Shadow Ball','Play Rough','Poltergeist'], pvp:{f:'Charm', c1:'Play Rough', c2:'Shadow Ball'}},
   {num:779, name:'Bruxish', gen:7, types:['water','psychic'], fast:['Waterfall','Confusion'], charge:['Hydro Pump','Psychic','Hydro Cannon'], pvp:{f:'Waterfall', c1:'Hydro Cannon', c2:'Hydro Pump'}},
   {num:780, name:'Drampa', gen:7, types:['normal','dragon'], fast:['Quick Attack','Dragon Tail'], charge:['Body Slam','Draco Meteor','Hyper Beam'], pvp:{f:'Dragon Tail', c1:'Draco Meteor', c2:'Body Slam'}},
@@ -2103,7 +2218,7 @@ const MY_TEAM = [
     tip: 'Ideal als zweiter Switch. Fell Stinger baut Angriffs-Buff auf. Immun gegen Poison-Typen durch Steel-Typ. Konter Water- und Flying-Matchups für Azumarill.'
   },
   {
-    num: 908,
+    num: 979,
     name: 'Clodsire',
     types: ['poison','ground'],
     ivs: '0 / 13 / 15',
@@ -2150,16 +2265,18 @@ function show(tabId) {
     'moves-tab': 0,
     'pokemon-tab': 1,
     'types-tab': 2,
-    'team-tab': 3
+    'team-tab': 3,
+    'ranking-tab': 4
   };
   const idx = tabIndex[tabId];
   if (idx !== undefined) {
     document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   }
-  if (tabId === 'moves-tab')   renderMoves();
-  if (tabId === 'pokemon-tab') renderPokemon();
-  if (tabId === 'types-tab')   renderTypes();
-  if (tabId === 'team-tab')    renderTeam();
+  if (tabId === 'moves-tab')    renderMoves();
+  if (tabId === 'pokemon-tab')  renderPokemon();
+  if (tabId === 'types-tab')    renderTypes();
+  if (tabId === 'team-tab')     renderTeam();
+  if (tabId === 'ranking-tab')  renderRanking();
 }
 
 function toggleCard(num) {
@@ -2268,7 +2385,7 @@ function renderPokemon() {
   if (activeGen !== 'all') data = data.filter(p => p.gen === activeGen);
 
   // Filter by search
-  const q = pkSearch.trim().toLowerCase();
+  const q = pkSearch.trim().toLowerCase().replace(/^#/, '');
   if (q) {
     data = data.filter(p =>
       p.name.toLowerCase().includes(q) ||
@@ -2467,7 +2584,7 @@ function renderTeam() {
       weakTo: ['Fire','Fighting','Ground']
     },
     {
-      num: 908,
+      num: 979,
       name: 'Clodsire',
       counters: ['Electric','Steel','Fire','Rock','Poison'],
       weakTo: ['Ground','Water','Psychic','Ice']
@@ -2493,7 +2610,118 @@ function renderTeam() {
   }).join('');
 }
 
-// ── INIT ───────────────────────────────────────────────────────────────────
+// ── TAB 5: LIGA-RANGLISTE ──────────────────────────────────────────────────
+const RANKING_DATA = {
+  gl: [
+    {tier:'S', num:184,  name:'Azumarill',     types:['water','fairy'],    fast:'Bubble',       charge:'Play Rough / Ice Beam',     note:'Superliga-Anker #1'},
+    {tier:'S', num:63,   name:'Abra',           types:['psychic'],          fast:'Counter',      charge:'Close Combat / Body Slam',  note:'Medicham-Linie'},
+    {tier:'S', num:308,  name:'Medicham',        types:['fighting','psychic'],fast:'Counter',     charge:'Ice Punch / Psychic',       note:'Top GL Sweeper'},
+    {tier:'S', num:304,  name:'Bastiodon',       types:['rock','steel'],     fast:'Smack Down',   charge:'Stone Edge / Flamethrower', note:'Bester Defender'},
+    {tier:'S', num:334,  name:'Altaria',         types:['dragon','flying'],  fast:'Dragon Breath',charge:'Sky Attack / Moonblast',    note:'Mega auch für UL'},
+    {tier:'S', num:259,  name:'Swampert',        types:['water','ground'],   fast:'Mud Shot',     charge:'Hydro Cannon / Earthquake', note:'Community Day Move'},
+    {tier:'S', num:379,  name:'Registeel',       types:['steel'],            fast:'Lock-On',      charge:'Flash Cannon / Focus Blast', note:'Top Steel Pick'},
+    {tier:'S', num:362,  name:'Glalie',          types:['ice'],              fast:'Ice Shard',    charge:'Avalanche / Shadow Ball',   note:'Starkes Ice-Pick'},
+    {tier:'S', num:365,  name:'Walrein',         types:['ice','water'],      fast:'Powder Snow',  charge:'Icicle Spear / Earthquake', note:'Bester Ice-Pick GL'},
+    {tier:'S', num:978,  name:'Annihilape',      types:['fighting','ghost'], fast:'Counter',      charge:'Close Combat / Night Slash', note:'Top GL seit Gen 9'},
+    {tier:'S', num:979,  name:'Clodsire',        types:['poison','ground'],  fast:'Poison Sting', charge:'Sludge Bomb / Earthquake',  note:'Top GL Closer'},
+    {tier:'S', num:959,  name:'Tinkaton',        types:['fairy','steel'],    fast:'Charm',        charge:'Play Rough / Flash Cannon',  note:'Top GL Pick seit Gen 9'},
+    {tier:'A', num:302,  name:'Sableye',         types:['dark','ghost'],     fast:'Shadow Claw',  charge:'Foul Play / Return',         note:'Frustration-immun'},
+    {tier:'A', num:741,  name:'Talonflame',      types:['fire','flying'],    fast:'Incinerate',   charge:'Brave Bird / Flame Charge',  note:'Starkes Duo-Type'},
+    {tier:'A', num:596,  name:'Galvantula',      types:['bug','electric'],   fast:'Volt Switch',  charge:'Bug Buzz / Lunge',           note:'Energy-Engine'},
+    {tier:'A', num:598,  name:'Ferrothorn',      types:['grass','steel'],    fast:'Bullet Seed',  charge:'Power Whip / Flash Cannon',  note:'Starker Grass/Steel'},
+    {tier:'A', num:398,  name:'Staraptor',       types:['normal','flying'],  fast:'Air Slash',    charge:'Brave Bird / Close Combat',  note:'Gutes Flying-Pick'},
+    {tier:'A', num:426,  name:'Drifblim',        types:['ghost','flying'],   fast:'Hex',          charge:'Shadow Ball / Icy Wind',     note:'Trick Room-Pick'},
+    {tier:'A', num:777,  name:'Togedemaru',      types:['electric','steel'], fast:'Thunder Shock', charge:'Wild Charge / Fell Stinger', note:'Überraschungs-Switch'},
+    {tier:'A', num:671,  name:'Florges',         types:['fairy'],            fast:'Charm',        charge:'Moonblast / Disarming Voice', note:'Starker Fairy-Tank'},
+    {tier:'B', num:279,  name:'Pelipper',        types:['water','flying'],   fast:'Wing Attack',  charge:'Weather Ball Water / Hurricane', note:'Wetter-Support'},
+    {tier:'B', num:476,  name:'Probopass',       types:['rock','steel'],     fast:'Spark',        charge:'Rock Slide / Thunderbolt',   note:'Budget Bastiodon'},
+    {tier:'B', num:462,  name:'Magnezone',       types:['electric','steel'], fast:'Spark',        charge:'Wild Charge / Flash Cannon',  note:'Electric/Steel'},
+    {tier:'B', num:350,  name:'Milotic',         types:['water'],            fast:'Waterfall',    charge:'Surf / Blizzard',            note:'Guter Water-Anker'},
+    {tier:'B', num:143,  name:'Snorlax',         types:['normal'],           fast:'Quick Attack', charge:'Body Slam / Skull Bash',     note:'Bulk-Monster'},
+  ],
+  ul: [
+    {tier:'S', num:365,  name:'Walrein',         types:['ice','water'],      fast:'Powder Snow',  charge:'Icicle Spear / Earthquake',  note:'#1 UL Pick'},
+    {tier:'S', num:379,  name:'Registeel',       types:['steel'],            fast:'Lock-On',      charge:'Flash Cannon / Focus Blast',  note:'Top Steel UL'},
+    {tier:'S', num:488,  name:'Cresselia',       types:['psychic'],          fast:'Psycho Cut',   charge:'Moonblast / Grass Knot',     note:'Bester Psychic UL'},
+    {tier:'S', num:334,  name:'Altaria',         types:['dragon','flying'],  fast:'Dragon Breath',charge:'Sky Attack / Moonblast',      note:'Auch als Mega'},
+    {tier:'S', num:259,  name:'Swampert',        types:['water','ground'],   fast:'Mud Shot',     charge:'Hydro Cannon / Earthquake',   note:'Community Day Move'},
+    {tier:'S', num:741,  name:'Talonflame',      types:['fire','flying'],    fast:'Incinerate',   charge:'Brave Bird / Flame Charge',   note:'Top Closer UL'},
+    {tier:'S', num:788,  name:'Tapu Fini',       types:['water','fairy'],    fast:'Waterfall',    charge:'Hydro Cannon / Moonblast',    note:'Bester Water/Fairy'},
+    {tier:'A', num:472,  name:'Gliscor',         types:['ground','flying'],  fast:'Wing Attack',  charge:'Earthquake / Night Slash',    note:'Starker Ground/Flying'},
+    {tier:'A', num:330,  name:'Flygon',          types:['ground','dragon'],  fast:'Mud Shot',     charge:'Earth Power / Dragon Claw',   note:'Ground/Dragon'},
+    {tier:'A', num:596,  name:'Galvantula',      types:['bug','electric'],   fast:'Volt Switch',  charge:'Bug Buzz / Lunge',            note:'Energy-Engine'},
+    {tier:'A', num:243,  name:'Raikou',          types:['electric'],         fast:'Volt Switch',  charge:'Wild Charge / Shadow Ball',   note:'Bester Electric UL'},
+    {tier:'A', num:208,  name:'Steelix',         types:['steel','ground'],   fast:'Mud Shot',     charge:'Earthquake / Iron Head',      note:'Bulk UL Pick'},
+    {tier:'A', num:376,  name:'Metagross',       types:['steel','psychic'],  fast:'Bullet Punch', charge:'Meteor Mash / Earthquake',    note:'Community Day Move'},
+    {tier:'B', num:230,  name:'Kingdra',         types:['water','dragon'],   fast:'Dragon Tail',  charge:'Hydro Cannon / Outrage',      note:'Nur 2 Schwächen'},
+    {tier:'B', num:144,  name:'Articuno',        types:['ice','flying'],     fast:'Ice Shard',    charge:'Ice Beam / Hurricane',        note:'Guter Ice/Flying'},
+    {tier:'B', num:635,  name:'Hydreigon',       types:['dark','dragon'],    fast:'Dragon Tail',  charge:'Brutal Swing / Dragon Pulse', note:'Starker Dark/Dragon'},
+  ],
+  ml: [
+    {tier:'S', num:483,  name:'Dialga',          types:['steel','dragon'],   fast:'Dragon Breath',charge:'Iron Head / Draco Meteor',    note:'#1 ML seit Gen 4'},
+    {tier:'S', num:484,  name:'Palkia',          types:['water','dragon'],   fast:'Dragon Tail',  charge:'Aqua Tail / Draco Meteor',    note:'Starke Origin Forme'},
+    {tier:'S', num:382,  name:'Kyogre',          types:['water'],            fast:'Waterfall',    charge:'Surf / Origin Pulse',         note:'Bester Water ML'},
+    {tier:'S', num:383,  name:'Groudon',         types:['ground'],           fast:'Mud Shot',     charge:'Precipice Blades / Fire Punch', note:'Bester Ground ML'},
+    {tier:'S', num:888,  name:'Zacian',          types:['fairy'],            fast:'Snarl',        charge:'Play Rough / Close Combat',   note:'Top Fairy ML'},
+    {tier:'S', num:717,  name:'Yveltal',         types:['dark','flying'],    fast:'Snarl',        charge:'Dark Pulse / Oblivion Wing',  note:'Bester Dark/Flying'},
+    {tier:'S', num:250,  name:'Ho-Oh',           types:['fire','flying'],    fast:'Incinerate',   charge:'Brave Bird / Sacred Fire',    note:'Starker Fire/Flying'},
+    {tier:'S', num:150,  name:'Mewtwo',          types:['psychic'],          fast:'Psycho Cut',   charge:'Psystrike / Shadow Ball',     note:'Legende der Legenden'},
+    {tier:'A', num:249,  name:'Lugia',           types:['psychic','flying'], fast:'Dragon Tail',  charge:'Aeroblast / Sky Attack',      note:'Bester Defensive ML'},
+    {tier:'A', num:445,  name:'Garchomp',        types:['dragon','ground'],  fast:'Mud Shot',     charge:'Outrage / Earth Power',       note:'Top Dragon/Ground'},
+    {tier:'A', num:149,  name:'Dragonite',       types:['dragon','flying'],  fast:'Dragon Tail',  charge:'Outrage / Hurricane',         note:'Starkes Dragon/Flying'},
+    {tier:'A', num:384,  name:'Rayquaza',        types:['dragon','flying'],  fast:'Air Slash',    charge:'Outrage / Breaking Swipe',    note:'Starkes Dragon/Flying'},
+    {tier:'A', num:487,  name:'Giratina',        types:['ghost','dragon'],   fast:'Shadow Claw',  charge:'Shadow Ball / Ominous Wind',  note:'Bester Ghost ML'},
+    {tier:'A', num:468,  name:'Togekiss',        types:['fairy','flying'],   fast:'Charm',        charge:'Flamethrower / Dazzling Gleam', note:'Top Fairy/Flying'},
+    {tier:'B', num:645,  name:'Landorus',        types:['ground','flying'],  fast:'Mud Shot',     charge:'Earth Power / Stone Edge',    note:'Starker Ground/Flying'},
+    {tier:'B', num:289,  name:'Slaking',         types:['normal'],           fast:'Yawn',         charge:'Body Slam / Earthquake',      note:'Hohes CP-Potenzial'},
+  ]
+};
+
+function setLeague(league) {
+  activeLeague = league;
+  document.querySelectorAll('#league-pills .pill').forEach((p, i) => {
+    p.classList.toggle('active', ['gl','ul','ml'][i] === league);
+  });
+  renderRanking();
+}
+
+function renderRanking() {
+  const data = RANKING_DATA[activeLeague] || [];
+  const grid = document.getElementById('ranking-grid');
+
+  const tiers = ['S','A','B'];
+  const tierLabels = {S: '🥇 S-Tier', A: '🥈 A-Tier', B: '🥉 B-Tier'};
+
+  grid.innerHTML = tiers.map(tier => {
+    const entries = data.filter(e => e.tier === tier);
+    if (!entries.length) return '';
+
+    const rows = entries.map(e => {
+      const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${e.num}.png`;
+      const typeBadges = e.types.map(t => typeBadge(t)).join('');
+      const noteHtml = e.note ? `<div class="rank-note">💡 ${e.note}</div>` : '';
+      return `
+      <div class="rank-row">
+        <img class="rank-sprite" src="${spriteUrl}" alt="${e.name}" onerror="this.style.display='none'">
+        <div class="rank-info">
+          <div class="rank-name">${e.name}</div>
+          <div class="rank-types">${typeBadges}</div>
+          <div class="rank-moves"><strong>Fast:</strong> ${e.fast} &nbsp;|&nbsp; <strong>Ladung:</strong> ${e.charge}</div>
+          ${noteHtml}
+        </div>
+        <span class="rank-tier-badge rtb-${tier.toLowerCase()}">${tier}</span>
+      </div>`;
+    }).join('');
+
+    return `
+    <div class="tier-section">
+      <div class="tier-label tier-${tier.toLowerCase()}">${tierLabels[tier]}</div>
+      ${rows}
+    </div>`;
+  }).join('');
+}
+
+
 // Deduplicate MOVES once at init (defensive, ensures no duplicate key errors)
 const _moveSeen = new Set();
 const MOVES_DEDUPED = MOVES.filter(m => {
