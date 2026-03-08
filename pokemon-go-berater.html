@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pokémon GO PvP Berater</title>
+<title>Pokémon GO PvP Advisor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -691,6 +691,114 @@
     margin-top: 3px;
   }
 
+  /* ── RANK ACCORDION ─────────────────────────────────────── */
+  .rank-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .rank-card:hover { border-color: var(--border2); }
+  .rank-card.open { border-color: var(--accent2); }
+
+  .rank-card .rank-row {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+  }
+  .rank-card .rank-row:hover { background: var(--bg3); }
+
+  .rank-chevron {
+    color: var(--text3);
+    font-size: 14px;
+    transition: transform 0.22s;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+  .rank-card.open .rank-chevron { transform: rotate(180deg); }
+
+  .rank-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .rank-card.open .rank-body { max-height: 800px; }
+
+  .rank-body-inner {
+    padding: 0 14px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .rank-info-section {
+    margin-top: 12px;
+  }
+  .rank-info-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+  .rank-badges-list { display: flex; flex-wrap: wrap; gap: 4px; }
+  .rank-none { font-size: 12px; color: var(--text3); font-style: italic; }
+
+  .rank-counters {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: rgba(124,131,245,0.06);
+    border: 1px solid rgba(124,131,245,0.2);
+    border-radius: 8px;
+  }
+  .rank-counters-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .rank-counter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+  .rank-counter-item:last-child { border-bottom: none; }
+  .rank-counter-sprite {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .rank-counter-name { font-weight: 600; flex: 1; }
+  .rank-counter-badges { display: flex; gap: 3px; flex-wrap: wrap; }
+  .rank-counter-adv {
+    font-size: 10px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .rank-counter-atk {
+    background: rgba(76,175,122,0.2);
+    color: var(--green);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .rank-counter-def {
+    background: rgba(124,131,245,0.2);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+
   .source-note {
     margin-top: 20px;
     font-size: 12px;
@@ -701,8 +809,9 @@
   .source-note a:hover { text-decoration: underline; }
 
   @media (max-width: 640px) {
-    .rank-row { padding: 8px 10px; }
+    .rank-card .rank-row { padding: 8px 10px; }
     .rank-sprite { width: 40px; height: 40px; }
+    .rank-body-inner { padding: 0 10px 12px; }
   }
 
   /* ── META TEAM SELECTOR ─────────────────────────────────── */
@@ -797,17 +906,39 @@
   /* ── RESPONSIVE ─────────────────────────────────────────── */
   @media (max-width: 640px) {
     .page-header h1 { font-size: 28px; }
+    .page-header p { font-size: 13px; }
     .controls-row { gap: 8px; }
-    .search-wrap { max-width: 100%; }
+    .controls-row > * { width: 100%; }
+    .search-wrap { max-width: 100%; min-width: 0; }
     thead th { padding: 9px 10px; font-size: 11px; }
     tbody td { padding: 8px 10px; font-size: 13px; }
     .team-grid { grid-template-columns: 1fr; }
     .types-grid { grid-template-columns: 1fr; }
+    .meta-teams-grid { grid-template-columns: 1fr; }
+    .home-hero { padding: 28px 12px 20px; }
+    .home-hero h1 { font-size: 32px; }
+    .home-hero p { font-size: 14px; }
+    .home-hero-badges { gap: 6px; }
+    .home-features { grid-template-columns: 1fr; }
+    .home-tips-list { grid-template-columns: 1fr; }
+    .pk-header { gap: 8px; padding: 10px 12px; }
+    .pk-name { font-size: 16px; }
+    .pk-sprite { width: 40px; height: 40px; }
+    .pk-body-inner { padding: 0 12px 12px; }
+    .nav-btn { padding: 6px 10px; font-size: 13px; }
+    .pills { gap: 4px; }
+    .pill { padding: 4px 10px; font-size: 12px; }
+    .type-badge { font-size: 11px; padding: 2px 7px; }
+    .calc-grid { grid-template-columns: 1fr; }
+    .team-card { padding: 16px; }
+    .synergy-table th, .synergy-table td { padding: 8px 10px; font-size: 12px; }
+    .table-wrap { max-height: 55vh; }
   }
 
   @media (max-width: 400px) {
     .nav-logo { font-size: 18px; }
-    main { padding: 16px 12px 48px; }
+    main { padding: 16px 10px 48px; }
+    .nav-inner { gap: 4px; padding: 0 8px; }
   }
 
   /* ── LIGHT THEME ────────────────────────────────────────── */
@@ -1166,29 +1297,29 @@
 
 <nav>
   <div class="nav-inner">
-    <span class="nav-logo">⚔️ PvP Berater</span>
+    <span class="nav-logo">⚔️ PvP Advisor</span>
     <button class="nav-btn active" onclick="show('home-tab')">
-      <span class="icon">🏠</span> Start
+      <span class="icon">🏠</span> Home
     </button>
     <button class="nav-btn" onclick="show('moves-tab')">
-      <span class="icon">⚡</span> Attacken
+      <span class="icon">⚡</span> Moves
     </button>
     <button class="nav-btn" onclick="show('pokemon-tab')">
       <span class="icon">🎯</span> Pokémon
     </button>
     <button class="nav-btn" onclick="show('types-tab')">
-      <span class="icon">🔮</span> Typen
+      <span class="icon">🔮</span> Types
     </button>
     <button class="nav-btn" onclick="show('team-tab')">
       <span class="icon">🏆</span> Teams
     </button>
     <button class="nav-btn" onclick="show('ranking-tab')">
-      <span class="icon">📊</span> Liga-Rangliste
+      <span class="icon">📊</span> League Rankings
     </button>
     <button class="nav-btn" onclick="show('calc-tab')">
-      <span class="icon">🧮</span> Rechner
+      <span class="icon">🧮</span> Calculator
     </button>
-    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Hell/Dunkel-Modus wechseln" title="Hell/Dunkel-Modus wechseln">☀️</button>
+    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">☀️</button>
   </div>
 </nav>
 
@@ -1197,89 +1328,89 @@
   <section id="home-tab" class="tab active">
     <div class="home-hero">
       <span class="home-hero-icon">⚔️</span>
-      <h1>Pokémon GO PvP Berater</h1>
-      <p>Dein umfassendes Werkzeug für Pokémon GO PvP – Attacken, Pokédex, Typ-Übersicht, Meta-Teams, Ranglisten und Rechner an einem Ort.</p>
+      <h1>Pokémon GO PvP Advisor</h1>
+      <p>Your comprehensive Pokémon GO PvP tool – Moves, Pokédex, Type overview, Meta Teams, Rankings and Calculator in one place.</p>
       <div class="home-hero-badges">
-        <span class="home-hero-badge">🌿 Superliga</span>
-        <span class="home-hero-badge">💎 Hyperliga</span>
-        <span class="home-hero-badge">👑 Meisterliga</span>
-        <span class="home-hero-badge">🇩🇪 Auf Deutsch</span>
+        <span class="home-hero-badge">🌿 Great League</span>
+        <span class="home-hero-badge">💎 Ultra League</span>
+        <span class="home-hero-badge">👑 Master League</span>
+        <span class="home-hero-badge">🇬🇧 In English</span>
       </div>
     </div>
 
-    <div class="home-section-title">🗂️ Bereiche</div>
+    <div class="home-section-title">🗂️ Features</div>
 
     <div class="home-features">
       <div class="home-feature-card" onclick="show('moves-tab')">
         <span class="home-feature-icon">⚡</span>
-        <div class="home-feature-title">Attacken-Datenbank</div>
-        <div class="home-feature-desc">Alle Schnell- und Lade-Attacken mit PvE- und PvP-Stärkewerten. Sortier- und filterbar nach Typ und Kategorie.</div>
-        <button class="home-feature-action">Öffnen →</button>
+        <div class="home-feature-title">Move Database</div>
+        <div class="home-feature-desc">All fast and charge moves with PvE and PvP power values. Sortable and filterable by type and category.</div>
+        <button class="home-feature-action">Open →</button>
       </div>
 
       <div class="home-feature-card" onclick="show('pokemon-tab')">
         <span class="home-feature-icon">🎯</span>
-        <div class="home-feature-title">Pokémon-Datenbank</div>
-        <div class="home-feature-desc">PvP-optimierte Movesets für alle wichtigen Pokémon – filterbar nach Generation und Liga.</div>
-        <button class="home-feature-action">Öffnen →</button>
+        <div class="home-feature-title">Pokémon Database</div>
+        <div class="home-feature-desc">PvP-optimized movesets for all key Pokémon – filterable by generation and league.</div>
+        <button class="home-feature-action">Open →</button>
       </div>
 
       <div class="home-feature-card" onclick="show('types-tab')">
         <span class="home-feature-icon">🔮</span>
-        <div class="home-feature-title">Typ-Übersicht</div>
-        <div class="home-feature-desc">Stärken, Schwächen und Immunitäten aller 18 Typen mit Pokémon GO Multiplikatoren (×1.6 / ×0.625).</div>
-        <button class="home-feature-action">Öffnen →</button>
+        <div class="home-feature-title">Type Overview</div>
+        <div class="home-feature-desc">Strengths, weaknesses and immunities of all 18 types with Pokémon GO multipliers (×1.6 / ×0.625).</div>
+        <button class="home-feature-action">Open →</button>
       </div>
 
       <div class="home-feature-card" onclick="show('team-tab')">
         <span class="home-feature-icon">🏆</span>
-        <div class="home-feature-title">Meta-Teams</div>
-        <div class="home-feature-desc">Empfohlene Top-Teams für Superliga, Hyperliga und Meisterliga mit Strategie-Tipps und Synergie-Analyse.</div>
-        <button class="home-feature-action">Öffnen →</button>
+        <div class="home-feature-title">Meta Teams</div>
+        <div class="home-feature-desc">Top recommended teams for Great League, Ultra League and Master League with strategy tips and synergy analysis.</div>
+        <button class="home-feature-action">Open →</button>
       </div>
 
       <div class="home-feature-card" onclick="show('ranking-tab')">
         <span class="home-feature-icon">📊</span>
-        <div class="home-feature-title">Liga-Rangliste</div>
-        <div class="home-feature-desc">S/A/B-Tier-Listen für alle drei Ligen – basierend auf PVPoke &amp; GamePress. Immer aktuell mit den besten Pokémon.</div>
-        <button class="home-feature-action">Öffnen →</button>
+        <div class="home-feature-title">League Rankings</div>
+        <div class="home-feature-desc">S/A/B-Tier lists for all three leagues – based on PVPoke &amp; GamePress. Always up-to-date with the best Pokémon.</div>
+        <button class="home-feature-action">Open →</button>
       </div>
 
       <div class="home-feature-card" onclick="show('calc-tab')">
         <span class="home-feature-icon">🧮</span>
-        <div class="home-feature-title">Rechner</div>
-        <div class="home-feature-desc">CP-Rechner und IV-Rang-Rechner: Finde die optimalen IVs für dein Pokémon in jeder Liga.</div>
-        <button class="home-feature-action">Öffnen →</button>
+        <div class="home-feature-title">Calculator</div>
+        <div class="home-feature-desc">CP Calculator and IV Rank Calculator: Find the optimal IVs for your Pokémon in any league.</div>
+        <button class="home-feature-action">Open →</button>
       </div>
     </div>
 
-    <div class="home-section-title">💡 Tipps</div>
+    <div class="home-section-title">💡 Tips</div>
 
     <div class="home-tips">
       <div class="home-tips-list">
         <div class="home-tip-item">
           <span class="home-tip-icon">🏅</span>
-          <span><strong>IV 0/15/15 kann besser sein:</strong> In der Superliga ermöglicht ein niedriger Angriffs-IV oft ein höheres Level unter dem CP-Limit.</span>
+          <span><strong>IV 0/15/15 can be better:</strong> In Great League, a lower Attack IV often allows a higher level under the CP cap.</span>
         </div>
         <div class="home-tip-item">
           <span class="home-tip-icon">✦</span>
-          <span><strong>Community Day Moves:</strong> ✦ markiert Attacken, die nur per Community Day oder Elite TM erlernbar sind.</span>
+          <span><strong>Community Day Moves:</strong> ✦ marks moves only learnable via Community Day or Elite TM.</span>
         </div>
         <div class="home-tip-item">
           <span class="home-tip-icon">⚔️</span>
-          <span><strong>Typ-Synergie:</strong> Achte bei der Teamzusammenstellung darauf, dass dein Team möglichst viele gegnerische Typen abdeckt.</span>
+          <span><strong>Type Synergy:</strong> When building your team, make sure it covers as many opposing types as possible.</span>
         </div>
         <div class="home-tip-item">
           <span class="home-tip-icon">🔄</span>
-          <span><strong>Wechselvorteile:</strong> Der letzte Switch-Vorteil (Switching Advantage) ist entscheidend – behalte einen Konter in Reserve.</span>
+          <span><strong>Switch Advantage:</strong> The last switching advantage is crucial – keep a counter in reserve.</span>
         </div>
         <div class="home-tip-item">
           <span class="home-tip-icon">💎</span>
-          <span><strong>Shield-Management:</strong> Schilde richtig einsetzen – nicht jeden Lade-Angriff blocken, sondern taktisch spielen.</span>
+          <span><strong>Shield Management:</strong> Use shields wisely – don't block every charge move, play tactically.</span>
         </div>
         <div class="home-tip-item">
           <span class="home-tip-icon">📊</span>
-          <span><strong>Meta kennen:</strong> Die Rangliste zeigt, welche Pokémon du in der jeweiligen Liga am häufigsten begegnen wirst.</span>
+          <span><strong>Know the Meta:</strong> The rankings show which Pokémon you will encounter most often in each league.</span>
         </div>
       </div>
     </div>
@@ -1288,19 +1419,19 @@
   <!-- ── TAB 1: MOVES ──────────────────────────────────────── -->
   <section id="moves-tab" class="tab">
     <div class="page-header">
-      <h1>⚡ Attacken-Datenbank</h1>
-      <p>Alle Schnell- und Lade-Attacken mit PvP-Werten im Vergleich</p>
+      <h1>⚡ Move Database</h1>
+      <p>All fast and charge moves with PvP values compared</p>
     </div>
 
     <div class="controls-row">
       <div class="pills" id="mv-pills">
-        <button class="pill active" onclick="setMvCat('all')">Alle</button>
-        <button class="pill" onclick="setMvCat('fast')">⚡ Schnell</button>
-        <button class="pill" onclick="setMvCat('charge')">💥 Ladung</button>
+        <button class="pill active" onclick="setMvCat('all')">All</button>
+        <button class="pill" onclick="setMvCat('fast')">⚡ Fast</button>
+        <button class="pill" onclick="setMvCat('charge')">💥 Charge</button>
       </div>
       <div class="search-wrap">
         <span class="icon">🔍</span>
-        <input class="search-input" id="mv-search" type="text" placeholder="Attacke oder Typ suchen…" oninput="mvSearch=this.value; renderMoves()">
+        <input class="search-input" id="mv-search" type="text" placeholder="Search move or type…" oninput="mvSearch=this.value; renderMoves()">
       </div>
     </div>
 
@@ -1311,11 +1442,11 @@
         <thead>
           <tr>
             <th class="sortable" onclick="sortMoves('name')">Name <span class="sort-icon" id="s-name"></span></th>
-            <th class="sortable" onclick="sortMoves('type')">Typ <span class="sort-icon" id="s-type"></span></th>
-            <th class="sortable" onclick="sortMoves('cat')">Kategorie <span class="sort-icon" id="s-cat"></span></th>
+            <th class="sortable" onclick="sortMoves('type')">Type <span class="sort-icon" id="s-type"></span></th>
+            <th class="sortable" onclick="sortMoves('cat')">Category <span class="sort-icon" id="s-cat"></span></th>
             <th class="sortable" onclick="sortMoves('power')">PvE <span class="sort-icon" id="s-power"></span></th>
-            <th class="sortable" onclick="sortMoves('pvp')">PvP-Stärke <span class="sort-icon" id="s-pvp"></span></th>
-            <th>Hinweis</th>
+            <th class="sortable" onclick="sortMoves('pvp')">PvP Power <span class="sort-icon" id="s-pvp"></span></th>
+            <th>Note</th>
           </tr>
         </thead>
         <tbody id="moves-tbody"></tbody>
@@ -1326,13 +1457,13 @@
   <!-- ── TAB 2: POKEMON ────────────────────────────────────── -->
   <section id="pokemon-tab" class="tab">
     <div class="page-header">
-      <h1>🎯 Pokémon-Datenbank</h1>
-      <p>PvP-optimierte Movesets für alle wichtigen Pokémon</p>
+      <h1>🎯 Pokémon Database</h1>
+      <p>PvP-optimized movesets for all key Pokémon</p>
     </div>
 
     <div class="controls-row">
       <div class="pills" id="gen-pills">
-        <button class="pill active" onclick="setGen('all')">Alle</button>
+        <button class="pill active" onclick="setGen('all')">All</button>
         <button class="pill" onclick="setGen(1)">Gen I</button>
         <button class="pill" onclick="setGen(2)">Gen II</button>
         <button class="pill" onclick="setGen(3)">Gen III</button>
@@ -1345,13 +1476,13 @@
       </div>
       <div class="search-wrap">
         <span class="icon">🔍</span>
-        <input class="search-input" id="pk-search" type="text" placeholder="Name, #Nr, Typ oder Attacke…" oninput="pkSearch=this.value; renderPokemon()">
+        <input class="search-input" id="pk-search" type="text" placeholder="Name, #No, type or move…" oninput="pkSearch=this.value; renderPokemon()">
       </div>
     </div>
     <div class="liga-filter-row">
-      <span class="liga-filter-label">🏆 Liga:</span>
+      <span class="liga-filter-label">🏆 League:</span>
       <div class="pills" id="liga-pills">
-        <button class="pill active" onclick="setLigaFilter('all')">Alle</button>
+        <button class="pill active" onclick="setLigaFilter('all')">All</button>
         <button class="pill" onclick="setLigaFilter('gl')">🌿 GL</button>
         <button class="pill" onclick="setLigaFilter('ul')">💎 UL</button>
         <button class="pill" onclick="setLigaFilter('ml')">👑 ML</button>
@@ -1365,22 +1496,22 @@
   <!-- ── TAB 3: TYPES ──────────────────────────────────────── -->
   <section id="types-tab" class="tab">
     <div class="page-header">
-      <h1>🔮 Typ-Übersicht</h1>
-      <p>Stärken, Schwächen und Immunitäten aller 18 Typen in Pokémon GO</p>
+      <h1>🔮 Type Overview</h1>
+      <p>Strengths, weaknesses and immunities of all 18 types in Pokémon GO</p>
     </div>
 
     <div class="controls-row">
       <div class="search-wrap">
         <span class="icon">🔍</span>
-        <input class="search-input" id="type-search" type="text" placeholder="Typ suchen…" oninput="typeSearch=this.value; renderTypes()">
+        <input class="search-input" id="type-search" type="text" placeholder="Search type…" oninput="typeSearch=this.value; renderTypes()">
       </div>
     </div>
 
     <div class="types-note">
-      <strong>Pokémon GO Multiplikatoren:</strong>
-      In Pokémon GO gelten vereinfachte Multiplikatoren: Sehr effektiv = <strong>×1.6</strong>,
-      nicht sehr effektiv = <strong>×0.625</strong>, immun/doppelt NVE = <strong>×0.390625</strong>.
-      Doppelte Stärke (dual type) entspricht <strong>×2.56</strong> (×1.6²).
+      <strong>Pokémon GO Multipliers:</strong>
+      In Pokémon GO simplified multipliers apply: Super effective = <strong>×1.6</strong>,
+      not very effective = <strong>×0.625</strong>, immune/double NVE = <strong>×0.390625</strong>.
+      Double effectiveness (dual type) equals <strong>×2.56</strong> (×1.6²).
     </div>
 
     <div class="types-grid" id="types-grid"></div>
@@ -1389,15 +1520,15 @@
   <!-- ── TAB 4: TEAMS ─────────────────────────────────────── -->
   <section id="team-tab" class="tab">
     <div class="page-header">
-      <h1>🏆 Meta-Teams</h1>
-      <p>Empfohlene Top-Teams für jede Liga – wähle eine Liga und klicke ein Team für Details</p>
+      <h1>🏆 Meta Teams</h1>
+      <p>Top recommended teams for each league – select a league and click a team for details</p>
     </div>
 
     <div class="controls-row">
       <div class="pills" id="team-league-pills">
-        <button class="pill active" onclick="setTeamLeague('gl')">🌿 Superliga (≤1500)</button>
-        <button class="pill" onclick="setTeamLeague('ul')">💎 Hyperliga (≤2500)</button>
-        <button class="pill" onclick="setTeamLeague('ml')">👑 Meisterliga</button>
+        <button class="pill active" onclick="setTeamLeague('gl')">🌿 Great League (≤1500)</button>
+        <button class="pill" onclick="setTeamLeague('ul')">💎 Ultra League (≤2500)</button>
+        <button class="pill" onclick="setTeamLeague('ml')">👑 Master League</button>
       </div>
     </div>
 
@@ -1408,22 +1539,22 @@
   <!-- ── TAB 5: LIGA-RANGLISTE ─────────────────────────────── -->
   <section id="ranking-tab" class="tab">
     <div class="page-header">
-      <h1>📊 Liga-Rangliste</h1>
-      <p>Top Pokémon für Superliga, Hyperliga und Meisterliga – basierend auf PVPoke & GamePress</p>
+      <h1>📊 League Rankings</h1>
+      <p>Top Pokémon for Great League, Ultra League and Master League – based on PVPoke &amp; GamePress</p>
     </div>
 
     <div class="controls-row">
       <div class="pills" id="league-pills">
-        <button class="pill active" onclick="setLeague('gl')">🌿 Superliga (≤1500)</button>
-        <button class="pill" onclick="setLeague('ul')">💎 Hyperliga (≤2500)</button>
-        <button class="pill" onclick="setLeague('ml')">👑 Meisterliga</button>
+        <button class="pill active" onclick="setLeague('gl')">🌿 Great League (≤1500)</button>
+        <button class="pill" onclick="setLeague('ul')">💎 Ultra League (≤2500)</button>
+        <button class="pill" onclick="setLeague('ml')">👑 Master League</button>
       </div>
     </div>
 
     <div id="ranking-grid" class="rank-grid"></div>
 
     <div class="source-note">
-      Quellen: <a href="https://pvpoke.com" target="_blank" rel="noopener">PVPoke</a> ·
+      Sources: <a href="https://pvpoke.com" target="_blank" rel="noopener">PVPoke</a> ·
       <a href="https://gamepress.gg/pokemongo" target="_blank" rel="noopener">GamePress</a> ·
       <a href="https://pokemongohub.net" target="_blank" rel="noopener">GO Hub</a>
     </div>
@@ -1432,39 +1563,39 @@
   <!-- ── TAB 6: RECHNER ──────────────────────────────────── -->
   <section id="calc-tab" class="tab">
     <div class="page-header">
-      <h1>🧮 Rechner</h1>
-      <p>CP-Rechner und IV-Rang für alle Ligen – finde die optimalen IVs für dein Pokémon</p>
+      <h1>🧮 Calculator</h1>
+      <p>CP Calculator and IV Rank for all leagues – find the optimal IVs for your Pokémon</p>
     </div>
 
     <div class="calc-grid">
-      <!-- CP-Rechner -->
+      <!-- CP Calculator -->
       <div class="calc-card">
-        <div class="calc-card-title">⚡ CP-Rechner</div>
-        <div class="calc-card-desc">Berechne den CP-Wert eines Pokémon bei beliebigem Level und IVs.</div>
+        <div class="calc-card-title">⚡ CP Calculator</div>
+        <div class="calc-card-desc">Calculate the CP value of a Pokémon at any level and IVs.</div>
         <div class="calc-form">
           <div class="calc-form-row">
-            <span class="calc-label">Basis-Angriff</span>
+            <span class="calc-label">Base Attack</span>
             <input class="calc-input" id="cp-base-atk" type="number" min="1" max="400" placeholder="z.B. 208">
           </div>
           <div class="calc-form-row">
-            <span class="calc-label">Basis-Verteidigung</span>
+            <span class="calc-label">Base Defense</span>
             <input class="calc-input" id="cp-base-def" type="number" min="1" max="400" placeholder="z.B. 175">
           </div>
           <div class="calc-form-row">
-            <span class="calc-label">Basis-KP</span>
+            <span class="calc-label">Base HP</span>
             <input class="calc-input" id="cp-base-sta" type="number" min="1" max="500" placeholder="z.B. 225">
           </div>
           <div class="iv-trio">
             <div>
-              <div class="iv-stat-label">IV Angriff</div>
+              <div class="iv-stat-label">IV Attack</div>
               <input class="calc-input" id="cp-iv-atk" type="number" min="0" max="15" placeholder="0–15" value="15">
             </div>
             <div>
-              <div class="iv-stat-label">IV Verteidigung</div>
+              <div class="iv-stat-label">IV Defense</div>
               <input class="calc-input" id="cp-iv-def" type="number" min="0" max="15" placeholder="0–15" value="15">
             </div>
             <div>
-              <div class="iv-stat-label">IV KP</div>
+              <div class="iv-stat-label">IV HP</div>
               <input class="calc-input" id="cp-iv-sta" type="number" min="0" max="15" placeholder="0–15" value="15">
             </div>
           </div>
@@ -1472,45 +1603,45 @@
             <span class="calc-label">Level</span>
             <select class="calc-select" id="cp-level"></select>
           </div>
-          <button class="calc-btn" onclick="calcCP()">⚡ CP berechnen</button>
+          <button class="calc-btn" onclick="calcCP()">⚡ Calculate CP</button>
         </div>
         <div class="calc-result hidden" id="cp-result"></div>
       </div>
 
-      <!-- IV-Rang Rechner -->
+      <!-- IV Rank Calculator -->
       <div class="calc-card">
-        <div class="calc-card-title">🏅 IV-Rang</div>
-        <div class="calc-card-desc">Berechne den Rang deiner IVs für Superliga, Hyperliga oder Meisterliga (nach Stat-Produkt).</div>
+        <div class="calc-card-title">🏅 IV Rank</div>
+        <div class="calc-card-desc">Calculate the rank of your IVs for Great League, Ultra League or Master League (by stat product).</div>
         <div class="calc-form">
           <div class="calc-form-row">
             <span class="calc-label">Pokémon</span>
             <select class="calc-select" id="iv-pokemon" onchange="onIVPokemonChange()">
-              <option value="">– Pokémon wählen –</option>
+              <option value="">– Select Pokémon –</option>
             </select>
           </div>
           <div class="calc-form-row">
-            <span class="calc-label">Liga</span>
+            <span class="calc-label">League</span>
             <select class="calc-select" id="iv-league">
-              <option value="1500">🌿 Superliga (≤1500 CP)</option>
-              <option value="2500">💎 Hyperliga (≤2500 CP)</option>
-              <option value="10000">👑 Meisterliga</option>
+              <option value="1500">🌿 Great League (≤1500 CP)</option>
+              <option value="2500">💎 Ultra League (≤2500 CP)</option>
+              <option value="10000">👑 Master League</option>
             </select>
           </div>
           <div class="iv-trio">
             <div>
-              <div class="iv-stat-label">IV Angriff</div>
+              <div class="iv-stat-label">IV Attack</div>
               <input class="calc-input" id="iv-atk" type="number" min="0" max="15" placeholder="0–15" value="0">
             </div>
             <div>
-              <div class="iv-stat-label">IV Verteidigung</div>
+              <div class="iv-stat-label">IV Defense</div>
               <input class="calc-input" id="iv-def" type="number" min="0" max="15" placeholder="0–15" value="15">
             </div>
             <div>
-              <div class="iv-stat-label">IV KP</div>
+              <div class="iv-stat-label">IV HP</div>
               <input class="calc-input" id="iv-sta" type="number" min="0" max="15" placeholder="0–15" value="15">
             </div>
           </div>
-          <button class="calc-btn" id="iv-rank-btn" onclick="calcIVRank()">🏅 Rang berechnen</button>
+          <button class="calc-btn" id="iv-rank-btn" onclick="calcIVRank()">🏅 Calculate Rank</button>
         </div>
         <div class="calc-result hidden" id="iv-result"></div>
       </div>
@@ -1518,15 +1649,15 @@
 
     <div style="margin-top:16px">
       <div class="calc-card">
-        <div class="calc-card-title">💡 Hinweise</div>
+        <div class="calc-card-title">💡 Notes</div>
         <div class="calc-card-desc" style="margin-bottom:0">
-          <strong>CP-Rechner:</strong> Basis-Werte für alle Pokémon findest du auf
+          <strong>CP Calculator:</strong> Base stats for all Pokémon can be found on
           <a href="https://pvpoke.com" target="_blank" rel="noopener" style="color:var(--accent)">PVPoke</a> oder
           <a href="https://pokemongohub.net" target="_blank" rel="noopener" style="color:var(--accent)">GO Hub</a>.
-          Tipp: Wähle im IV-Rang ein Pokémon – die Basis-Werte werden automatisch in den CP-Rechner übertragen.<br><br>
-          <strong>IV-Rang:</strong> Rang 1 = 15/15/15 ist selten optimal! Für die Superliga ist oft 0/15/15 oder ähnlich besser,
-          da ein niedrigerer Angriffs-IV ein Pokémon unter das CP-Limit bringt und es auf einem höheren Level gespielt werden kann.
-          Der Rang basiert auf dem Stat-Produkt bei optimalem Level.<br><br>
+          Tip: Select a Pokémon in IV Rank – the base stats will be automatically transferred to the CP Calculator.<br><br>
+          <strong>IV Rank:</strong> Rank 1 = 15/15/15 is rarely optimal! For Great League, 0/15/15 or similar is often better,
+          as a lower Attack IV allows a Pokémon to be played under the CP cap at a higher level.
+          The rank is based on the stat product at optimal level.<br><br>
           <strong>✦</strong> = Community Day / Elite TM Move &nbsp;&nbsp; <strong>★</strong> = Empfohlenes PvP-Moveset
         </div>
       </div>
@@ -1970,7 +2101,7 @@ const POKEMON = [
   {num:181, name:'Ampharos', gen:2, types:['electric'], fast:['Volt Switch','Thunder Shock'], charge:['Wild Charge','Thunderbolt','Thunder'], pvp:{f:'Volt Switch', c1:'Wild Charge', c2:'Thunderbolt'}},
   {num:182, name:'Bellossom', gen:2, types:['grass'], fast:['Vine Whip','Razor Leaf'], charge:['Solar Beam','Leaf Blade','Power Whip'], pvp:{f:'Vine Whip', c1:'Leaf Blade', c2:'Solar Beam'}},
   {num:183, name:'Marill', gen:2, types:['water','fairy'], fast:['Waterfall','Charm'], charge:['Hydro Pump','Play Rough','Hydro Cannon'], pvp:{f:'Charm', c1:'Hydro Cannon', c2:'Play Rough'}},
-  {num:184, name:'Azumarill', gen:2, types:['water','fairy'], fast:['Bubble','Tackle','Rock Smash'], charge:['Play Rough','Ice Beam','Aqua Tail','Hydro Pump'], pvp:{f:'Bubble', c1:'Play Rough', c2:'Ice Beam'}, note:'🏆 Superliga-Staple · 0/15/15 IVs'},
+  {num:184, name:'Azumarill', gen:2, types:['water','fairy'], fast:['Bubble','Tackle','Rock Smash'], charge:['Play Rough','Ice Beam','Aqua Tail','Hydro Pump'], pvp:{f:'Bubble', c1:'Play Rough', c2:'Ice Beam'}, note:'🏆 Great League staple · 0/15/15 IVs'},
   {num:185, name:'Sudowoodo', gen:2, types:['rock'], fast:['Smack Down','Rock Throw'], charge:['Stone Edge','Rock Slide','Rock Blast'], pvp:{f:'Smack Down', c1:'Stone Edge', c2:'Rock Slide'}},
   {num:186, name:'Politoed', gen:2, types:['water'], fast:['Waterfall','Bubble'], charge:['Hydro Pump','Hydro Cannon','Surf'], pvp:{f:'Waterfall', c1:'Hydro Cannon', c2:'Hydro Pump'}},
   {num:187, name:'Hoppip', gen:2, types:['grass','flying'], fast:['Vine Whip','Air Slash'], charge:['Solar Beam','Hurricane','Leaf Blade'], pvp:{f:'Vine Whip', c1:'Leaf Blade', c2:'Solar Beam'}},
@@ -2819,15 +2950,15 @@ const META_TEAMS = {
       id: 'gl-1',
       name: 'Classic Core',
       emoji: '🏅',
-      desc: 'Das bewährteste Superliga-Team – maximale Matchup-Abdeckung und Stabilität',
+      desc: 'The most proven Great League team – maximum matchup coverage and stability',
       members: [
         {
           num: 184, name: 'Azumarill', types: ['water','fairy'],
-          ivs: '0/15/15', role: 'Anker / Opener',
+          ivs: '0/15/15', role: 'Anchor / Opener',
           fast: 'Bubble', charge1: 'Play Rough', charge2: 'Ice Beam',
           counters: ['Fighting','Dragon','Dark','Ground','Rock'],
           weakTo: ['Grass','Electric','Poison'],
-          tip: 'Superliga-Anker #1. Eröffnet sicher gegen Dark, Dragon, Fighting. Bubble generiert sehr schnell Energie für Play Rough. Ice Beam schlägt Grass- und Dragon-Konter.'
+          tip: 'Great League Anchor #1. Opens safely against Dark, Dragon, Fighting. Bubble generates energy very quickly for Play Rough. Ice Beam covers Grass and Dragon counters.'
         },
         {
           num: 308, name: 'Medicham', types: ['fighting','psychic'],
@@ -2835,7 +2966,7 @@ const META_TEAMS = {
           fast: 'Counter', charge1: 'Ice Punch', charge2: 'Psychic',
           counters: ['Normal','Ice','Rock','Dark','Steel'],
           weakTo: ['Flying','Psychic','Fairy'],
-          tip: 'Mächtigster Sweeper der GL. Counter hat top Energie-Effizienz und hohe Kraft. Ice Punch deckt Grass- und Flying-Typen ab. Psychic für Poison-Coverage.'
+          tip: 'Most powerful GL Sweeper. Counter has top energy efficiency and high power. Ice Punch covers Grass and Flying types. Psychic for Poison coverage.'
         },
         {
           num: 304, name: 'Bastiodon', types: ['rock','steel'],
@@ -2843,16 +2974,16 @@ const META_TEAMS = {
           fast: 'Smack Down', charge1: 'Stone Edge', charge2: 'Flamethrower',
           counters: ['Fire','Ice','Flying','Bug','Fairy'],
           weakTo: ['Water','Fighting','Ground'],
-          tip: 'Defensivster Pick der GL. Extrem hohe Ausdauer und Verteidigung. Schlägt Fairy und Flying hart. Langsame Energiegenerierung – als Closer ideal.'
+          tip: 'Most defensive GL pick. Extremely high bulk and defense. Hits Fairy and Flying hard. Slow energy generation – ideal as a Closer.'
         }
       ],
-      strategy: 'Azumarill eröffnet und setzt frühen Druck. Medicham kommt als Sweeper herein, wenn der Gegner seine Shields verbraucht hat. Bastiodon tankt als finales Pokémon fast alle Angriffe. Die drei decken gemeinsam fast jede Typ-Kombination ab.'
+      strategy: 'Azumarill leads and applies early pressure. Medicham enters as sweeper once the opponent has used their shields. Bastiodon tanks as the final Pokémon, absorbing almost all attacks. Together the three cover almost every type combination.'
     },
     {
       id: 'gl-2',
       name: 'Gen 9 Powerhouse',
       emoji: '⚔️',
-      desc: 'Das stärkste aktuelle Meta-Team aus Generation 9 – Annihilape als Schlüssel',
+      desc: 'The strongest current meta team from Generation 9 – Annihilape is the key',
       members: [
         {
           num: 978, name: 'Annihilape', types: ['fighting','ghost'],
@@ -2860,7 +2991,7 @@ const META_TEAMS = {
           fast: 'Counter', charge1: 'Close Combat', charge2: 'Night Slash',
           counters: ['Normal','Ice','Rock','Dark','Steel','Psychic','Ghost'],
           weakTo: ['Flying','Psychic','Ghost','Fairy'],
-          tip: 'Counter + Ghost-Immunität macht Annihilape zum Top-Sweeper seit Gen 9. Night Slash erzwingt Shields günstig. Close Combat macht massiven Schaden gegen Steel und Ice.'
+          tip: 'Counter + Ghost immunity makes Annihilape the top sweeper since Gen 9. Night Slash forces shields cheaply. Close Combat deals massive damage against Steel and Ice.'
         },
         {
           num: 959, name: 'Tinkaton', types: ['fairy','steel'],
@@ -2868,7 +2999,7 @@ const META_TEAMS = {
           fast: 'Charm', charge1: 'Play Rough', charge2: 'Flash Cannon',
           counters: ['Fighting','Dragon','Dark','Ice','Rock','Fairy'],
           weakTo: ['Fire','Ground'],
-          tip: 'Charm ist eine der stärksten Fast Attacks überhaupt. Immun gegen Dragon und Poison. Flash Cannon deckt Steel-Konter ab. Extrem resistent gegen viele Typen.'
+          tip: 'Charm is one of the strongest fast moves overall. Immune to Dragon and Poison. Flash Cannon covers Steel counters. Extremely resistant to many types.'
         },
         {
           num: 979, name: 'Clodsire', types: ['poison','ground'],
@@ -2876,16 +3007,16 @@ const META_TEAMS = {
           fast: 'Poison Sting', charge1: 'Sludge Bomb', charge2: 'Earthquake',
           counters: ['Electric','Steel','Fire','Rock','Poison','Fairy'],
           weakTo: ['Ground','Water','Psychic','Ice'],
-          tip: 'Immun gegen Electric. Sludge Bomb + Earthquake bieten breite Typ-Abdeckung. Schlägt Steel und Fire. Optimale IVs erlauben maximale WP unter 1500.'
+          tip: 'Immune to Electric. Sludge Bomb + Earthquake offer wide type coverage. Beats Steel and Fire. Optimal IVs allow maximum CP under 1500.'
         }
       ],
-      strategy: 'Annihilape eröffnet aggressiv und erzwingt frühe Shields. Tinkaton ist der Anker gegen Dragon, Dark und Fighting. Clodsire schließt als Closer ab und kontert Electric- und Poison-Typen die das Team bedrohen.'
+      strategy: 'Annihilape leads aggressively and forces early shields. Tinkaton is the anchor against Dragon, Dark and Fighting. Clodsire closes as Closer and counters Electric and Poison types threatening the team.'
     },
     {
       id: 'gl-3',
       name: 'Ice & Steel Wall',
       emoji: '❄️',
-      desc: 'Verteidigungsstarkes Team mit maximaler Ausdauer und Shield-Druck',
+      desc: 'Defensive team with maximum bulk and shield pressure',
       members: [
         {
           num: 365, name: 'Walrein', types: ['ice','water'],
@@ -2893,7 +3024,7 @@ const META_TEAMS = {
           fast: 'Powder Snow', charge1: 'Icicle Spear', charge2: 'Earthquake',
           counters: ['Grass','Ground','Flying','Dragon','Fire'],
           weakTo: ['Fighting','Rock','Electric','Grass'],
-          tip: 'Powder Snow generiert massiv Energie. Icicle Spear als günstige 1-Bar-Attack erzwingt frühe Shields. Earthquake überrascht Steel-Konter. Bester Ice-Lead der GL.'
+          tip: 'Powder Snow generates massive energy. Icicle Spear as a cheap 1-bar move forces early shields. Earthquake surprises Steel counters. Best Ice lead in GL.'
         },
         {
           num: 379, name: 'Registeel', types: ['steel'],
@@ -2901,7 +3032,7 @@ const META_TEAMS = {
           fast: 'Lock-On', charge1: 'Flash Cannon', charge2: 'Focus Blast',
           counters: ['Ice','Rock','Fairy','Poison','Normal'],
           weakTo: ['Fire','Fighting','Ground'],
-          tip: 'Bester Steel-Typ der GL. Lock-On generiert sehr schnell Energie. Extrem hohe Ausdauer. Focus Blast als finaler Schlag mit massivem Schaden.'
+          tip: 'Best Steel type in GL. Lock-On generates energy very quickly. Extremely high bulk. Focus Blast as a final hit with massive damage.'
         },
         {
           num: 302, name: 'Sableye', types: ['dark','ghost'],
@@ -2909,16 +3040,16 @@ const META_TEAMS = {
           fast: 'Shadow Claw', charge1: 'Foul Play', charge2: 'Return',
           counters: ['Psychic','Ghost','Normal','Fighting'],
           weakTo: ['Fairy'],
-          tip: 'Einzige Schwäche: Fairy. Immun gegen Normal und Fighting. Shadow Claw generiert gut Energie. Return (Elite TM) ist extrem stark bei Purified-Pokémon.'
+          tip: 'Only one weakness: Fairy. Immune to Normal and Fighting. Shadow Claw generates good energy. Return (Elite TM) is extremely strong on Purified Pokémon.'
         }
       ],
-      strategy: 'Walrein lead setzt mit Icicle Spear frühen Shield-Druck. Registeel ist der sichere, universelle Safe Switch. Sableye als Closer ist kaum zu kontern – nur eine einzige Schwäche (Fairy) und doppelte Immunität.'
+      strategy: 'Walrein leads with Icicle Spear for early shield pressure. Registeel is the safe, universal Safe Switch. Sableye as Closer is nearly unbeatable – only one weakness (Fairy) and double immunity.'
     },
     {
       id: 'gl-4',
       name: 'Flying Menace',
       emoji: '🦅',
-      desc: 'Schnelles Energie-Team mit Incinerate und Dragon Breath – aggressiver Stil',
+      desc: 'Fast energy team with Incinerate and Dragon Breath – aggressive style',
       members: [
         {
           num: 334, name: 'Altaria', types: ['dragon','flying'],
@@ -2926,7 +3057,7 @@ const META_TEAMS = {
           fast: 'Dragon Breath', charge1: 'Sky Attack', charge2: 'Moonblast',
           counters: ['Grass','Fighting','Bug','Ground','Dragon'],
           weakTo: ['Ice','Rock','Dragon','Fairy'],
-          tip: 'Dragon Breath ist eine der besten Fast Attacks. Sky Attack (Elite TM) erzwingt Shields. Moonblast schlägt Dragon-Konter und Fairy. Sehr vielseitig.'
+          tip: 'Dragon Breath is one of the best fast moves. Sky Attack (Elite TM) forces shields. Moonblast beats Dragon counters and Fairy. Very versatile.'
         },
         {
           num: 741, name: 'Talonflame', types: ['fire','flying'],
@@ -2934,7 +3065,7 @@ const META_TEAMS = {
           fast: 'Incinerate', charge1: 'Brave Bird', charge2: 'Flame Charge',
           counters: ['Grass','Fighting','Bug','Steel','Ice'],
           weakTo: ['Rock','Water','Electric'],
-          tip: 'Incinerate generiert extrem schnell Energie. Brave Bird macht massiven Flying-Schaden. Flame Charge baut Angriffs-Buff auf und ist günstig einzusetzen.'
+          tip: 'Incinerate generates energy extremely quickly. Brave Bird deals massive Flying damage. Flame Charge builds an attack buff and is cheap to use.'
         },
         {
           num: 598, name: 'Ferrothorn', types: ['grass','steel'],
@@ -2942,10 +3073,10 @@ const META_TEAMS = {
           fast: 'Bullet Seed', charge1: 'Power Whip', charge2: 'Flash Cannon',
           counters: ['Water','Rock','Ground','Ice','Fairy','Poison'],
           weakTo: ['Fire','Fighting'],
-          tip: 'Bullet Seed generiert sehr schnell Energie. Power Whip mit hohem Schaden. Flash Cannon für Steel-STAB. Immun gegen Poison. Konter Water und Rock.'
+          tip: 'Bullet Seed generates energy very quickly. Power Whip with high damage. Flash Cannon for Steel STAB. Immune to Poison. Counters Water and Rock.'
         }
       ],
-      strategy: 'Altaria lead mit Dragon Breath erzeugt Druck auf viele Typen. Talonflame kommt als aggressiver Sweeper herein und nutzt Incinerate für schnelle Shields. Ferrothorn tankt Water- und Rock-Angriffe, die Altaria und Talonflame bedrohen.'
+      strategy: 'Altaria leads with Dragon Breath applying pressure on many types. Talonflame enters as aggressive sweeper using Incinerate for fast shields. Ferrothorn tanks Water and Rock attacks threatening Altaria and Talonflame.'
     }
   ],
   ul: [
@@ -2953,7 +3084,7 @@ const META_TEAMS = {
       id: 'ul-1',
       name: 'Season Classic',
       emoji: '💎',
-      desc: 'Das bewährteste Hyperliga-Team – perfekte Balance aus Offense und Defense',
+      desc: 'The most proven Ultra League team – perfect balance of offense and defense',
       members: [
         {
           num: 365, name: 'Walrein', types: ['ice','water'],
@@ -2961,7 +3092,7 @@ const META_TEAMS = {
           fast: 'Powder Snow', charge1: 'Icicle Spear', charge2: 'Earthquake',
           counters: ['Grass','Ground','Flying','Dragon','Fire'],
           weakTo: ['Fighting','Rock','Electric','Grass'],
-          tip: '#1 UL Lead. Powder Snow + Icicle Spear generiert massiv Shield-Druck. Earthquake überrascht Steel-Konter. Sehr hohe Ausdauer bei optimalen IVs.'
+          tip: '#1 UL Lead. Powder Snow + Icicle Spear generate massive shield pressure. Earthquake surprises Steel counters. Very high bulk with optimal IVs.'
         },
         {
           num: 379, name: 'Registeel', types: ['steel'],
@@ -2969,7 +3100,7 @@ const META_TEAMS = {
           fast: 'Lock-On', charge1: 'Flash Cannon', charge2: 'Focus Blast',
           counters: ['Ice','Rock','Fairy','Poison','Normal'],
           weakTo: ['Fire','Fighting','Ground'],
-          tip: 'Top Steel Safe Switch UL. Lock-On generiert sehr schnell Energie. Flash Cannon stark gegen Fairy und Ice. Focus Blast ist extrem mächtig gegen Steel-Konter.'
+          tip: 'Top Steel Safe Switch UL. Lock-On generates energy very quickly. Flash Cannon strong against Fairy and Ice. Focus Blast is extremely powerful against Steel counters.'
         },
         {
           num: 488, name: 'Cresselia', types: ['psychic'],
@@ -2977,16 +3108,16 @@ const META_TEAMS = {
           fast: 'Psycho Cut', charge1: 'Moonblast', charge2: 'Grass Knot',
           counters: ['Fighting','Poison','Dragon','Water','Ground'],
           weakTo: ['Bug','Ghost','Dark'],
-          tip: 'Bester Psychic-Typ der UL. Extreme Ausdauer. Moonblast gegen Dark-Konter. Grass Knot für Water/Ground-Coverage. Kaum zu besiegen wenn sie erst im Spiel ist.'
+          tip: 'Best Psychic type in UL. Extreme bulk. Moonblast against Dark counters. Grass Knot for Water/Ground coverage. Nearly unbeatable once in play.'
         }
       ],
-      strategy: 'Walrein lead setzt frühen Shield-Druck mit Icicle Spear. Registeel ist der universelle Safe Switch der fast alles tankt. Cresselia als Anchor tankt mit extremer Ausdauer und schließt ab.'
+      strategy: 'Walrein leads with early shield pressure via Icicle Spear. Registeel is the universal Safe Switch tanking almost everything. Cresselia as Anchor tanks with extreme bulk and closes out.'
     },
     {
       id: 'ul-2',
       name: 'Swamp Power',
       emoji: '💧',
-      desc: 'Community Day Team mit starken Kanto-Klassikern und breiter Coverage',
+      desc: 'Community Day team with strong Kanto classics and broad coverage',
       members: [
         {
           num: 259, name: 'Swampert', types: ['water','ground'],
@@ -2994,7 +3125,7 @@ const META_TEAMS = {
           fast: 'Mud Shot', charge1: 'Hydro Cannon', charge2: 'Earthquake',
           counters: ['Fire','Electric','Steel','Rock','Poison'],
           weakTo: ['Grass'],
-          tip: 'Hydro Cannon (Community Day) ist extrem stark. Mud Shot generiert sehr schnell Energie. Nur eine Schwäche: Grass. Earthquake für Ground-Coverage gegen Steel.'
+          tip: 'Hydro Cannon (Community Day) is extremely strong. Mud Shot generates energy very quickly. Only one weakness: Grass. Earthquake for Ground coverage against Steel.'
         },
         {
           num: 741, name: 'Talonflame', types: ['fire','flying'],
@@ -3002,7 +3133,7 @@ const META_TEAMS = {
           fast: 'Incinerate', charge1: 'Brave Bird', charge2: 'Flame Charge',
           counters: ['Grass','Fighting','Bug','Steel','Ice'],
           weakTo: ['Rock','Water','Electric'],
-          tip: 'Top UL Closer. Incinerate generiert extrem schnell Energie. Brave Bird für massive Flying-Coverage. Deckt perfekt die Grass-Schwäche von Swampert ab.'
+          tip: 'Top UL Closer. Incinerate generates energy extremely quickly. Brave Bird for massive Flying coverage. Perfectly covers Swampert\'s Grass weakness.'
         },
         {
           num: 788, name: 'Tapu Fini', types: ['water','fairy'],
@@ -3010,16 +3141,16 @@ const META_TEAMS = {
           fast: 'Waterfall', charge1: 'Hydro Cannon', charge2: 'Moonblast',
           counters: ['Fighting','Dragon','Dark','Fire','Rock','Ground'],
           weakTo: ['Grass','Electric','Poison'],
-          tip: 'Stärkstes Water/Fairy Pick der UL. Hydro Cannon (Community Day) unglaublich stark. Moonblast für Fairy-Coverage gegen Dragon und Dark. Top Anchor.'
+          tip: 'Strongest Water/Fairy pick in UL. Hydro Cannon (Community Day) incredibly strong. Moonblast for Fairy coverage against Dragon and Dark. Top Anchor.'
         }
       ],
-      strategy: 'Swampert lead kontert Steel, Fire und Electric sicher. Talonflame als Sweeper deckt die Grass-Schwäche von Swampert ab und bringt schnelle Energie. Tapu Fini als Anchor bietet Water + Fairy Coverage und schließt ab.'
+      strategy: 'Swampert lead safely counters Steel, Fire and Electric. Talonflame as Sweeper covers Swampert\'s Grass weakness and brings fast energy. Tapu Fini as Anchor offers Water + Fairy coverage and closes out.'
     },
     {
       id: 'ul-3',
       name: 'Bug & Glide',
       emoji: '🐛',
-      desc: 'Energie-dominantes Team mit Volt Switch und schnellen Shield-Entscheidungen',
+      desc: 'Energy-dominant team with Volt Switch and fast shield decisions',
       members: [
         {
           num: 596, name: 'Galvantula', types: ['bug','electric'],
@@ -3027,7 +3158,7 @@ const META_TEAMS = {
           fast: 'Volt Switch', charge1: 'Bug Buzz', charge2: 'Lunge',
           counters: ['Water','Flying','Grass','Psychic','Dark'],
           weakTo: ['Fire','Flying','Rock'],
-          tip: 'Volt Switch ist die beste Energie-Attack im PvP. Bug Buzz + Lunge erzwingen sehr schnell Shield-Entscheidungen. Lunge senkt den Angriff des Gegners.'
+          tip: 'Volt Switch is the best energy move in PvP. Bug Buzz + Lunge force shield decisions very quickly. Lunge lowers the opponent\'s attack.'
         },
         {
           num: 472, name: 'Gliscor', types: ['ground','flying'],
@@ -3035,7 +3166,7 @@ const META_TEAMS = {
           fast: 'Wing Attack', charge1: 'Earthquake', charge2: 'Night Slash',
           counters: ['Electric','Poison','Rock','Fighting','Bug','Ghost'],
           weakTo: ['Ice','Water'],
-          tip: 'Einzigartige Ground/Flying-Kombi. Immun gegen Ground und Electric. Night Slash als günstige Shield-Bait. Earthquake für massiven Ground-Schaden.'
+          tip: 'Unique Ground/Flying combo. Immune to Ground and Electric. Night Slash as cheap shield bait. Earthquake for massive Ground damage.'
         },
         {
           num: 788, name: 'Tapu Fini', types: ['water','fairy'],
@@ -3043,16 +3174,16 @@ const META_TEAMS = {
           fast: 'Waterfall', charge1: 'Hydro Cannon', charge2: 'Moonblast',
           counters: ['Fighting','Dragon','Dark','Fire','Rock','Ground'],
           weakTo: ['Grass','Electric','Poison'],
-          tip: 'Schließt Matchups gegen Fighting und Dragon. Exzellente Ausdauer als Anchor. Hydro Cannon ist extrem stark. Moonblast als Fairy-Coverage.'
+          tip: 'Wins matchups against Fighting and Dragon. Excellent bulk as Anchor. Hydro Cannon is extremely strong. Moonblast as Fairy coverage.'
         }
       ],
-      strategy: 'Galvantula lead nutzt Volt Switch für sehr schnelle Energie und frühen Shield-Druck. Gliscor als Flex Switch für unerwartete Matchups. Tapu Fini sichert das Endspiel mit Water + Fairy Coverage.'
+      strategy: 'Galvantula leads using Volt Switch for very fast energy and early shield pressure. Gliscor as Flex Switch for unexpected matchups. Tapu Fini secures the endgame with Water + Fairy coverage.'
     },
     {
       id: 'ul-4',
       name: 'Origin Force',
       emoji: '👻',
-      desc: 'Giratina-basiertes Team mit Ghost-Dominanz und Steel-Unterstützung',
+      desc: 'Giratina-based team with Ghost dominance and Steel support',
       members: [
         {
           num: 487, name: 'Giratina', types: ['ghost','dragon'],
@@ -3060,7 +3191,7 @@ const META_TEAMS = {
           fast: 'Shadow Claw', charge1: 'Shadow Ball', charge2: 'Ominous Wind',
           counters: ['Psychic','Ghost','Dragon','Normal','Fighting'],
           weakTo: ['Ice','Dragon','Dark','Ghost','Fairy'],
-          tip: 'Bester Ghost-Typ der UL. Shadow Claw generiert schnell Energie. Shadow Ball ist extrem mächtig. Ominous Wind als kostengünstige Shield-Bait mit möglichem Buff.'
+          tip: 'Best Ghost type in UL. Shadow Claw generates energy quickly. Shadow Ball is extremely powerful. Ominous Wind as cheap shield bait with possible buff.'
         },
         {
           num: 376, name: 'Metagross', types: ['steel','psychic'],
@@ -3068,7 +3199,7 @@ const META_TEAMS = {
           fast: 'Bullet Punch', charge1: 'Meteor Mash', charge2: 'Earthquake',
           counters: ['Ice','Rock','Fairy','Poison','Fighting','Psychic'],
           weakTo: ['Fire','Ground','Ghost','Dark'],
-          tip: 'Meteor Mash (Community Day) ist der stärkste Steel-Move. Earthquake für Ground-Coverage. Immun gegen Poison. Sehr hohe Ausdauer als Switch.'
+          tip: 'Meteor Mash (Community Day) is the strongest Steel move. Earthquake for Ground coverage. Immune to Poison. Very high bulk as Switch.'
         },
         {
           num: 488, name: 'Cresselia', types: ['psychic'],
@@ -3076,10 +3207,10 @@ const META_TEAMS = {
           fast: 'Psycho Cut', charge1: 'Moonblast', charge2: 'Grass Knot',
           counters: ['Fighting','Poison','Dragon','Water','Ground'],
           weakTo: ['Bug','Ghost','Dark'],
-          tip: 'Tankt Dark-Angriffe die Giratina bedrohen. Moonblast gegen Dragon-Konter. Extreme Ausdauer als Anchor. Grass Knot für Water/Ground-Coverage.'
+          tip: 'Tanks Dark attacks threatening Giratina. Moonblast against Dragon counters. Extreme bulk as Anchor. Grass Knot for Water/Ground coverage.'
         }
       ],
-      strategy: 'Giratina lead dominiert Ghost/Dragon-Matchups und ist immun gegen Normal und Fighting. Metagross kommt als Steel Safe Switch und tankt Fairy-Attacken. Cresselia schließt als Anchor ab und tankt was übrig bleibt.'
+      strategy: 'Giratina leads dominating Ghost/Dragon matchups and is immune to Normal and Fighting. Metagross enters as Steel Safe Switch tanking Fairy attacks. Cresselia closes as Anchor tanking whatever remains.'
     }
   ],
   ml: [
@@ -3087,7 +3218,7 @@ const META_TEAMS = {
       id: 'ml-1',
       name: 'Legendary Core',
       emoji: '👑',
-      desc: 'Die Top-3 Legenden der Meisterliga – maximale Kraft ohne CP-Limit',
+      desc: 'The top 3 legends of Master League – maximum power with no CP cap',
       members: [
         {
           num: 483, name: 'Dialga', types: ['steel','dragon'],
@@ -3095,7 +3226,7 @@ const META_TEAMS = {
           fast: 'Dragon Breath', charge1: 'Iron Head', charge2: 'Draco Meteor',
           counters: ['Ice','Rock','Fairy','Poison','Normal','Flying'],
           weakTo: ['Fighting','Ground'],
-          tip: '#1 ML Lead. Dragon Breath mit top Effizienz. Iron Head günstig für Shield-Druck. Draco Meteor als finaler Schlag. Nur 2 Schwächen: Fighting und Ground.'
+          tip: '#1 ML Lead. Dragon Breath with top efficiency. Iron Head cheap for shield pressure. Draco Meteor as final hit. Only 2 weaknesses: Fighting and Ground.'
         },
         {
           num: 383, name: 'Groudon', types: ['ground'],
@@ -3103,7 +3234,7 @@ const META_TEAMS = {
           fast: 'Mud Shot', charge1: 'Precipice Blades', charge2: 'Fire Punch',
           counters: ['Electric','Steel','Fire','Rock','Poison'],
           weakTo: ['Water','Grass','Ice'],
-          tip: 'Precipice Blades ist der stärkste Ground-Move. Mud Shot generiert sehr schnell Energie. Fire Punch für Grass-Konter. Konter Steel und Electric sicher.'
+          tip: 'Precipice Blades is the strongest Ground move. Mud Shot generates energy very quickly. Fire Punch for Grass counters. Safely counters Steel and Electric.'
         },
         {
           num: 382, name: 'Kyogre', types: ['water'],
@@ -3111,16 +3242,16 @@ const META_TEAMS = {
           fast: 'Waterfall', charge1: 'Surf', charge2: 'Origin Pulse',
           counters: ['Fire','Ground','Rock','Steel'],
           weakTo: ['Grass','Electric'],
-          tip: 'Bester Water-Typ der ML. Origin Pulse ist enorm mächtig. Surf als günstigere Alternative für Shield-Druck. Kontert Groudon-Konter perfekt.'
+          tip: 'Best Water type in ML. Origin Pulse is enormously powerful. Surf as a cheaper alternative for shield pressure. Perfectly counters Groudon counters.'
         }
       ],
-      strategy: 'Dialga lead ist fast universell stabil. Groudon kontert Steel und Electric perfekt. Kyogre kontert Ground-Typen die Dialga und Groudon bedrohen. Das klassische "Primal Duo" mit Steel-Unterstützung ist eines der stärksten ML-Teams.'
+      strategy: 'Dialga lead is nearly universally stable. Groudon perfectly counters Steel and Electric. Kyogre counters Ground types threatening Dialga and Groudon. The classic "Primal Duo" with Steel support is one of the strongest ML teams.'
     },
     {
       id: 'ml-2',
       name: 'Fairy Kingdom',
       emoji: '✨',
-      desc: 'Fairy-dominiertes Team – konter Dragon und Dark und gewinne die Meisterliga',
+      desc: 'Fairy-dominated team – counter Dragon and Dark and win Master League',
       members: [
         {
           num: 888, name: 'Zacian', types: ['fairy'],
@@ -3128,7 +3259,7 @@ const META_TEAMS = {
           fast: 'Snarl', charge1: 'Play Rough', charge2: 'Close Combat',
           counters: ['Fighting','Dragon','Dark','Ice','Rock'],
           weakTo: ['Poison','Steel'],
-          tip: 'Top Fairy ML. Snarl generiert schnell Energie. Play Rough als starke Fairy-Hauptattacke. Close Combat überraschend stark gegen Steel-Konter. Nur 2 Schwächen.'
+          tip: 'Top Fairy ML. Snarl generates energy quickly. Play Rough as strong Fairy main move. Close Combat surprisingly strong against Steel counters. Only 2 weaknesses.'
         },
         {
           num: 717, name: 'Yveltal', types: ['dark','flying'],
@@ -3136,7 +3267,7 @@ const META_TEAMS = {
           fast: 'Snarl', charge1: 'Dark Pulse', charge2: 'Oblivion Wing',
           counters: ['Psychic','Ghost','Grass','Fighting','Bug'],
           weakTo: ['Rock','Electric','Ice','Fairy'],
-          tip: 'Bester Dark/Flying ML. Immun gegen Ground. Oblivion Wing heilt HP und macht Schaden. Snarl mit schneller Energiegenerierung. Stark gegen Psychic und Ghost.'
+          tip: 'Best Dark/Flying ML. Immune to Ground. Oblivion Wing heals HP and deals damage. Snarl with fast energy generation. Strong against Psychic and Ghost.'
         },
         {
           num: 483, name: 'Dialga', types: ['steel','dragon'],
@@ -3144,16 +3275,16 @@ const META_TEAMS = {
           fast: 'Dragon Breath', charge1: 'Iron Head', charge2: 'Draco Meteor',
           counters: ['Ice','Rock','Fairy','Poison','Normal','Flying'],
           weakTo: ['Fighting','Ground'],
-          tip: 'Steel-Immunität gegen Poison. Kontert Fighting-Typen die Zacian bedrohen. Iron Head als günstige Shield-Attack. Draco Meteor als mächtiger Finisher.'
+          tip: 'Steel immunity to Poison. Counters Fighting types threatening Zacian. Iron Head as cheap shield move. Draco Meteor as powerful finisher.'
         }
       ],
-      strategy: 'Zacian lead setzt Fairy-Druck und schlägt Dragon + Dark. Yveltal ist der universelle Safe Switch gegen Psychic und Ghost. Dialga als Steel-Anchor schließt ab und kontert Poison-Typen die Fairy bedrohen.'
+      strategy: 'Zacian leads applying Fairy pressure and beating Dragon + Dark. Yveltal is the universal Safe Switch against Psychic and Ghost. Dialga as Steel Anchor closes out and counters Poison types threatening Fairy.'
     },
     {
       id: 'ml-3',
       name: 'Dragon Fury',
       emoji: '🐉',
-      desc: 'Dragon-Power mit Mewtwo als Ass – maximale Offensive, minimale Schwächen',
+      desc: 'Dragon power with Mewtwo as ace – maximum offense, minimal weaknesses',
       members: [
         {
           num: 484, name: 'Palkia', types: ['water','dragon'],
@@ -3161,7 +3292,7 @@ const META_TEAMS = {
           fast: 'Dragon Tail', charge1: 'Aqua Tail', charge2: 'Draco Meteor',
           counters: ['Fire','Ground','Rock','Dragon','Flying'],
           weakTo: ['Dragon','Fairy'],
-          tip: 'Nur 2 Schwächen (Dragon, Fairy). Dragon Tail generiert viel Energie. Aqua Tail als günstige Shield-Option. Draco Meteor als finaler Schlag. Sehr offensiv.'
+          tip: 'Only 2 weaknesses (Dragon, Fairy). Dragon Tail generates lots of energy. Aqua Tail as cheap shield option. Draco Meteor as final hit. Very offensive.'
         },
         {
           num: 150, name: 'Mewtwo', types: ['psychic'],
@@ -3169,7 +3300,7 @@ const META_TEAMS = {
           fast: 'Psycho Cut', charge1: 'Psystrike', charge2: 'Shadow Ball',
           counters: ['Fighting','Poison','Grass','Dragon','Ghost'],
           weakTo: ['Bug','Ghost','Dark'],
-          tip: 'Die Legende der Legenden. Psystrike (Elite TM) unglaublich stark. Shadow Ball für Ghost-Coverage. Psycho Cut generiert schnell Energie. Kann fast jedes Pokémon schlagen.'
+          tip: 'The legend of legends. Psystrike (Elite TM) incredibly strong. Shadow Ball for Ghost coverage. Psycho Cut generates energy quickly. Can beat almost any Pokémon.'
         },
         {
           num: 250, name: 'Ho-Oh', types: ['fire','flying'],
@@ -3177,10 +3308,10 @@ const META_TEAMS = {
           fast: 'Incinerate', charge1: 'Brave Bird', charge2: 'Sacred Fire',
           counters: ['Grass','Fighting','Bug','Steel','Ice'],
           weakTo: ['Rock','Water','Electric'],
-          tip: 'Incinerate generiert extrem schnell Energie. Sacred Fire (Exclusive) ist sehr mächtig. Brave Bird für massive Flying-Coverage. Starker Closer gegen Ice und Grass.'
+          tip: 'Incinerate generates energy extremely quickly. Sacred Fire (Exclusive) is very powerful. Brave Bird for massive Flying coverage. Strong Closer against Ice and Grass.'
         }
       ],
-      strategy: 'Palkia lead nutzt Dragon Tail für schnelle Energie und deckt viele Matchups ab. Mewtwo kommt als Ace-Karte herein wenn Shields verbraucht sind. Ho-Oh schließt als Fire/Flying-Closer ab und deckt Ice-Typen die Palkia kontern.'
+      strategy: 'Palkia leads using Dragon Tail for fast energy covering many matchups. Mewtwo enters as ace card when shields are exhausted. Ho-Oh closes as Fire/Flying Closer covering Ice types countering Palkia.'
     }
   ]
 };
@@ -3302,19 +3433,19 @@ function renderMoves() {
   });
 
   // Count
-  document.getElementById('mv-count').innerHTML = `<strong>${data.length}</strong> Attacken`;
+  document.getElementById('mv-count').innerHTML = `<strong>${data.length}</strong> Moves`;
 
   // Render rows
   const tbody = document.getElementById('moves-tbody');
   if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="emoji">🔍</div><p>Keine Attacken gefunden</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="emoji">🔍</div><p>No moves found</p></div></td></tr>`;
     return;
   }
 
   tbody.innerHTML = data.map(m => {
     const catBadge = m.cat === 'fast'
-      ? `<span class="cat-badge cat-fast">Schnell</span>`
-      : `<span class="cat-badge cat-charge">Ladung</span>`;
+      ? `<span class="cat-badge cat-fast">Fast</span>`
+      : `<span class="cat-badge cat-charge">Charge</span>`;
     const pvpHtml = pvpDiffHtml(m.pvp, m.power);
     const noteHtml = m.note ? `<span class="td-note">${m.note}</span>` : '—';
     return `
@@ -3367,7 +3498,7 @@ function renderPokemon() {
 
   const grid = document.getElementById('pokemon-grid');
   if (!data.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>Keine Pokémon gefunden</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>No Pokémon found</p></div>`;
     return;
   }
 
@@ -3425,11 +3556,11 @@ function renderPokemon() {
       <div class="pk-body">
         <div class="pk-body-inner">
           <div class="pk-moves-section">
-            <div class="pk-moves-title">⚡ Schnellattacken</div>
+            <div class="pk-moves-title">⚡ Fast Moves</div>
             ${fastRows}
           </div>
           <div class="pk-moves-section">
-            <div class="pk-moves-title">💥 Ladeattacken</div>
+            <div class="pk-moves-title">💥 Charge Moves</div>
             ${chargeRows}
           </div>
           ${noteHtml}
@@ -3447,7 +3578,7 @@ function renderTypes() {
 
   const grid = document.getElementById('types-grid');
   if (!data.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>Kein Typ gefunden</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>No type found</p></div>`;
     return;
   }
 
@@ -3531,7 +3662,7 @@ function renderTeam() {
     detail.innerHTML = `
       <div class="empty-state">
         <div class="emoji">👆</div>
-        <p>Team auswählen um Details zu sehen</p>
+        <p>Select a team to see details</p>
       </div>`;
     return;
   }
@@ -3555,19 +3686,19 @@ function renderTeam() {
       <div class="team-iv">⚙️ IVs: ${member.ivs}</div>
       <div class="team-role">🎯 ${member.role}</div>
       <div class="team-moves">
-        <div class="team-moves-title">Empfohlenes Moveset</div>
+        <div class="team-moves-title">Recommended Moveset</div>
         <div class="team-move-row">
-          <span class="team-move-label">Schnell</span>
+          <span class="team-move-label">Fast</span>
           ${mvFast ? typeBadge(mvFast.type) : ''}
           <span>${member.fast}</span>
         </div>
         <div class="team-move-row">
-          <span class="team-move-label">Ladung 1</span>
+          <span class="team-move-label">Charge 1</span>
           ${mvCharge1 ? typeBadge(mvCharge1.type) : ''}
           <span>${member.charge1}</span>
         </div>
         <div class="team-move-row">
-          <span class="team-move-label">Ladung 2</span>
+          <span class="team-move-label">Charge 2</span>
           ${mvCharge2 ? typeBadge(mvCharge2.type) : ''}
           <span>${member.charge2}</span>
         </div>
@@ -3604,22 +3735,22 @@ function renderTeam() {
     </div>
     <div class="team-grid">${teamCardsHtml}</div>
     <div class="synergy-section">
-      <div class="synergy-title">🔗 Team-Synergie</div>
-      <div class="synergy-subtitle">Welches Teammitglied kontert welche Typen?</div>
+      <div class="synergy-title">🔗 Team Synergy</div>
+      <div class="synergy-subtitle">Which team member counters which types?</div>
       <div class="synergy-wrap">
         <table class="synergy-table">
           <thead>
             <tr>
               <th>Pokémon</th>
-              <th>Konter gegen</th>
-              <th>Schwach gegen</th>
+              <th>Counters</th>
+              <th>Weak to</th>
             </tr>
           </thead>
           <tbody>${synergyRows}</tbody>
         </table>
       </div>
       <div class="strategy-box">
-        <h3>📋 Team-Strategie</h3>
+        <h3>📋 Team Strategy</h3>
         <p>${team.strategy}</p>
       </div>
     </div>`;
@@ -3628,67 +3759,67 @@ function renderTeam() {
 // ── TAB 5: LIGA-RANGLISTE ──────────────────────────────────────────────────
 const RANKING_DATA = {
   gl: [
-    {tier:'S', num:184,  name:'Azumarill',     types:['water','fairy'],    fast:'Bubble',       charge:'Play Rough / Ice Beam',     note:'Superliga-Anker #1'},
-    {tier:'S', num:63,   name:'Abra',           types:['psychic'],          fast:'Counter',      charge:'Close Combat / Body Slam',  note:'Medicham-Linie'},
+    {tier:'S', num:184,  name:'Azumarill',     types:['water','fairy'],    fast:'Bubble',       charge:'Play Rough / Ice Beam',     note:'GL Anchor #1'},
+    {tier:'S', num:63,   name:'Abra',           types:['psychic'],          fast:'Counter',      charge:'Close Combat / Body Slam',  note:'Medicham Line'},
     {tier:'S', num:308,  name:'Medicham',        types:['fighting','psychic'],fast:'Counter',     charge:'Ice Punch / Psychic',       note:'Top GL Sweeper'},
-    {tier:'S', num:304,  name:'Bastiodon',       types:['rock','steel'],     fast:'Smack Down',   charge:'Stone Edge / Flamethrower', note:'Bester Defender'},
-    {tier:'S', num:334,  name:'Altaria',         types:['dragon','flying'],  fast:'Dragon Breath',charge:'Sky Attack / Moonblast',    note:'Mega auch für UL'},
+    {tier:'S', num:304,  name:'Bastiodon',       types:['rock','steel'],     fast:'Smack Down',   charge:'Stone Edge / Flamethrower', note:'Best Defender'},
+    {tier:'S', num:334,  name:'Altaria',         types:['dragon','flying'],  fast:'Dragon Breath',charge:'Sky Attack / Moonblast',    note:'Mega available for UL too'},
     {tier:'S', num:259,  name:'Swampert',        types:['water','ground'],   fast:'Mud Shot',     charge:'Hydro Cannon / Earthquake', note:'Community Day Move'},
     {tier:'S', num:379,  name:'Registeel',       types:['steel'],            fast:'Lock-On',      charge:'Flash Cannon / Focus Blast', note:'Top Steel Pick'},
-    {tier:'S', num:362,  name:'Glalie',          types:['ice'],              fast:'Ice Shard',    charge:'Avalanche / Shadow Ball',   note:'Starkes Ice-Pick'},
-    {tier:'S', num:365,  name:'Walrein',         types:['ice','water'],      fast:'Powder Snow',  charge:'Icicle Spear / Earthquake', note:'Bester Ice-Pick GL'},
-    {tier:'S', num:978,  name:'Annihilape',      types:['fighting','ghost'], fast:'Counter',      charge:'Close Combat / Night Slash', note:'Top GL seit Gen 9'},
+    {tier:'S', num:362,  name:'Glalie',          types:['ice'],              fast:'Ice Shard',    charge:'Avalanche / Shadow Ball',   note:'Strong Ice Pick'},
+    {tier:'S', num:365,  name:'Walrein',         types:['ice','water'],      fast:'Powder Snow',  charge:'Icicle Spear / Earthquake', note:'Best Ice Pick GL'},
+    {tier:'S', num:978,  name:'Annihilape',      types:['fighting','ghost'], fast:'Counter',      charge:'Close Combat / Night Slash', note:'Top GL since Gen 9'},
     {tier:'S', num:979,  name:'Clodsire',        types:['poison','ground'],  fast:'Poison Sting', charge:'Sludge Bomb / Earthquake',  note:'Top GL Closer'},
-    {tier:'S', num:959,  name:'Tinkaton',        types:['fairy','steel'],    fast:'Charm',        charge:'Play Rough / Flash Cannon',  note:'Top GL Pick seit Gen 9'},
-    {tier:'A', num:302,  name:'Sableye',         types:['dark','ghost'],     fast:'Shadow Claw',  charge:'Foul Play / Return',         note:'Frustration-immun'},
-    {tier:'A', num:741,  name:'Talonflame',      types:['fire','flying'],    fast:'Incinerate',   charge:'Brave Bird / Flame Charge',  note:'Starkes Duo-Type'},
-    {tier:'A', num:596,  name:'Galvantula',      types:['bug','electric'],   fast:'Volt Switch',  charge:'Bug Buzz / Lunge',           note:'Energy-Engine'},
-    {tier:'A', num:598,  name:'Ferrothorn',      types:['grass','steel'],    fast:'Bullet Seed',  charge:'Power Whip / Flash Cannon',  note:'Starker Grass/Steel'},
-    {tier:'A', num:398,  name:'Staraptor',       types:['normal','flying'],  fast:'Air Slash',    charge:'Brave Bird / Close Combat',  note:'Gutes Flying-Pick'},
-    {tier:'A', num:426,  name:'Drifblim',        types:['ghost','flying'],   fast:'Hex',          charge:'Shadow Ball / Icy Wind',     note:'Trick Room-Pick'},
-    {tier:'A', num:777,  name:'Togedemaru',      types:['electric','steel'], fast:'Thunder Shock', charge:'Wild Charge / Fell Stinger', note:'Überraschungs-Switch'},
-    {tier:'A', num:671,  name:'Florges',         types:['fairy'],            fast:'Charm',        charge:'Moonblast / Disarming Voice', note:'Starker Fairy-Tank'},
-    {tier:'B', num:279,  name:'Pelipper',        types:['water','flying'],   fast:'Wing Attack',  charge:'Weather Ball Water / Hurricane', note:'Wetter-Support'},
+    {tier:'S', num:959,  name:'Tinkaton',        types:['fairy','steel'],    fast:'Charm',        charge:'Play Rough / Flash Cannon',  note:'Top GL Pick since Gen 9'},
+    {tier:'A', num:302,  name:'Sableye',         types:['dark','ghost'],     fast:'Shadow Claw',  charge:'Foul Play / Return',         note:'Frustration immune'},
+    {tier:'A', num:741,  name:'Talonflame',      types:['fire','flying'],    fast:'Incinerate',   charge:'Brave Bird / Flame Charge',  note:'Strong dual type'},
+    {tier:'A', num:596,  name:'Galvantula',      types:['bug','electric'],   fast:'Volt Switch',  charge:'Bug Buzz / Lunge',           note:'Energy Engine'},
+    {tier:'A', num:598,  name:'Ferrothorn',      types:['grass','steel'],    fast:'Bullet Seed',  charge:'Power Whip / Flash Cannon',  note:'Strong Grass/Steel'},
+    {tier:'A', num:398,  name:'Staraptor',       types:['normal','flying'],  fast:'Air Slash',    charge:'Brave Bird / Close Combat',  note:'Good Flying Pick'},
+    {tier:'A', num:426,  name:'Drifblim',        types:['ghost','flying'],   fast:'Hex',          charge:'Shadow Ball / Icy Wind',     note:'Trick Room Pick'},
+    {tier:'A', num:777,  name:'Togedemaru',      types:['electric','steel'], fast:'Thunder Shock', charge:'Wild Charge / Fell Stinger', note:'Surprise Switch'},
+    {tier:'A', num:671,  name:'Florges',         types:['fairy'],            fast:'Charm',        charge:'Moonblast / Disarming Voice', note:'Strong Fairy Tank'},
+    {tier:'B', num:279,  name:'Pelipper',        types:['water','flying'],   fast:'Wing Attack',  charge:'Weather Ball Water / Hurricane', note:'Weather Support'},
     {tier:'B', num:476,  name:'Probopass',       types:['rock','steel'],     fast:'Spark',        charge:'Rock Slide / Thunderbolt',   note:'Budget Bastiodon'},
-    {tier:'B', num:462,  name:'Magnezone',       types:['electric','steel'], fast:'Spark',        charge:'Wild Charge / Flash Cannon',  note:'Electric/Steel'},
-    {tier:'B', num:350,  name:'Milotic',         types:['water'],            fast:'Waterfall',    charge:'Surf / Blizzard',            note:'Guter Water-Anker'},
-    {tier:'B', num:143,  name:'Snorlax',         types:['normal'],           fast:'Quick Attack', charge:'Body Slam / Skull Bash',     note:'Bulk-Monster'},
+    {tier:'B', num:462,  name:'Magnezone',       types:['electric','steel'], fast:'Spark',        charge:'Wild Charge / Flash Cannon',  note:'Electric/Steel Pick'},
+    {tier:'B', num:350,  name:'Milotic',         types:['water'],            fast:'Waterfall',    charge:'Surf / Blizzard',            note:'Good Water Anchor'},
+    {tier:'B', num:143,  name:'Snorlax',         types:['normal'],           fast:'Quick Attack', charge:'Body Slam / Skull Bash',     note:'Bulk Monster'},
   ],
   ul: [
     {tier:'S', num:365,  name:'Walrein',         types:['ice','water'],      fast:'Powder Snow',  charge:'Icicle Spear / Earthquake',  note:'#1 UL Pick'},
     {tier:'S', num:379,  name:'Registeel',       types:['steel'],            fast:'Lock-On',      charge:'Flash Cannon / Focus Blast',  note:'Top Steel UL'},
-    {tier:'S', num:488,  name:'Cresselia',       types:['psychic'],          fast:'Psycho Cut',   charge:'Moonblast / Grass Knot',     note:'Bester Psychic UL'},
-    {tier:'S', num:334,  name:'Altaria',         types:['dragon','flying'],  fast:'Dragon Breath',charge:'Sky Attack / Moonblast',      note:'Auch als Mega'},
+    {tier:'S', num:488,  name:'Cresselia',       types:['psychic'],          fast:'Psycho Cut',   charge:'Moonblast / Grass Knot',     note:'Best Psychic UL'},
+    {tier:'S', num:334,  name:'Altaria',         types:['dragon','flying'],  fast:'Dragon Breath',charge:'Sky Attack / Moonblast',      note:'Mega form available'},
     {tier:'S', num:259,  name:'Swampert',        types:['water','ground'],   fast:'Mud Shot',     charge:'Hydro Cannon / Earthquake',   note:'Community Day Move'},
     {tier:'S', num:741,  name:'Talonflame',      types:['fire','flying'],    fast:'Incinerate',   charge:'Brave Bird / Flame Charge',   note:'Top Closer UL'},
-    {tier:'S', num:788,  name:'Tapu Fini',       types:['water','fairy'],    fast:'Waterfall',    charge:'Hydro Cannon / Moonblast',    note:'Bester Water/Fairy'},
-    {tier:'A', num:472,  name:'Gliscor',         types:['ground','flying'],  fast:'Wing Attack',  charge:'Earthquake / Night Slash',    note:'Starker Ground/Flying'},
-    {tier:'A', num:330,  name:'Flygon',          types:['ground','dragon'],  fast:'Mud Shot',     charge:'Earth Power / Dragon Claw',   note:'Ground/Dragon'},
-    {tier:'A', num:596,  name:'Galvantula',      types:['bug','electric'],   fast:'Volt Switch',  charge:'Bug Buzz / Lunge',            note:'Energy-Engine'},
-    {tier:'A', num:243,  name:'Raikou',          types:['electric'],         fast:'Volt Switch',  charge:'Wild Charge / Shadow Ball',   note:'Bester Electric UL'},
+    {tier:'S', num:788,  name:'Tapu Fini',       types:['water','fairy'],    fast:'Waterfall',    charge:'Hydro Cannon / Moonblast',    note:'Best Water/Fairy'},
+    {tier:'A', num:472,  name:'Gliscor',         types:['ground','flying'],  fast:'Wing Attack',  charge:'Earthquake / Night Slash',    note:'Strong Ground/Flying'},
+    {tier:'A', num:330,  name:'Flygon',          types:['ground','dragon'],  fast:'Mud Shot',     charge:'Earth Power / Dragon Claw',   note:'Ground/Dragon Pick'},
+    {tier:'A', num:596,  name:'Galvantula',      types:['bug','electric'],   fast:'Volt Switch',  charge:'Bug Buzz / Lunge',            note:'Energy Engine'},
+    {tier:'A', num:243,  name:'Raikou',          types:['electric'],         fast:'Volt Switch',  charge:'Wild Charge / Shadow Ball',   note:'Best Electric UL'},
     {tier:'A', num:208,  name:'Steelix',         types:['steel','ground'],   fast:'Mud Shot',     charge:'Earthquake / Iron Head',      note:'Bulk UL Pick'},
     {tier:'A', num:376,  name:'Metagross',       types:['steel','psychic'],  fast:'Bullet Punch', charge:'Meteor Mash / Earthquake',    note:'Community Day Move'},
-    {tier:'B', num:230,  name:'Kingdra',         types:['water','dragon'],   fast:'Dragon Tail',  charge:'Hydro Cannon / Outrage',      note:'Nur 2 Schwächen'},
-    {tier:'B', num:144,  name:'Articuno',        types:['ice','flying'],     fast:'Ice Shard',    charge:'Ice Beam / Hurricane',        note:'Guter Ice/Flying'},
-    {tier:'B', num:635,  name:'Hydreigon',       types:['dark','dragon'],    fast:'Dragon Tail',  charge:'Brutal Swing / Dragon Pulse', note:'Starker Dark/Dragon'},
+    {tier:'B', num:230,  name:'Kingdra',         types:['water','dragon'],   fast:'Dragon Tail',  charge:'Hydro Cannon / Outrage',      note:'Only 2 weaknesses'},
+    {tier:'B', num:144,  name:'Articuno',        types:['ice','flying'],     fast:'Ice Shard',    charge:'Ice Beam / Hurricane',        note:'Good Ice/Flying'},
+    {tier:'B', num:635,  name:'Hydreigon',       types:['dark','dragon'],    fast:'Dragon Tail',  charge:'Brutal Swing / Dragon Pulse', note:'Strong Dark/Dragon'},
   ],
   ml: [
-    {tier:'S', num:483,  name:'Dialga',          types:['steel','dragon'],   fast:'Dragon Breath',charge:'Iron Head / Draco Meteor',    note:'#1 ML seit Gen 4'},
-    {tier:'S', num:484,  name:'Palkia',          types:['water','dragon'],   fast:'Dragon Tail',  charge:'Aqua Tail / Draco Meteor',    note:'Starke Origin Forme'},
-    {tier:'S', num:382,  name:'Kyogre',          types:['water'],            fast:'Waterfall',    charge:'Surf / Origin Pulse',         note:'Bester Water ML'},
-    {tier:'S', num:383,  name:'Groudon',         types:['ground'],           fast:'Mud Shot',     charge:'Precipice Blades / Fire Punch', note:'Bester Ground ML'},
+    {tier:'S', num:483,  name:'Dialga',          types:['steel','dragon'],   fast:'Dragon Breath',charge:'Iron Head / Draco Meteor',    note:'#1 ML since Gen 4'},
+    {tier:'S', num:484,  name:'Palkia',          types:['water','dragon'],   fast:'Dragon Tail',  charge:'Aqua Tail / Draco Meteor',    note:'Strong Origin Forme'},
+    {tier:'S', num:382,  name:'Kyogre',          types:['water'],            fast:'Waterfall',    charge:'Surf / Origin Pulse',         note:'Best Water ML'},
+    {tier:'S', num:383,  name:'Groudon',         types:['ground'],           fast:'Mud Shot',     charge:'Precipice Blades / Fire Punch', note:'Best Ground ML'},
     {tier:'S', num:888,  name:'Zacian',          types:['fairy'],            fast:'Snarl',        charge:'Play Rough / Close Combat',   note:'Top Fairy ML'},
-    {tier:'S', num:717,  name:'Yveltal',         types:['dark','flying'],    fast:'Snarl',        charge:'Dark Pulse / Oblivion Wing',  note:'Bester Dark/Flying'},
-    {tier:'S', num:250,  name:'Ho-Oh',           types:['fire','flying'],    fast:'Incinerate',   charge:'Brave Bird / Sacred Fire',    note:'Starker Fire/Flying'},
-    {tier:'S', num:150,  name:'Mewtwo',          types:['psychic'],          fast:'Psycho Cut',   charge:'Psystrike / Shadow Ball',     note:'Legende der Legenden'},
-    {tier:'A', num:249,  name:'Lugia',           types:['psychic','flying'], fast:'Dragon Tail',  charge:'Aeroblast / Sky Attack',      note:'Bester Defensive ML'},
+    {tier:'S', num:717,  name:'Yveltal',         types:['dark','flying'],    fast:'Snarl',        charge:'Dark Pulse / Oblivion Wing',  note:'Best Dark/Flying'},
+    {tier:'S', num:250,  name:'Ho-Oh',           types:['fire','flying'],    fast:'Incinerate',   charge:'Brave Bird / Sacred Fire',    note:'Strong Fire/Flying'},
+    {tier:'S', num:150,  name:'Mewtwo',          types:['psychic'],          fast:'Psycho Cut',   charge:'Psystrike / Shadow Ball',     note:'Legend of Legends'},
+    {tier:'A', num:249,  name:'Lugia',           types:['psychic','flying'], fast:'Dragon Tail',  charge:'Aeroblast / Sky Attack',      note:'Best Defensive ML'},
     {tier:'A', num:445,  name:'Garchomp',        types:['dragon','ground'],  fast:'Mud Shot',     charge:'Outrage / Earth Power',       note:'Top Dragon/Ground'},
-    {tier:'A', num:149,  name:'Dragonite',       types:['dragon','flying'],  fast:'Dragon Tail',  charge:'Outrage / Hurricane',         note:'Starkes Dragon/Flying'},
-    {tier:'A', num:384,  name:'Rayquaza',        types:['dragon','flying'],  fast:'Air Slash',    charge:'Outrage / Breaking Swipe',    note:'Starkes Dragon/Flying'},
-    {tier:'A', num:487,  name:'Giratina',        types:['ghost','dragon'],   fast:'Shadow Claw',  charge:'Shadow Ball / Ominous Wind',  note:'Bester Ghost ML'},
+    {tier:'A', num:149,  name:'Dragonite',       types:['dragon','flying'],  fast:'Dragon Tail',  charge:'Outrage / Hurricane',         note:'Strong Dragon/Flying'},
+    {tier:'A', num:384,  name:'Rayquaza',        types:['dragon','flying'],  fast:'Air Slash',    charge:'Outrage / Breaking Swipe',    note:'Strong Dragon/Flying'},
+    {tier:'A', num:487,  name:'Giratina',        types:['ghost','dragon'],   fast:'Shadow Claw',  charge:'Shadow Ball / Ominous Wind',  note:'Best Ghost ML'},
     {tier:'A', num:468,  name:'Togekiss',        types:['fairy','flying'],   fast:'Charm',        charge:'Flamethrower / Dazzling Gleam', note:'Top Fairy/Flying'},
-    {tier:'B', num:645,  name:'Landorus',        types:['ground','flying'],  fast:'Mud Shot',     charge:'Earth Power / Stone Edge',    note:'Starker Ground/Flying'},
-    {tier:'B', num:289,  name:'Slaking',         types:['normal'],           fast:'Yawn',         charge:'Body Slam / Earthquake',      note:'Hohes CP-Potenzial'},
+    {tier:'B', num:645,  name:'Landorus',        types:['ground','flying'],  fast:'Mud Shot',     charge:'Earth Power / Stone Edge',    note:'Strong Ground/Flying'},
+    {tier:'B', num:289,  name:'Slaking',         types:['normal'],           fast:'Yawn',         charge:'Body Slam / Earthquake',      note:'High CP potential'},
   ]
 };
 
@@ -3715,16 +3846,78 @@ function renderRanking() {
       const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${e.num}.png`;
       const typeBadges = e.types.map(t => typeBadge(t)).join('');
       const noteHtml = e.note ? `<div class="rank-note">💡 ${e.note}</div>` : '';
+
+      // Build type info (weaknesses, strengths, immunities)
+      const typeInfo = getRankingTypeInfo(e.types);
+
+      const weakHtml = typeInfo.weaknesses.length
+        ? typeInfo.weaknesses.map(t => typeBadge(t)).join('')
+        : `<span class="rank-none">None</span>`;
+      const strongHtml = typeInfo.strengths.length
+        ? typeInfo.strengths.map(t => typeBadge(t)).join('')
+        : `<span class="rank-none">None</span>`;
+      const immuneHtml = typeInfo.immunities.length
+        ? typeInfo.immunities.map(t => typeBadge(t)).join('')
+        : `<span class="rank-none">None</span>`;
+      const resistHtml = typeInfo.resistances.length
+        ? typeInfo.resistances.map(t => typeBadge(t)).join('')
+        : `<span class="rank-none">None</span>`;
+
+      // Counter recommendations
+      const counters = getCounterRecommendations(e, data);
+      const countersHtml = counters.length ? counters.map(c => {
+        const cSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${c.num}.png`;
+        const cBadges = c.types.map(t => typeBadge(t)).join('');
+        return `
+        <div class="rank-counter-item">
+          <img class="rank-counter-sprite" src="${cSprite}" alt="${c.name}" onerror="this.style.display='none'">
+          <div class="rank-counter-name">${c.name}</div>
+          <div class="rank-counter-badges">${cBadges}</div>
+          <div class="rank-counter-adv">
+            ${c._hasAtkAdv ? '<span class="rank-counter-atk">⚔️ ATK</span>' : ''}
+            ${c._hasDefAdv ? '<span class="rank-counter-def">🛡️ DEF</span>' : ''}
+          </div>
+        </div>`;
+      }).join('') : `<div style="font-size:12px;color:var(--text3);font-style:italic">No ideal counters found in this tier list</div>`;
+
       return `
-      <div class="rank-row">
-        <img class="rank-sprite" src="${spriteUrl}" alt="${e.name}" onerror="this.style.display='none'">
-        <div class="rank-info">
-          <div class="rank-name">${e.name}</div>
-          <div class="rank-types">${typeBadges}</div>
-          <div class="rank-moves"><strong>Fast:</strong> ${e.fast} &nbsp;|&nbsp; <strong>Ladung:</strong> ${e.charge}</div>
-          ${noteHtml}
+      <div class="rank-card" id="rc${e.num}-${tier}">
+        <div class="rank-row" onclick="toggleRankCard('rc${e.num}-${tier}')">
+          <img class="rank-sprite" src="${spriteUrl}" alt="${e.name}" onerror="this.style.display='none'">
+          <div class="rank-info">
+            <div class="rank-name">${e.name}</div>
+            <div class="rank-types">${typeBadges}</div>
+            <div class="rank-moves"><strong>Fast:</strong> ${e.fast} &nbsp;|&nbsp; <strong>Charge:</strong> ${e.charge}</div>
+            ${noteHtml}
+          </div>
+          <span class="rank-tier-badge rtb-${tier.toLowerCase()}">${tier}</span>
+          <span class="rank-chevron">▼</span>
         </div>
-        <span class="rank-tier-badge rtb-${tier.toLowerCase()}">${tier}</span>
+        <div class="rank-body">
+          <div class="rank-body-inner">
+            <div class="rank-info-section">
+              <div class="rank-info-section-title">⚔️ Effective against (attack)</div>
+              <div class="rank-badges-list">${strongHtml}</div>
+            </div>
+            <div class="rank-info-section">
+              <div class="rank-info-section-title">⚠️ Weak to (takes ×1.6)</div>
+              <div class="rank-badges-list">${weakHtml}</div>
+            </div>
+            <div class="rank-info-section">
+              <div class="rank-info-section-title">🛡️ Resists (takes ×0.625 or less)</div>
+              <div class="rank-badges-list">${resistHtml}</div>
+            </div>
+            ${typeInfo.immunities.length ? `
+            <div class="rank-info-section">
+              <div class="rank-info-section-title">✨ Immune to (×0.390625)</div>
+              <div class="rank-badges-list">${immuneHtml}</div>
+            </div>` : ''}
+            <div class="rank-counters">
+              <div class="rank-counters-title">🎯 Recommended Counters (Attack + Defense Advantage)</div>
+              ${countersHtml}
+            </div>
+          </div>
+        </div>
       </div>`;
     }).join('');
 
@@ -3734,6 +3927,190 @@ function renderRanking() {
       ${rows}
     </div>`;
   }).join('');
+}
+
+function toggleRankCard(id) {
+  const card = document.getElementById(id);
+  if (card) card.classList.toggle('open');
+}
+
+// ── TYPE EFFECTIVENESS HELPERS ────────────────────────────────────────────
+// Returns weaknesses, strengths (attack), resistances and immunities for given types
+function getRankingTypeInfo(types) {
+  const weakSet     = new Set();
+  const immuneSet   = new Set();
+  const strongSet   = new Set(); // What this pokemon attacks super-effectively
+  const resistSet   = new Set(); // What this pokemon resists (takes not-very-effective damage from)
+
+  for (const typeName of types) {
+    const td = TYPES.find(t => t.name.toLowerCase() === typeName.toLowerCase());
+    if (!td) continue;
+    td.weak.forEach(w => weakSet.add(w));
+    td.immune.forEach(i => { immuneSet.add(i); weakSet.delete(i); });
+    td.strong.forEach(s => strongSet.add(s));
+  }
+
+  // Compute resistances: type A resists attack of type B if
+  // B does NOT appear in A's weak list and B is not immune
+  // We find types where none of our 'types' have them in their weak list
+  // i.e. check for each known type T: if T is NOT in weakSet AND T NOT in immuneSet
+  // and T is in some type's "causes_resistance" — which means our type is in T's strong list
+  // Shortcut: resistance = types that are in the STRONG list of opponent types,
+  // meaning the opponent's moves are NVE against us.
+  // In practice: type X resists type A if X is in A.strong's "RESISTED_BY" which we must compute.
+  // For each type A (potential attacker), if our pokemon type is NOT in A.weak (i.e. A is not SE against us)
+  // AND our pokemon type IS "defended by" A (A.strong does not include us - which means A hits us NVE)
+  // Actually: A is resisted = A.strong does NOT contain our type's name
+  // vs neutral = A hits us neutrally
+  // Let's just use: for each TYPES entry T (attacker), if our type appears nowhere in T's "strong" list
+  // and T.name is not in our immune list and T.name is not in our weak list → it's resistant or neutral
+  // True resistance: our type appears in the "RESISTED_BY" which we can derive as:
+  // For attacker type T, the types T does NOT effectively hit are those not in T.strong
+  // But we need "T is resisted by our type" = our type is in the list of types that T doesn't SE
+  // This is complex. Let's use a simpler approach:
+  // resistances = types that have our types in their "strong" list but mapped inversely
+  // i.e. if our type is Fairy, and looking at Dragon: Dragon.strong contains Dragon but Fairy is in Dragon's weak?
+  // No, simpler: Fairy is NOT in Dragon.strong (Dragon is NOT effective against Fairy)
+  // So Dragon attacks are NVE against Fairy? Not exactly...
+  // Actually in Pokemon type chart: Dragon is NOT effective against Fairy (×0 in main games, immune)
+  // But the TYPES data has: Dragon.weak = ['Ice','Dragon','Fairy'] and Fairy.strong = ['Fighting','Dragon','Dark']
+  // So Dragon hits Fairy for immune (Dragon is in Fairy's immune? No, immune means Fairy attacks)
+  // Wait - Fairy.immune is empty. Dragon.weak contains Fairy... 
+  // Let me re-read: Dragon.weak = types that hit Dragon SE. Not "immune to".
+  // Actually for Fairy vs Dragon damage: Dragon attacks are NOT effective against Fairy type.
+  // This is because Dragon is in Fairy's list of resistances (×0.390625 in GO).
+  // The TYPES data doesn't explicitly list "resisted by" but we can derive:
+  // For each type T in TYPES: if our pokemon's types include a type that is in T.weak → T hits us SE
+  // Otherwise, if our pokemon's types include a type that has T in its immune → T hits us immune
+  // Otherwise if T is in one of our types' "resisted" (not listed) → NVE
+  // For simplicity, let's compute: 
+  // resistances = all types that are NOT in our weakSet AND NOT in immuneSet
+  // AND that are listed in the "weak" of some other type that we ARE strong against
+  // This is getting too complex. Let's use a hardcoded type effectiveness table for resistances.
+
+  // Actually, let me just check: for each type T in TYPES, 
+  // if T.name is NOT in weakSet (we're not weak to it)
+  // AND T.name is NOT in immuneSet (we're not immune to it)
+  // AND at least one of our types makes T NVE (our type is in some "resisted_by_X" list)
+  // We can derive: type T is NVE against type X if X is in the "resisted_by_T" which equals
+  // all types NOT in T.strong (that T doesn't hit SE) and not immune.
+  // 
+  // For practical purposes, let's use the inverse: 
+  // For each of our pokemon's types P, P resists attack type A if A.strong does NOT include P
+  // AND P.immune does not include A (that would be immune)
+  // AND A != null
+  // But "A.strong does not include P" means A attacks P for ×1 (neutral), not necessarily resist.
+  // In main games, not being in strong list means either ×0.5 or ×1 or ×0.
+  // We need the ×0.5 case.
+  //
+  // The only proper way is to have the full type chart.
+  // Let's add a minimal resistance map as a lookup:
+  const RESISTS = {
+    normal:   ['ghost'],
+    fire:     ['fire','grass','ice','bug','steel','fairy'],
+    water:    ['fire','water','ice','steel'],
+    grass:    ['water','grass','electric','ground'],
+    electric: ['electric','flying','steel'],
+    ice:      ['ice'],
+    fighting: ['bug','rock','dark'],
+    poison:   ['grass','fighting','poison','bug','fairy'],
+    ground:   ['poison','rock'],
+    flying:   ['grass','fighting','bug'],
+    psychic:  ['fighting','psychic'],
+    bug:      ['grass','fighting','ground'],
+    rock:     ['normal','fire','poison','flying'],
+    ghost:    ['poison','bug'],
+    dragon:   ['fire','water','grass','electric'],
+    dark:     ['ghost','dark'],
+    steel:    ['normal','grass','ice','flying','psychic','bug','rock','dragon','steel','fairy'],
+    fairy:    ['fighting','bug','dark'],
+  };
+  // Also immunities from pokemon type perspective (what attacks don't hit our type at all in GO)
+  const IMMUNE_DEFENSES = {
+    normal:   ['ghost'],
+    electric: ['ground'],
+    flying:   ['ground'],
+    ground:   ['electric'],
+    ghost:    ['normal','fighting'],
+    dark:     ['psychic'],
+    steel:    ['poison'],
+    fairy:    ['dragon'],
+  };
+
+  for (const typeName of types) {
+    const t = typeName.toLowerCase();
+    const resists = RESISTS[t] || [];
+    resists.forEach(r => {
+      if (!immuneSet.has(r) && !weakSet.has(r)) resistSet.add(r.charAt(0).toUpperCase() + r.slice(1));
+    });
+    const immDef = IMMUNE_DEFENSES[t] || [];
+    immDef.forEach(i => {
+      const cap = i.charAt(0).toUpperCase() + i.slice(1);
+      weakSet.delete(cap);
+      immuneSet.add(cap);
+    });
+  }
+
+  return {
+    weaknesses: [...weakSet].sort(),
+    strengths:  [...strongSet].sort(),
+    resistances: [...resistSet].sort(),
+    immunities: [...immuneSet].sort(),
+  };
+}
+
+// ── COUNTER RECOMMENDATIONS ────────────────────────────────────────────────
+function getCounterRecommendations(target, leagueData) {
+  const typeInfo = getRankingTypeInfo(target.types);
+  const targetWeaknesses = typeInfo.weaknesses.map(w => w.toLowerCase());
+  const targetImmunities = typeInfo.immunities.map(i => i.toLowerCase());
+
+  // What target's STAB moves are (for defense advantage check)
+  const targetStrengths = typeInfo.strengths.map(s => s.toLowerCase());
+
+  // ALL ranking data across all leagues for broader counter search
+  const allData = [
+    ...(RANKING_DATA['gl'] || []),
+    ...(RANKING_DATA['ul'] || []),
+    ...(RANKING_DATA['ml'] || []),
+  ];
+  // Deduplicate by num
+  const seen = new Set();
+  const uniqueData = allData.filter(e => { if (seen.has(e.num)) return false; seen.add(e.num); return true; });
+
+  const scoredCounters = uniqueData
+    .filter(e => e.num !== target.num)
+    .map(e => {
+      const counterTypes = e.types.map(t => t.toLowerCase());
+      // Attack advantage: counter's type is in target's weaknesses
+      const hasAtkAdv = counterTypes.some(ct => targetWeaknesses.includes(ct));
+      // Defense advantage: none of counter's types are in target's strengths (target won't hit counter SE)
+      const hasDefAdv = !counterTypes.some(ct => targetStrengths.includes(ct));
+      // Bonus: counter resists target's types
+      const counterTypeInfo = getRankingTypeInfo(e.types);
+      const counterResists = counterTypeInfo.resistances.map(r => r.toLowerCase());
+      const counterImmune  = counterTypeInfo.immunities.map(i => i.toLowerCase());
+      const resistsTarget  = target.types.every(tt => {
+        const tl = tt.toLowerCase();
+        return counterResists.includes(tl) || counterImmune.includes(tl);
+      });
+      // Score: 3 pts for both atk+def, bonus for resisting
+      let score = 0;
+      if (hasAtkAdv) score += 2;
+      if (hasDefAdv) score += 1;
+      if (resistsTarget) score += 1;
+      // Tier bonus
+      const tierBonus = { S: 3, A: 2, B: 1 };
+      // Find tier in leagueData, fallback to current activeLeague data
+      const leagueEntry = leagueData.find(ld => ld.num === e.num);
+      score += tierBonus[leagueEntry ? leagueEntry.tier : 'B'] || 0;
+
+      return { ...e, _hasAtkAdv: hasAtkAdv, _hasDefAdv: hasDefAdv, _score: score };
+    })
+    .filter(e => e._hasAtkAdv) // Must have attack advantage at minimum
+    .sort((a, b) => b._score - a._score);
+
+  return scoredCounters.slice(0, 3);
 }
 
 
@@ -3902,14 +4279,14 @@ function calcCP() {
   const result  = document.getElementById('cp-result');
 
   if (!baseAtk || !baseDef || !baseSta || isNaN(level)) {
-    result.innerHTML = `<span style="color:var(--red)">⚠️ Bitte alle Basis-Werte eingeben.</span>`;
+    result.innerHTML = `<span style="color:var(--red)">⚠️ Please enter all base stats.</span>`;
     result.classList.remove('hidden');
     return;
   }
 
   const cpmEntry = CPM_LEVELS.find(l => l[0] === level);
   if (!cpmEntry) {
-    result.innerHTML = `<span style="color:var(--red)">⚠️ Ungültiges Level.</span>`;
+    result.innerHTML = `<span style="color:var(--red)">⚠️ Invalid level.</span>`;
     result.classList.remove('hidden');
     return;
   }
@@ -3922,8 +4299,8 @@ function calcCP() {
   result.innerHTML = `
     <span class="calc-result-big">CP ${cp.toLocaleString('de-DE')}</span>
     <span class="calc-result-sub">
-      Level ${level} · IVs: ${ivAtk}/${ivDef}/${ivSta} (${pct}% Perfektion)<br>
-      Max CP bei Level ${level}: <strong>${cpPerfect.toLocaleString('de-DE')}</strong>
+      Level ${level} · IVs: ${ivAtk}/${ivDef}/${ivSta} (${pct}% perfection)<br>
+      Max CP at Level ${level}: <strong>${cpPerfect.toLocaleString('de-DE')}</strong>
     </span>`;
   result.classList.remove('hidden');
 }
@@ -3938,14 +4315,14 @@ function calcIVRank() {
   const btn     = document.getElementById('iv-rank-btn');
 
   if (!pokNum) {
-    result.innerHTML = `<span style="color:var(--red)">⚠️ Bitte ein Pokémon wählen.</span>`;
+    result.innerHTML = `<span style="color:var(--red)">⚠️ Please select a Pokémon.</span>`;
     result.classList.remove('hidden');
     return;
   }
 
   const poke = POKE_BASE_STATS.find(p => p.num === parseInt(pokNum));
   if (!poke) {
-    result.innerHTML = `<span style="color:var(--red)">⚠️ Pokémon nicht gefunden.</span>`;
+    result.innerHTML = `<span style="color:var(--red)">⚠️ Pokémon not found.</span>`;
     result.classList.remove('hidden');
     return;
   }
@@ -3967,7 +4344,7 @@ function calcIVRank() {
 
   if (mySP === 0) {
     const cp1 = cpFormula(poke.atk, poke.def, poke.sta, myIVAtk, myIVDef, myIVSta, CPM_LEVELS[0][1]);
-    result.innerHTML = `<span style="color:var(--red)">⚠️ ${poke.name} überschreitet das CP-Limit schon bei Level 1 (CP ${cp1}).</span>`;
+    result.innerHTML = `<span style="color:var(--red)">⚠️ ${poke.name} exceeds the CP cap already at Level 1 (CP ${cp1}).</span>`;
     result.classList.remove('hidden');
     return;
   }
@@ -3988,7 +4365,7 @@ function calcIVRank() {
   }
 
   const rankClass   = rank === 1 ? 'calc-rank-1' : rank <= 10 ? 'calc-rank-top' : 'calc-rank-other';
-  const leagueLabel = cpLimit === 1500 ? 'Superliga' : cpLimit === 2500 ? 'Hyperliga' : 'Meisterliga';
+  const leagueLabel = cpLimit === 1500 ? 'Great League' : cpLimit === 2500 ? 'Ultra League' : 'Master League';
   const pct         = Math.round((mySP / bestSP) * 1000) / 10;
 
   result.innerHTML = `
@@ -3997,8 +4374,8 @@ function calcIVRank() {
     </span>
     <span class="calc-result-sub">
       <strong>${poke.name}</strong> · ${leagueLabel} · IVs: ${myIVAtk}/${myIVDef}/${myIVSta}<br>
-      Optimales Level: <strong>${myResult.level}</strong> · Stat-Produkt: <strong>${Math.round(mySP).toLocaleString('de-DE')}</strong><br>
-      Beste IVs: ${bestIVs.atk}/${bestIVs.def}/${bestIVs.sta} (Level ${bestLevel}) · ${pct}% des Maximums
+      Optimal Level: <strong>${myResult.level}</strong> · Stat Product: <strong>${Math.round(mySP).toLocaleString('de-DE')}</strong><br>
+      Best IVs: ${bestIVs.atk}/${bestIVs.def}/${bestIVs.sta} (Level ${bestLevel}) · ${pct}% of maximum
     </span>`;
   result.classList.remove('hidden');
 }
