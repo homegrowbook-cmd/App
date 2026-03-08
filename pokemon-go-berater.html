@@ -1183,13 +1183,8 @@ function sortMoves(col) {
 }
 
 function renderMoves() {
-  // Deduplicate by name+cat
-  const seen = new Map();
-  for (const m of MOVES) {
-    const key = m.name.toLowerCase() + '|' + m.cat;
-    if (!seen.has(key)) seen.set(key, m);
-  }
-  let data = Array.from(seen.values());
+  // Use the pre-deduplicated array (initialized at startup)
+  let data = MOVES_DEDUPED.slice();
 
   // Filter by category
   if (mvCat !== 'all') data = data.filter(m => m.cat === mvCat);
@@ -1334,7 +1329,8 @@ function renderPokemon() {
       <div class="pk-header" onclick="toggleCard(${p.num})">
         <img class="pk-sprite" src="${spriteUrl}" alt="${p.name}" onerror="this.style.display='none'">
         <div class="pk-title">
-          <div class="pk-name"><span class="pk-num">#${String(p.num).padStart(3,'0')}</span> ${p.name}</div>
+          <span class="pk-num">#${String(p.num).padStart(3,'0')}</span>
+          <div class="pk-name">${p.name}</div>
           <div class="pk-types">${typesBadges}</div>
         </div>
         <span class="pk-chevron">▼</span>
@@ -1495,10 +1491,17 @@ function renderTeam() {
 }
 
 // ── INIT ───────────────────────────────────────────────────────────────────
+// Deduplicate MOVES once at init (defensive, ensures no duplicate key errors)
+const _moveSeen = new Set();
+const MOVES_DEDUPED = MOVES.filter(m => {
+  const k = m.name.toLowerCase() + '|' + m.cat;
+  if (_moveSeen.has(k)) return false;
+  _moveSeen.add(k);
+  return true;
+});
+
 function buildGenTabs() {
-  // Gen pills are static HTML; this activates the 'all' pill on load
-  const pills = document.querySelectorAll('#gen-pills .pill');
-  if (pills.length) pills[0].classList.add('active');
+  // Gen I–IX pills are static HTML; 'Alle' pill is pre-activated in HTML
 }
 buildGenTabs();
 renderMoves();
