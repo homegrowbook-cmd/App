@@ -1495,7 +1495,14 @@ function renderTeam() {
 }
 
 // ── INIT ───────────────────────────────────────────────────────────────────
+function buildGenTabs() {
+  // Gen pills are static HTML; this activates the 'all' pill on load
+  const pills = document.querySelectorAll('#gen-pills .pill');
+  if (pills.length) pills[0].classList.add('active');
+}
+buildGenTabs();
 renderMoves();
+renderPokemon();
 </script>
 </body>
 </html>
