@@ -747,8 +747,8 @@
     <div class="types-note">
       <strong>Pokémon GO Multiplikatoren:</strong>
       In Pokémon GO gelten vereinfachte Multiplikatoren: Sehr effektiv = <strong>×1.6</strong>,
-      nicht sehr effektiv = <strong>×0.625</strong>, immun = <strong>×0.390625</strong> (doppelt nicht sehr effektiv).
-      Doppelte Schwäche/Stärke (dual type) entspricht <strong>×2.56</strong> bzw. <strong>×0.391</strong>.
+      nicht sehr effektiv = <strong>×0.625</strong>, immun/doppelt NVE = <strong>×0.390625</strong>.
+      Doppelte Stärke (dual type) entspricht <strong>×2.56</strong> (×1.6²).
     </div>
 
     <div class="types-grid" id="types-grid"></div>
@@ -785,7 +785,7 @@
         <p>
           <strong>Azumarill</strong> ist der Anker des Teams. Mit <em>Bubble + Play Rough + Ice Beam</em> deckt es
           Fighting-, Dragon-, Dark-, Ground- und Grass-Typen ab. Die optimalen IVs <em>0/15/15</em> erlauben maximale
-          WP unterhalb der 1500er-Grenze mit hohem Angriff.
+          WP unterhalb der 1500er-Grenze mit maximaler Verteidigung und Ausdauer.
         </p>
         <p>
           <strong>Togedemaru</strong> fungiert als Überraschungs-Switch. Mit <em>Thunder Shock + Wild Charge + Fell Stinger</em>
@@ -799,8 +799,8 @@
         </p>
         <p>
           <strong>Kernsynergie:</strong> Azumarill verliert gegen Steel und Electric →
-          Clodsire kontert Electric (immun), Togedemaru kontert nicht direkt Steel aber erzwingt
-          günstige Matchups. Clodsire verliert gegen Ground, Water, Psychic →
+          Clodsire kontert Electric (immun), Togedemaru widersteht Steel-Attacken (eigener Steel-Typ)
+          und erzwingt günstige Matchups durch Fell Stinger-Buff. Clodsire verliert gegen Ground, Water, Psychic →
           Azumarill und Togedemaru schaffen dort Gegengewichte. Das Team ist breit aufgestellt
           mit minimalen gemeinsamen Schwächen.
         </p>
@@ -1376,7 +1376,7 @@ function renderTypes() {
       ? t.weak.map(s => typeBadge(s)).join('')
       : `<span class="type-none">Keine</span>`;
     const immuneHtml = t.immune.length
-      ? t.immune.map(s => `<span class="type-badge" style="background:${getTypeColor(s)};opacity:0.8">${s} ×0.39</span>`).join('')
+      ? t.immune.map(s => `<span class="type-badge" style="background:${getTypeColor(s)};opacity:0.8">${s} ×0.390625</span>`).join('')
       : `<span class="type-none">Keine</span>`;
 
     return `
@@ -1394,7 +1394,7 @@ function renderTypes() {
         <div class="type-badges-list">${weakHtml}</div>
       </div>
       <div class="type-section">
-        <div class="type-section-label">🛡️ Immun gegen (×0.39)</div>
+        <div class="type-section-label">🛡️ Immun gegen (×0.390625)</div>
         <div class="type-badges-list">${immuneHtml}</div>
       </div>
     </div>`;
