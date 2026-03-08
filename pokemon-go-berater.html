@@ -809,6 +809,182 @@
     .nav-logo { font-size: 18px; }
     main { padding: 16px 12px 48px; }
   }
+
+  /* ── LIGHT THEME ────────────────────────────────────────── */
+  body.light-theme {
+    --bg: #f0f2ff;
+    --bg2: #e4e7f8;
+    --bg3: #d8dcf5;
+    --bg4: #cdd1ee;
+    --surface: #eaecf9;
+    --border: #c5c9e8;
+    --border2: #9fa3cc;
+    --text: #1a1c30;
+    --text2: #3d4060;
+    --text3: #6b6f99;
+    --accent: #5a61e8;
+    --accent2: #3a42d0;
+    --gold: #b07500;
+    --green: #2a7248;
+    --red: #b03030;
+    --shadow: rgba(0,0,0,0.15);
+  }
+  body.light-theme nav {
+    background: rgba(240,242,255,0.95);
+  }
+  body.light-theme ::-webkit-scrollbar-track { background: var(--bg2); }
+
+  /* ── THEME TOGGLE ───────────────────────────────────────── */
+  .theme-toggle {
+    margin-left: auto;
+    flex-shrink: 0;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover { background: var(--bg4); color: var(--text); }
+
+  /* ── LIGA-FILTER ────────────────────────────────────────── */
+  .liga-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .liga-filter-label {
+    font-size: 12px;
+    color: var(--text3);
+    font-weight: 600;
+    margin-right: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── RECHNER TAB ────────────────────────────────────────── */
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 8px;
+  }
+  @media (max-width: 700px) { .calc-grid { grid-template-columns: 1fr; } }
+
+  .calc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .calc-card-title {
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .calc-card-desc {
+    font-size: 13px;
+    color: var(--text3);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .calc-form { display: flex; flex-direction: column; gap: 10px; }
+  .calc-form-row { display: flex; gap: 8px; align-items: center; }
+  .calc-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+  .calc-input {
+    flex: 1;
+    padding: 8px 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    min-width: 0;
+  }
+  .calc-input:focus { border-color: var(--accent); }
+  .calc-input::placeholder { color: var(--text3); }
+  .calc-select {
+    flex: 1;
+    padding: 8px 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    min-width: 0;
+  }
+  .calc-select:focus { border-color: var(--accent); }
+  .calc-btn {
+    padding: 10px 20px;
+    background: var(--accent2);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .calc-btn:hover { background: var(--accent); transform: translateY(-1px); }
+  .calc-btn:active { transform: translateY(0); }
+  .calc-result {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .calc-result.hidden { display: none; }
+  .calc-result-big {
+    font-family: 'Bangers', cursive;
+    font-size: 28px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .calc-result-sub { font-size: 13px; color: var(--text2); }
+  .calc-rank-1    { color: var(--gold); }
+  .calc-rank-top  { color: var(--green); }
+  .calc-rank-other{ color: var(--text2); }
+  .iv-trio {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .iv-stat-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -831,6 +1007,10 @@
     <button class="nav-btn" onclick="show('ranking-tab')">
       <span class="icon">📊</span> Liga-Rangliste
     </button>
+    <button class="nav-btn" onclick="show('calc-tab')">
+      <span class="icon">🧮</span> Rechner
+    </button>
+    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Hell/Dunkel-Modus wechseln">☀️</button>
   </div>
 </nav>
 
@@ -896,6 +1076,15 @@
       <div class="search-wrap">
         <span class="icon">🔍</span>
         <input class="search-input" id="pk-search" type="text" placeholder="Name, #Nr, Typ oder Attacke…" oninput="pkSearch=this.value; renderPokemon()">
+      </div>
+    </div>
+    <div class="liga-filter-row">
+      <span class="liga-filter-label">🏆 Liga:</span>
+      <div class="pills" id="liga-pills">
+        <button class="pill active" onclick="setLigaFilter('all')">Alle</button>
+        <button class="pill" onclick="setLigaFilter('gl')">🌿 GL</button>
+        <button class="pill" onclick="setLigaFilter('ul')">💎 UL</button>
+        <button class="pill" onclick="setLigaFilter('ml')">👑 ML</button>
       </div>
     </div>
 
@@ -969,6 +1158,110 @@
       <a href="https://pokemongohub.net" target="_blank" rel="noopener">GO Hub</a>
     </div>
   </section>
+
+  <!-- ── TAB 6: RECHNER ──────────────────────────────────── -->
+  <section id="calc-tab" class="tab">
+    <div class="page-header">
+      <h1>🧮 Rechner</h1>
+      <p>CP-Rechner und IV-Rang für alle Ligen – finde die optimalen IVs für dein Pokémon</p>
+    </div>
+
+    <div class="calc-grid">
+      <!-- CP-Rechner -->
+      <div class="calc-card">
+        <div class="calc-card-title">⚡ CP-Rechner</div>
+        <div class="calc-card-desc">Berechne den CP-Wert eines Pokémon bei beliebigem Level und IVs.</div>
+        <div class="calc-form">
+          <div class="calc-form-row">
+            <span class="calc-label">Basis-Angriff</span>
+            <input class="calc-input" id="cp-base-atk" type="number" min="1" max="400" placeholder="z.B. 208">
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Basis-Verteidigung</span>
+            <input class="calc-input" id="cp-base-def" type="number" min="1" max="400" placeholder="z.B. 175">
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Basis-KP</span>
+            <input class="calc-input" id="cp-base-sta" type="number" min="1" max="500" placeholder="z.B. 225">
+          </div>
+          <div class="iv-trio">
+            <div>
+              <div class="iv-stat-label">IV Angriff</div>
+              <input class="calc-input" id="cp-iv-atk" type="number" min="0" max="15" placeholder="0–15" value="15">
+            </div>
+            <div>
+              <div class="iv-stat-label">IV Verteidigung</div>
+              <input class="calc-input" id="cp-iv-def" type="number" min="0" max="15" placeholder="0–15" value="15">
+            </div>
+            <div>
+              <div class="iv-stat-label">IV KP</div>
+              <input class="calc-input" id="cp-iv-sta" type="number" min="0" max="15" placeholder="0–15" value="15">
+            </div>
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Level</span>
+            <select class="calc-select" id="cp-level"></select>
+          </div>
+          <button class="calc-btn" onclick="calcCP()">⚡ CP berechnen</button>
+        </div>
+        <div class="calc-result hidden" id="cp-result"></div>
+      </div>
+
+      <!-- IV-Rang Rechner -->
+      <div class="calc-card">
+        <div class="calc-card-title">🏅 IV-Rang</div>
+        <div class="calc-card-desc">Berechne den Rang deiner IVs für Superliga, Hyperliga oder Meisterliga (nach Stat-Produkt).</div>
+        <div class="calc-form">
+          <div class="calc-form-row">
+            <span class="calc-label">Pokémon</span>
+            <select class="calc-select" id="iv-pokemon" onchange="onIVPokemonChange()">
+              <option value="">– Pokémon wählen –</option>
+            </select>
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Liga</span>
+            <select class="calc-select" id="iv-league">
+              <option value="1500">🌿 Superliga (≤1500 CP)</option>
+              <option value="2500">💎 Hyperliga (≤2500 CP)</option>
+              <option value="10000">👑 Meisterliga</option>
+            </select>
+          </div>
+          <div class="iv-trio">
+            <div>
+              <div class="iv-stat-label">IV Angriff</div>
+              <input class="calc-input" id="iv-atk" type="number" min="0" max="15" placeholder="0–15" value="0">
+            </div>
+            <div>
+              <div class="iv-stat-label">IV Verteidigung</div>
+              <input class="calc-input" id="iv-def" type="number" min="0" max="15" placeholder="0–15" value="15">
+            </div>
+            <div>
+              <div class="iv-stat-label">IV KP</div>
+              <input class="calc-input" id="iv-sta" type="number" min="0" max="15" placeholder="0–15" value="15">
+            </div>
+          </div>
+          <button class="calc-btn" onclick="calcIVRank()">🏅 Rang berechnen</button>
+        </div>
+        <div class="calc-result hidden" id="iv-result"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div class="calc-card">
+        <div class="calc-card-title">💡 Hinweise</div>
+        <div class="calc-card-desc" style="margin-bottom:0">
+          <strong>CP-Rechner:</strong> Basis-Werte für alle Pokémon findest du auf
+          <a href="https://pvpoke.com" target="_blank" rel="noopener" style="color:var(--accent)">PVPoke</a> oder
+          <a href="https://pokemongohub.net" target="_blank" rel="noopener" style="color:var(--accent)">GO Hub</a>.
+          Tipp: Wähle im IV-Rang ein Pokémon – die Basis-Werte werden automatisch in den CP-Rechner übertragen.<br><br>
+          <strong>IV-Rang:</strong> Rang 1 = 15/15/15 ist selten optimal! Für die Superliga ist oft 0/15/15 oder ähnlich besser,
+          da ein niedrigerer Angriffs-IV ein Pokémon unter das CP-Limit bringt und es auf einem höheren Level gespielt werden kann.
+          Der Rang basiert auf dem Stat-Produkt bei optimalem Level.<br><br>
+          <strong>✦</strong> = Community Day / Elite TM Move &nbsp;&nbsp; <strong>★</strong> = Empfohlenes PvP-Moveset
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <script>
@@ -982,6 +1275,7 @@ let typeSearch = '';
 let activeLeague = 'gl';
 let activeTeamLeague = 'gl';
 let selectedTeamId   = null;
+let ligaFilter = 'all';
 // ── MOVES DATA ─────────────────────────────────────────────────────────────
 const MOVES = [
   // FAST MOVES
@@ -2660,7 +2954,8 @@ function show(tabId) {
     'pokemon-tab': 1,
     'types-tab': 2,
     'team-tab': 3,
-    'ranking-tab': 4
+    'ranking-tab': 4,
+    'calc-tab': 5
   };
   const idx = tabIndex[tabId];
   if (idx !== undefined) {
@@ -2671,6 +2966,7 @@ function show(tabId) {
   if (tabId === 'types-tab')    renderTypes();
   if (tabId === 'team-tab')     renderTeam();
   if (tabId === 'ranking-tab')  renderRanking();
+  if (tabId === 'calc-tab')     renderCalc();
 }
 
 function toggleCard(num) {
@@ -2777,6 +3073,12 @@ function renderPokemon() {
 
   // Filter by gen
   if (activeGen !== 'all') data = data.filter(p => p.gen === activeGen);
+
+  // Filter by liga viability
+  if (ligaFilter !== 'all') {
+    const nums = new Set((RANKING_DATA[ligaFilter] || []).map(e => e.num));
+    data = data.filter(p => nums.has(p.num));
+  }
 
   // Filter by search
   const q = pkSearch.trim().toLowerCase().replace(/^#/, '');
@@ -3173,12 +3475,273 @@ const MOVES_DEDUPED = MOVES.filter(m => {
   return true;
 });
 
+// ── LIGA-VIABILITÄT FILTER ─────────────────────────────────────────────────
+function setLigaFilter(liga) {
+  ligaFilter = liga;
+  document.querySelectorAll('#liga-pills .pill').forEach((p, i) => {
+    p.classList.toggle('active', ['all','gl','ul','ml'][i] === liga);
+  });
+  renderPokemon();
+}
+
+// ── THEME TOGGLE ───────────────────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.textContent = isLight ? '🌙' : '☀️';
+}
+
+// ── RECHNER DATA ───────────────────────────────────────────────────────────
+// CPM table: [level, multiplier] pairs for levels 1–51 (0.5 increments)
+const CPM_LEVELS = [
+  [1,0.0940],[1.5,0.1351],[2,0.1664],[2.5,0.1927],[3,0.2157],[3.5,0.2366],
+  [4,0.2557],[4.5,0.2735],[5,0.2903],[5.5,0.3061],[6,0.3211],[6.5,0.3354],
+  [7,0.3492],[7.5,0.3625],[8,0.3752],[8.5,0.3876],[9,0.3996],[9.5,0.4112],
+  [10,0.4225],[10.5,0.4329],[11,0.4431],[11.5,0.4531],[12,0.4628],[12.5,0.4723],
+  [13,0.4817],[13.5,0.4909],[14,0.4998],[14.5,0.5087],[15,0.5174],[15.5,0.5259],
+  [16,0.5344],[16.5,0.5426],[17,0.5507],[17.5,0.5587],[18,0.5666],[18.5,0.5743],
+  [19,0.5820],[19.5,0.5895],[20,0.5974],[20.5,0.6052],[21,0.6130],[21.5,0.6206],
+  [22,0.6281],[22.5,0.6356],[23,0.6429],[23.5,0.6502],[24,0.6574],[24.5,0.6645],
+  [25,0.6715],[25.5,0.6785],[26,0.6854],[26.5,0.6922],[27,0.6990],[27.5,0.7056],
+  [28,0.7123],[28.5,0.7188],[29,0.7253],[29.5,0.7317],[30,0.7381],[30.5,0.7438],
+  [31,0.7495],[31.5,0.7552],[32,0.7608],[32.5,0.7664],[33,0.7720],[33.5,0.7775],
+  [34,0.7830],[34.5,0.7884],[35,0.7938],[35.5,0.7991],[36,0.8045],[36.5,0.8097],
+  [37,0.8150],[37.5,0.8202],[38,0.8253],[38.5,0.8304],[39,0.8355],[39.5,0.8405],
+  [40,0.8456],[40.5,0.8505],[41,0.8555],[41.5,0.8604],[42,0.8653],[42.5,0.8701],
+  [43,0.8749],[43.5,0.8796],[44,0.8844],[44.5,0.8891],[45,0.8937],[45.5,0.8984],
+  [46,0.9030],[46.5,0.9075],[47,0.9121],[47.5,0.9165],[48,0.9210],[48.5,0.9254],
+  [49,0.9298],[49.5,0.9341],[50,0.9384],[50.5,0.9427],[51,0.9469]
+];
+
+// Base stats (Atk/Def/Sta) for key meta Pokémon in Pokémon GO
+const POKE_BASE_STATS = [
+  {num:3,   name:'Venusaur',    atk:198, def:189, sta:190},
+  {num:6,   name:'Charizard',   atk:223, def:176, sta:186},
+  {num:9,   name:'Blastoise',   atk:171, def:210, sta:188},
+  {num:25,  name:'Pikachu',     atk:112, def:101, sta:111},
+  {num:94,  name:'Gengar',      atk:261, def:149, sta:155},
+  {num:131, name:'Lapras',      atk:165, def:180, sta:277},
+  {num:143, name:'Snorlax',     atk:190, def:169, sta:330},
+  {num:144, name:'Articuno',    atk:192, def:249, sta:207},
+  {num:149, name:'Dragonite',   atk:263, def:198, sta:209},
+  {num:150, name:'Mewtwo',      atk:300, def:182, sta:214},
+  {num:184, name:'Azumarill',   atk:112, def:152, sta:225},
+  {num:197, name:'Umbreon',     atk:126, def:240, sta:216},
+  {num:208, name:'Steelix',     atk:148, def:272, sta:181},
+  {num:230, name:'Kingdra',     atk:194, def:194, sta:182},
+  {num:243, name:'Raikou',      atk:241, def:210, sta:193},
+  {num:248, name:'Tyranitar',   atk:251, def:207, sta:225},
+  {num:249, name:'Lugia',       atk:193, def:310, sta:235},
+  {num:250, name:'Ho-Oh',       atk:239, def:244, sta:214},
+  {num:259, name:'Swampert',    atk:208, def:175, sta:225},
+  {num:279, name:'Pelipper',    atk:130, def:189, sta:207},
+  {num:289, name:'Slaking',     atk:290, def:166, sta:284},
+  {num:302, name:'Sableye',     atk:82,  def:150, sta:137},
+  {num:304, name:'Bastiodon',   atk:30,  def:242, sta:155},
+  {num:308, name:'Medicham',    atk:121, def:152, sta:155},
+  {num:330, name:'Flygon',      atk:205, def:168, sta:190},
+  {num:334, name:'Altaria',     atk:141, def:201, sta:162},
+  {num:350, name:'Milotic',     atk:192, def:219, sta:216},
+  {num:362, name:'Glalie',      atk:162, def:120, sta:190},
+  {num:365, name:'Walrein',     atk:182, def:176, sta:220},
+  {num:373, name:'Salamence',   atk:277, def:168, sta:216},
+  {num:376, name:'Metagross',   atk:257, def:228, sta:190},
+  {num:379, name:'Registeel',   atk:143, def:285, sta:190},
+  {num:382, name:'Kyogre',      atk:270, def:228, sta:216},
+  {num:383, name:'Groudon',     atk:270, def:228, sta:216},
+  {num:384, name:'Rayquaza',    atk:284, def:170, sta:213},
+  {num:398, name:'Staraptor',   atk:234, def:140, sta:198},
+  {num:426, name:'Drifblim',    atk:180, def:80,  sta:312},
+  {num:445, name:'Garchomp',    atk:261, def:193, sta:239},
+  {num:462, name:'Magnezone',   atk:238, def:205, sta:172},
+  {num:468, name:'Togekiss',    atk:225, def:217, sta:198},
+  {num:472, name:'Gliscor',     atk:185, def:222, sta:181},
+  {num:476, name:'Probopass',   atk:135, def:275, sta:155},
+  {num:483, name:'Dialga',      atk:275, def:211, sta:205},
+  {num:484, name:'Palkia',      atk:280, def:215, sta:189},
+  {num:487, name:'Giratina',    atk:187, def:225, sta:284},
+  {num:488, name:'Cresselia',   atk:152, def:258, sta:260},
+  {num:596, name:'Galvantula',  atk:201, def:128, sta:172},
+  {num:598, name:'Ferrothorn',  atk:158, def:231, sta:179},
+  {num:635, name:'Hydreigon',   atk:256, def:188, sta:211},
+  {num:645, name:'Landorus',    atk:261, def:159, sta:205},
+  {num:671, name:'Florges',     atk:212, def:221, sta:186},
+  {num:717, name:'Yveltal',     atk:250, def:185, sta:246},
+  {num:741, name:'Talonflame',  atk:176, def:155, sta:186},
+  {num:777, name:'Togedemaru',  atk:167, def:133, sta:146},
+  {num:788, name:'Tapu Fini',   atk:171, def:240, sta:186},
+  {num:888, name:'Zacian',      atk:254, def:236, sta:192},
+  {num:959, name:'Tinkaton',    atk:160, def:208, sta:218},
+  {num:978, name:'Annihilape',  atk:220, def:190, sta:236},
+  {num:979, name:'Clodsire',    atk:133, def:163, sta:295}
+];
+
+// ── RECHNER FUNCTIONS ──────────────────────────────────────────────────────
+function cpFormula(baseAtk, baseDef, baseSta, ivAtk, ivDef, ivSta, cpm) {
+  return Math.max(10, Math.floor(
+    (baseAtk + ivAtk) * Math.sqrt(baseDef + ivDef) * Math.sqrt(baseSta + ivSta) * cpm * cpm / 10
+  ));
+}
+
+function renderCalc() {
+  const sel = document.getElementById('cp-level');
+  if (sel && sel.options.length === 0) {
+    for (const [level] of CPM_LEVELS) {
+      const opt = document.createElement('option');
+      opt.value = level;
+      opt.textContent = `Level ${level}`;
+      if (level === 40) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  }
+  const pokSel = document.getElementById('iv-pokemon');
+  if (pokSel && pokSel.options.length <= 1) {
+    for (const p of POKE_BASE_STATS) {
+      const opt = document.createElement('option');
+      opt.value = p.num;
+      opt.textContent = `#${String(p.num).padStart(3,'0')} ${p.name}`;
+      pokSel.appendChild(opt);
+    }
+  }
+}
+
+function onIVPokemonChange() {
+  const num  = parseInt(document.getElementById('iv-pokemon').value);
+  const poke = POKE_BASE_STATS.find(p => p.num === num);
+  if (poke) {
+    document.getElementById('cp-base-atk').value = poke.atk;
+    document.getElementById('cp-base-def').value = poke.def;
+    document.getElementById('cp-base-sta').value = poke.sta;
+  }
+}
+
+function calcCP() {
+  const baseAtk = parseInt(document.getElementById('cp-base-atk').value);
+  const baseDef = parseInt(document.getElementById('cp-base-def').value);
+  const baseSta = parseInt(document.getElementById('cp-base-sta').value);
+  const ivAtk   = Math.max(0, Math.min(15, parseInt(document.getElementById('cp-iv-atk').value) || 0));
+  const ivDef   = Math.max(0, Math.min(15, parseInt(document.getElementById('cp-iv-def').value) || 0));
+  const ivSta   = Math.max(0, Math.min(15, parseInt(document.getElementById('cp-iv-sta').value) || 0));
+  const level   = parseFloat(document.getElementById('cp-level').value);
+  const result  = document.getElementById('cp-result');
+
+  if (!baseAtk || !baseDef || !baseSta || isNaN(level)) {
+    result.innerHTML = `<span style="color:var(--red)">⚠️ Bitte alle Basis-Werte eingeben.</span>`;
+    result.classList.remove('hidden');
+    return;
+  }
+
+  const cpmEntry = CPM_LEVELS.find(l => l[0] === level);
+  if (!cpmEntry) {
+    result.innerHTML = `<span style="color:var(--red)">⚠️ Ungültiges Level.</span>`;
+    result.classList.remove('hidden');
+    return;
+  }
+
+  const cpm  = cpmEntry[1];
+  const cp   = cpFormula(baseAtk, baseDef, baseSta, ivAtk, ivDef, ivSta, cpm);
+  const cpPerfect = cpFormula(baseAtk, baseDef, baseSta, 15, 15, 15, cpm);
+  const pct  = Math.round(((ivAtk + ivDef + ivSta) / 45) * 100);
+
+  result.innerHTML = `
+    <span class="calc-result-big">CP ${cp.toLocaleString('de-DE')}</span>
+    <span class="calc-result-sub">
+      Level ${level} · IVs: ${ivAtk}/${ivDef}/${ivSta} (${pct}% Perfektion)<br>
+      Max CP bei Level ${level}: <strong>${cpPerfect.toLocaleString('de-DE')}</strong>
+    </span>`;
+  result.classList.remove('hidden');
+}
+
+function calcIVRank() {
+  const pokNum  = document.getElementById('iv-pokemon').value;
+  const cpLimit = parseInt(document.getElementById('iv-league').value);
+  const myIVAtk = Math.max(0, Math.min(15, parseInt(document.getElementById('iv-atk').value) || 0));
+  const myIVDef = Math.max(0, Math.min(15, parseInt(document.getElementById('iv-def').value) || 0));
+  const myIVSta = Math.max(0, Math.min(15, parseInt(document.getElementById('iv-sta').value) || 0));
+  const result  = document.getElementById('iv-result');
+
+  if (!pokNum) {
+    result.innerHTML = `<span style="color:var(--red)">⚠️ Bitte ein Pokémon wählen.</span>`;
+    result.classList.remove('hidden');
+    return;
+  }
+
+  const poke = POKE_BASE_STATS.find(p => p.num === parseInt(pokNum));
+  if (!poke) {
+    result.innerHTML = `<span style="color:var(--red)">⚠️ Pokémon nicht gefunden.</span>`;
+    result.classList.remove('hidden');
+    return;
+  }
+
+  function bestStatProduct(ivA, ivD, ivS) {
+    let best = 0;
+    let bestLevel = 1;
+    for (const [level, cpm] of CPM_LEVELS) {
+      const cp = cpFormula(poke.atk, poke.def, poke.sta, ivA, ivD, ivS, cpm);
+      if (cp > cpLimit) break;
+      const sp = (poke.atk + ivA) * (poke.def + ivD) * (poke.sta + ivS) * cpm * cpm * cpm;
+      if (sp > best) { best = sp; bestLevel = level; }
+    }
+    return { sp: best, level: bestLevel };
+  }
+
+  const myResult = bestStatProduct(myIVAtk, myIVDef, myIVSta);
+  const mySP     = myResult.sp;
+
+  if (mySP === 0) {
+    const cp1 = cpFormula(poke.atk, poke.def, poke.sta, myIVAtk, myIVDef, myIVSta, CPM_LEVELS[0][1]);
+    result.innerHTML = `<span style="color:var(--red)">⚠️ ${poke.name} überschreitet das CP-Limit schon bei Level 1 (CP ${cp1}).</span>`;
+    result.classList.remove('hidden');
+    return;
+  }
+
+  let rank = 1;
+  let bestSP = 0;
+  let bestIVs = { atk: 0, def: 0, sta: 0 };
+  let bestLevel = 1;
+
+  for (let a = 0; a <= 15; a++) {
+    for (let d = 0; d <= 15; d++) {
+      for (let s = 0; s <= 15; s++) {
+        const r = bestStatProduct(a, d, s);
+        if (r.sp > mySP) rank++;
+        if (r.sp > bestSP) { bestSP = r.sp; bestIVs = { atk: a, def: d, sta: s }; bestLevel = r.level; }
+      }
+    }
+  }
+
+  const rankClass   = rank === 1 ? 'calc-rank-1' : rank <= 10 ? 'calc-rank-top' : 'calc-rank-other';
+  const leagueLabel = cpLimit === 1500 ? 'Superliga' : cpLimit === 2500 ? 'Hyperliga' : 'Meisterliga';
+  const pct         = Math.round((mySP / bestSP) * 1000) / 10;
+
+  result.innerHTML = `
+    <span class="calc-result-big">
+      <span class="${rankClass}">🏅 Rang ${rank} / 4096</span>
+    </span>
+    <span class="calc-result-sub">
+      <strong>${poke.name}</strong> · ${leagueLabel} · IVs: ${myIVAtk}/${myIVDef}/${myIVSta}<br>
+      Optimales Level: <strong>${myResult.level}</strong> · Stat-Produkt: <strong>${Math.round(mySP).toLocaleString('de-DE')}</strong><br>
+      Beste IVs: ${bestIVs.atk}/${bestIVs.def}/${bestIVs.sta} (Level ${bestLevel}) · ${pct}% des Maximums
+    </span>`;
+  result.classList.remove('hidden');
+}
+
 function buildGenTabs() {
   // Gen I–IX pills are static HTML; 'Alle' pill is pre-activated in HTML
 }
 buildGenTabs();
 renderMoves();
 renderPokemon();
+
+// Init theme from localStorage
+(function() {
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-theme');
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.textContent = '🌙';
+  }
+})();
 </script>
 </body>
 </html>
