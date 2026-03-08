@@ -985,6 +985,181 @@
     margin-bottom: 4px;
     text-align: center;
   }
+
+  /* ── HOME / STARTSEITE ──────────────────────────────────── */
+  .home-hero {
+    text-align: center;
+    padding: 48px 20px 36px;
+    margin-bottom: 32px;
+  }
+  .home-hero-icon {
+    font-size: 64px;
+    line-height: 1;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .home-hero h1 {
+    font-family: 'Bangers', cursive;
+    font-size: 48px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .home-hero p {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .home-hero-badges {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .home-hero-badge {
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+  }
+
+  .home-section-title {
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: var(--text2);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .home-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .home-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .home-feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 20px;
+    cursor: pointer;
+    transition: border-color 0.18s, transform 0.18s, background 0.18s;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--card-accent, var(--accent2)) 0%, transparent 60%);
+    opacity: 0.06;
+    transition: opacity 0.18s;
+    pointer-events: none;
+  }
+  .home-feature-card:hover {
+    border-color: var(--accent2);
+    transform: translateY(-4px);
+    background: var(--bg3);
+  }
+  .home-feature-card:hover::before { opacity: 0.12; }
+
+  .home-feature-icon {
+    font-size: 36px;
+    line-height: 1;
+    display: block;
+  }
+  .home-feature-title {
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .home-feature-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.5;
+    flex: 1;
+  }
+  .home-feature-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    background: var(--accent2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+  .home-feature-action:hover { background: var(--accent); }
+
+  .home-tips {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+  .home-tips-title {
+    font-family: 'Bangers', cursive;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .home-tips-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .home-tip-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+  .home-tip-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  @media (max-width: 640px) {
+    .home-hero { padding: 32px 16px 24px; }
+    .home-hero h1 { font-size: 36px; }
+    .home-hero p { font-size: 14px; }
+    .home-features { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -992,7 +1167,10 @@
 <nav>
   <div class="nav-inner">
     <span class="nav-logo">⚔️ PvP Berater</span>
-    <button class="nav-btn active" onclick="show('moves-tab')">
+    <button class="nav-btn active" onclick="show('home-tab')">
+      <span class="icon">🏠</span> Start
+    </button>
+    <button class="nav-btn" onclick="show('moves-tab')">
       <span class="icon">⚡</span> Attacken
     </button>
     <button class="nav-btn" onclick="show('pokemon-tab')">
@@ -1015,8 +1193,100 @@
 </nav>
 
 <main>
+  <!-- ── STARTSEITE ────────────────────────────────────────── -->
+  <section id="home-tab" class="tab active">
+    <div class="home-hero">
+      <span class="home-hero-icon">⚔️</span>
+      <h1>Pokémon GO PvP Berater</h1>
+      <p>Dein umfassendes Werkzeug für Pokémon GO PvP – Attacken, Pokédex, Typ-Übersicht, Meta-Teams, Ranglisten und Rechner an einem Ort.</p>
+      <div class="home-hero-badges">
+        <span class="home-hero-badge">🌿 Superliga</span>
+        <span class="home-hero-badge">💎 Hyperliga</span>
+        <span class="home-hero-badge">👑 Meisterliga</span>
+        <span class="home-hero-badge">🇩🇪 Auf Deutsch</span>
+      </div>
+    </div>
+
+    <div class="home-section-title">🗂️ Bereiche</div>
+
+    <div class="home-features">
+      <div class="home-feature-card" onclick="show('moves-tab')">
+        <span class="home-feature-icon">⚡</span>
+        <div class="home-feature-title">Attacken-Datenbank</div>
+        <div class="home-feature-desc">Alle Schnell- und Lade-Attacken mit PvE- und PvP-Stärkewerten. Sortier- und filterbar nach Typ und Kategorie.</div>
+        <button class="home-feature-action">Öffnen →</button>
+      </div>
+
+      <div class="home-feature-card" onclick="show('pokemon-tab')">
+        <span class="home-feature-icon">🎯</span>
+        <div class="home-feature-title">Pokémon-Datenbank</div>
+        <div class="home-feature-desc">PvP-optimierte Movesets für alle wichtigen Pokémon – filterbar nach Generation und Liga.</div>
+        <button class="home-feature-action">Öffnen →</button>
+      </div>
+
+      <div class="home-feature-card" onclick="show('types-tab')">
+        <span class="home-feature-icon">🔮</span>
+        <div class="home-feature-title">Typ-Übersicht</div>
+        <div class="home-feature-desc">Stärken, Schwächen und Immunitäten aller 18 Typen mit Pokémon GO Multiplikatoren (×1.6 / ×0.625).</div>
+        <button class="home-feature-action">Öffnen →</button>
+      </div>
+
+      <div class="home-feature-card" onclick="show('team-tab')">
+        <span class="home-feature-icon">🏆</span>
+        <div class="home-feature-title">Meta-Teams</div>
+        <div class="home-feature-desc">Empfohlene Top-Teams für Superliga, Hyperliga und Meisterliga mit Strategie-Tipps und Synergie-Analyse.</div>
+        <button class="home-feature-action">Öffnen →</button>
+      </div>
+
+      <div class="home-feature-card" onclick="show('ranking-tab')">
+        <span class="home-feature-icon">📊</span>
+        <div class="home-feature-title">Liga-Rangliste</div>
+        <div class="home-feature-desc">S/A/B-Tier-Listen für alle drei Ligen – basierend auf PVPoke &amp; GamePress. Immer aktuell mit den besten Pokémon.</div>
+        <button class="home-feature-action">Öffnen →</button>
+      </div>
+
+      <div class="home-feature-card" onclick="show('calc-tab')">
+        <span class="home-feature-icon">🧮</span>
+        <div class="home-feature-title">Rechner</div>
+        <div class="home-feature-desc">CP-Rechner und IV-Rang-Rechner: Finde die optimalen IVs für dein Pokémon in jeder Liga.</div>
+        <button class="home-feature-action">Öffnen →</button>
+      </div>
+    </div>
+
+    <div class="home-section-title">💡 Tipps</div>
+
+    <div class="home-tips">
+      <div class="home-tips-list">
+        <div class="home-tip-item">
+          <span class="home-tip-icon">🏅</span>
+          <span><strong>IV 0/15/15 kann besser sein:</strong> In der Superliga ermöglicht ein niedriger Angriffs-IV oft ein höheres Level unter dem CP-Limit.</span>
+        </div>
+        <div class="home-tip-item">
+          <span class="home-tip-icon">✦</span>
+          <span><strong>Community Day Moves:</strong> ✦ markiert Attacken, die nur per Community Day oder Elite TM erlernbar sind.</span>
+        </div>
+        <div class="home-tip-item">
+          <span class="home-tip-icon">⚔️</span>
+          <span><strong>Typ-Synergie:</strong> Achte bei der Teamzusammenstellung darauf, dass dein Team möglichst viele gegnerische Typen abdeckt.</span>
+        </div>
+        <div class="home-tip-item">
+          <span class="home-tip-icon">🔄</span>
+          <span><strong>Wechselvorteile:</strong> Der letzte Switch-Vorteil (Switching Advantage) ist entscheidend – behalte einen Konter in Reserve.</span>
+        </div>
+        <div class="home-tip-item">
+          <span class="home-tip-icon">💎</span>
+          <span><strong>Shield-Management:</strong> Schilde richtig einsetzen – nicht jeden Lade-Angriff blocken, sondern taktisch spielen.</span>
+        </div>
+        <div class="home-tip-item">
+          <span class="home-tip-icon">📊</span>
+          <span><strong>Meta kennen:</strong> Die Rangliste zeigt, welche Pokémon du in der jeweiligen Liga am häufigsten begegnen wirst.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── TAB 1: MOVES ──────────────────────────────────────── -->
-  <section id="moves-tab" class="tab active">
+  <section id="moves-tab" class="tab">
     <div class="page-header">
       <h1>⚡ Attacken-Datenbank</h1>
       <p>Alle Schnell- und Lade-Attacken mit PvP-Werten im Vergleich</p>
@@ -2950,12 +3220,13 @@ function show(tabId) {
   document.getElementById(tabId).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const tabIndex = {
-    'moves-tab': 0,
-    'pokemon-tab': 1,
-    'types-tab': 2,
-    'team-tab': 3,
-    'ranking-tab': 4,
-    'calc-tab': 5
+    'home-tab':    0,
+    'moves-tab':   1,
+    'pokemon-tab': 2,
+    'types-tab':   3,
+    'team-tab':    4,
+    'ranking-tab': 5,
+    'calc-tab':    6
   };
   const idx = tabIndex[tabId];
   if (idx !== undefined) {
