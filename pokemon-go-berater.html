@@ -79,6 +79,7 @@
     gap: 8px;
     height: 58px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
   .nav-inner::-webkit-scrollbar { display: none; }
@@ -1291,6 +1292,125 @@
     .home-hero p { font-size: 14px; }
     .home-features { grid-template-columns: 1fr; }
   }
+
+  /* ── PK TYPE INFO ───────────────────────────────────────── */
+  .pk-type-info {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pk-type-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pk-type-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text3);
+    min-width: 80px;
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+  .pk-type-badges { display: flex; flex-wrap: wrap; gap: 3px; }
+  .pk-type-none { font-size: 12px; color: var(--text3); font-style: italic; }
+
+  /* ── PK META BADGE ──────────────────────────────────────── */
+  .pk-meta-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    margin-top: 2px;
+  }
+  .pk-meta-s { background: rgba(245,200,66,0.22); color: var(--gold); border: 1px solid rgba(245,200,66,0.3); }
+  .pk-meta-a { background: rgba(124,131,245,0.22); color: var(--accent); border: 1px solid rgba(124,131,245,0.3); }
+  .pk-meta-b { background: rgba(76,175,122,0.22); color: var(--green); border: 1px solid rgba(76,175,122,0.3); }
+
+  /* ── BACK TO TOP ────────────────────────────────────────── */
+  .back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    background: var(--accent2);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.25s, transform 0.25s, background 0.15s;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px var(--shadow);
+  }
+  .back-to-top.visible { opacity: 1; transform: translateY(0); }
+  .back-to-top:hover { background: var(--accent); }
+  @media (max-width: 640px) { .back-to-top { bottom: 16px; right: 14px; } }
+
+  /* ── HOME STATS ─────────────────────────────────────────── */
+  .home-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .home-stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 12px;
+    text-align: center;
+  }
+  .home-stat-number {
+    font-family: 'Bangers', cursive;
+    font-size: 36px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .home-stat-label {
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 600;
+  }
+  @media (max-width: 640px) {
+    .home-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── FAV BUTTON ─────────────────────────────────────────── */
+  .pk-fav-btn {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: color 0.15s, transform 0.15s;
+  }
+  .pk-fav-btn:hover { color: #e85; transform: scale(1.2); }
+  .pk-fav-btn.active { color: #e85; }
+
+  /* ── DUAL TYPE MATCHER ──────────────────────────────────── */
+  .dual-type-row { display:flex; align-items:center; margin:12px 0; flex-wrap:wrap; gap:8px; }
+  .dual-type-result { margin-top:12px; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:14px; }
+  .dual-type-result.hidden { display:none; }
 </style>
 </head>
 <body>
@@ -1414,6 +1534,25 @@
         </div>
       </div>
     </div>
+    <div class="home-section-title">📈 Quick Stats</div>
+    <div class="home-stats-grid">
+      <div class="home-stat-card">
+        <div class="home-stat-number" id="stat-pokemon">—</div>
+        <div class="home-stat-label">Pokémon in database</div>
+      </div>
+      <div class="home-stat-card">
+        <div class="home-stat-number" id="stat-moves">—</div>
+        <div class="home-stat-label">Moves in database</div>
+      </div>
+      <div class="home-stat-card">
+        <div class="home-stat-number" id="stat-types">18</div>
+        <div class="home-stat-label">Types covered</div>
+      </div>
+      <div class="home-stat-card">
+        <div class="home-stat-number" id="stat-ranked">—</div>
+        <div class="home-stat-label">Ranked Pokémon</div>
+      </div>
+    </div>
   </section>
 
   <!-- ── TAB 1: MOVES ──────────────────────────────────────── -->
@@ -1486,6 +1625,7 @@
         <button class="pill" onclick="setLigaFilter('gl')">🌿 GL</button>
         <button class="pill" onclick="setLigaFilter('ul')">💎 UL</button>
         <button class="pill" onclick="setLigaFilter('ml')">👑 ML</button>
+        <button class="pill" onclick="setLigaFilter('fav')">⭐ Favorites</button>
       </div>
     </div>
 
@@ -1515,6 +1655,21 @@
     </div>
 
     <div class="types-grid" id="types-grid"></div>
+
+    <div class="page-header" style="margin-top:24px">
+      <h2 style="font-family:'Bangers',cursive;font-size:22px;letter-spacing:1px;color:var(--accent)">⚗️ Dual Type Matcher</h2>
+      <p>Select two types to see combined weaknesses, resistances and immunities</p>
+    </div>
+    <div class="dual-type-row">
+      <select id="dual-type-1" class="calc-select" onchange="renderDualType()" style="max-width:160px">
+        <option value="">Type 1…</option>
+      </select>
+      <span style="color:var(--text3);font-size:18px;padding:0 8px">+</span>
+      <select id="dual-type-2" class="calc-select" onchange="renderDualType()" style="max-width:160px">
+        <option value="">Type 2 (optional)…</option>
+      </select>
+    </div>
+    <div id="dual-type-result" class="dual-type-result hidden"></div>
   </section>
 
   <!-- ── TAB 4: TEAMS ─────────────────────────────────────── -->
@@ -1548,6 +1703,12 @@
         <button class="pill active" onclick="setLeague('gl')">🌿 Great League (≤1500)</button>
         <button class="pill" onclick="setLeague('ul')">💎 Ultra League (≤2500)</button>
         <button class="pill" onclick="setLeague('ml')">👑 Master League</button>
+      </div>
+    </div>
+    <div class="controls-row" style="margin-top:8px">
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input class="search-input" id="rank-search" type="text" placeholder="Search Pokémon in rankings…" oninput="rankSearch=this.value; renderRanking()">
       </div>
     </div>
 
@@ -1664,6 +1825,7 @@
     </div>
   </section>
 </main>
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top" title="Back to top">↑</button>
 
 <script>
 // ── STATE ──────────────────────────────────────────────────────────────────
@@ -1677,6 +1839,8 @@ let activeLeague = 'gl';
 let activeTeamLeague = 'gl';
 let selectedTeamId   = null;
 let ligaFilter = 'all';
+let rankSearch = '';
+let favPokemon = new Set(JSON.parse((() => { try { return localStorage.getItem('favPokemon') || '[]'; } catch(e) { return '[]'; } })()));
 // ── MOVES DATA ─────────────────────────────────────────────────────────────
 const MOVES = [
   // FAST MOVES
@@ -3365,10 +3529,11 @@ function show(tabId) {
   }
   if (tabId === 'moves-tab')    renderMoves();
   if (tabId === 'pokemon-tab')  renderPokemon();
-  if (tabId === 'types-tab')    renderTypes();
+  if (tabId === 'types-tab')    { renderTypes(); initDualTypeSelects(); }
   if (tabId === 'team-tab')     renderTeam();
   if (tabId === 'ranking-tab')  renderRanking();
   if (tabId === 'calc-tab')     renderCalc();
+  if (tabId === 'home-tab')     updateHomeStats();
 }
 
 function toggleCard(num) {
@@ -3477,7 +3642,9 @@ function renderPokemon() {
   if (activeGen !== 'all') data = data.filter(p => p.gen === activeGen);
 
   // Filter by liga viability
-  if (ligaFilter !== 'all') {
+  if (ligaFilter === 'fav') {
+    data = data.filter(p => favPokemon.has(p.num));
+  } else if (ligaFilter !== 'all') {
     const nums = new Set((RANKING_DATA[ligaFilter] || []).map(e => e.num));
     data = data.filter(p => nums.has(p.num));
   }
@@ -3542,6 +3709,22 @@ function renderPokemon() {
 
     const noteHtml = p.note ? `<div class="pk-note">💡 ${p.note}</div>` : '';
 
+    // Get meta tier from ranking data
+    const rankEntries = Object.values(RANKING_DATA).flat().filter(e => e.num === p.num);
+    const bestTier = rankEntries.length ? (rankEntries.find(e=>e.tier==='S') || rankEntries.find(e=>e.tier==='A') || rankEntries[0]) : null;
+    const tierBadgeHtml = bestTier ? `<span class="pk-meta-badge pk-meta-${bestTier.tier.toLowerCase()}">${bestTier.tier} Tier</span>` : '';
+
+    const pkTypeInfo = getRankingTypeInfo(p.types);
+    const pkWeakHtml = pkTypeInfo.weaknesses.length ? pkTypeInfo.weaknesses.map(t => typeBadge(t)).join('') : '<span class="pk-type-none">None</span>';
+    const pkResistHtml = pkTypeInfo.resistances.length ? pkTypeInfo.resistances.map(t => typeBadge(t)).join('') : '<span class="pk-type-none">None</span>';
+    const pkStrongHtml = pkTypeInfo.strengths.length ? pkTypeInfo.strengths.map(t => typeBadge(t)).join('') : '<span class="pk-type-none">None</span>';
+    const typeInfoHtml = `
+<div class="pk-type-info">
+  <div class="pk-type-row"><span class="pk-type-label">⚠️ Weak to:</span><div class="pk-type-badges">${pkWeakHtml}</div></div>
+  <div class="pk-type-row"><span class="pk-type-label">🛡️ Resists:</span><div class="pk-type-badges">${pkResistHtml}</div></div>
+  <div class="pk-type-row"><span class="pk-type-label">⚔️ Strong vs:</span><div class="pk-type-badges">${pkStrongHtml}</div></div>
+</div>`;
+
     return `
     <div class="pk-card" id="pc${p.num}">
       <div class="pk-header" onclick="toggleCard(${p.num})">
@@ -3550,7 +3733,9 @@ function renderPokemon() {
           <span class="pk-num">#${String(p.num).padStart(3,'0')}</span>
           <div class="pk-name">${p.name}</div>
           <div class="pk-types">${typesBadges}</div>
+          ${tierBadgeHtml}
         </div>
+        <button class="pk-fav-btn${favPokemon.has(p.num) ? ' active' : ''}" onclick="event.stopPropagation(); toggleFav(${p.num})" title="Favorite" aria-label="Toggle favorite">♥</button>
         <span class="pk-chevron">▼</span>
       </div>
       <div class="pk-body">
@@ -3564,6 +3749,7 @@ function renderPokemon() {
             ${chargeRows}
           </div>
           ${noteHtml}
+          ${typeInfoHtml}
         </div>
       </div>
     </div>`;
@@ -3585,13 +3771,13 @@ function renderTypes() {
   grid.innerHTML = data.map(t => {
     const strongHtml = t.strong.length
       ? t.strong.map(s => typeBadge(s)).join('')
-      : `<span class="type-none">Keine</span>`;
+      : `<span class="type-none">None</span>`;
     const weakHtml = t.weak.length
       ? t.weak.map(s => typeBadge(s)).join('')
-      : `<span class="type-none">Keine</span>`;
+      : `<span class="type-none">None</span>`;
     const immuneHtml = t.immune.length
       ? t.immune.map(s => `<span class="type-badge" style="background:${getTypeColor(s)};opacity:0.8">${s} ×0.390625</span>`).join('')
-      : `<span class="type-none">Keine</span>`;
+      : `<span class="type-none">None</span>`;
 
     return `
     <div class="type-card">
@@ -3600,15 +3786,15 @@ function renderTypes() {
         <span class="type-name-big" style="color:${t.color}">${t.name}</span>
       </div>
       <div class="type-section">
-        <div class="type-section-label">✅ Stark gegen (×1.6)</div>
+        <div class="type-section-label">✅ Strong against (×1.6)</div>
         <div class="type-badges-list">${strongHtml}</div>
       </div>
       <div class="type-section">
-        <div class="type-section-label">⚠️ Schwach gegen (×0.625)</div>
+        <div class="type-section-label">⚠️ Weak to (×0.625)</div>
         <div class="type-badges-list">${weakHtml}</div>
       </div>
       <div class="type-section">
-        <div class="type-section-label">🛡️ Immun gegen (×0.390625)</div>
+        <div class="type-section-label">🛡️ Immune to (×0.390625)</div>
         <div class="type-badges-list">${immuneHtml}</div>
       </div>
     </div>`;
@@ -3835,11 +4021,19 @@ function renderRanking() {
   const data = RANKING_DATA[activeLeague] || [];
   const grid = document.getElementById('ranking-grid');
 
+  const rankQ = rankSearch.trim().toLowerCase();
+  const filteredRankData = rankQ ? data.filter(e =>
+    e.name.toLowerCase().includes(rankQ) ||
+    e.types.some(t => t.toLowerCase().includes(rankQ)) ||
+    e.fast.toLowerCase().includes(rankQ) ||
+    e.charge.toLowerCase().includes(rankQ)
+  ) : data;
+
   const tiers = ['S','A','B'];
   const tierLabels = {S: '🥇 S-Tier', A: '🥈 A-Tier', B: '🥉 B-Tier'};
 
   grid.innerHTML = tiers.map(tier => {
-    const entries = data.filter(e => e.tier === tier);
+    const entries = filteredRankData.filter(e => e.tier === tier);
     if (!entries.length) return '';
 
     const rows = entries.map(e => {
@@ -4127,7 +4321,7 @@ const MOVES_DEDUPED = MOVES.filter(m => {
 function setLigaFilter(liga) {
   ligaFilter = liga;
   document.querySelectorAll('#liga-pills .pill').forEach((p, i) => {
-    p.classList.toggle('active', ['all','gl','ul','ml'][i] === liga);
+    p.classList.toggle('active', ['all','gl','ul','ml','fav'][i] === liga);
   });
   renderPokemon();
 }
@@ -4386,6 +4580,64 @@ function buildGenTabs() {
 buildGenTabs();
 renderMoves();
 renderPokemon();
+
+// ── FAVORITES ──────────────────────────────────────────────────────────────
+function toggleFav(num) {
+  if (favPokemon.has(num)) favPokemon.delete(num);
+  else favPokemon.add(num);
+  localStorage.setItem('favPokemon', JSON.stringify([...favPokemon]));
+  renderPokemon();
+}
+
+// ── HOME STATS ──────────────────────────────────────────────────────────────
+function updateHomeStats() {
+  const statPokemon = document.getElementById('stat-pokemon');
+  const statMoves   = document.getElementById('stat-moves');
+  const statRanked  = document.getElementById('stat-ranked');
+  if (statPokemon) statPokemon.textContent = POKEMON.length;
+  if (statMoves)   statMoves.textContent   = MOVES_DEDUPED ? MOVES_DEDUPED.length : MOVES.length;
+  const allRanked = new Set([...Object.values(RANKING_DATA).flat().map(e => e.num)]);
+  if (statRanked)  statRanked.textContent  = allRanked.size;
+}
+updateHomeStats();
+
+// ── DUAL TYPE MATCHER ───────────────────────────────────────────────────────
+function renderDualType() {
+  const t1 = document.getElementById('dual-type-1').value.toLowerCase();
+  const t2 = document.getElementById('dual-type-2').value.toLowerCase();
+  const result = document.getElementById('dual-type-result');
+  if (!t1) { result.classList.add('hidden'); return; }
+  const types = t2 ? [t1, t2] : [t1];
+  const info = getRankingTypeInfo(types);
+  result.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><div class="rank-info-section-title">⚠️ Weak to (takes ×1.6+)</div><div class="rank-badges-list">${info.weaknesses.length ? info.weaknesses.map(t=>typeBadge(t)).join('') : '<span class="rank-none">None</span>'}</div></div>
+      <div><div class="rank-info-section-title">🛡️ Resists</div><div class="rank-badges-list">${info.resistances.length ? info.resistances.map(t=>typeBadge(t)).join('') : '<span class="rank-none">None</span>'}</div></div>
+      <div><div class="rank-info-section-title">✨ Immune to</div><div class="rank-badges-list">${info.immunities.length ? info.immunities.map(t=>typeBadge(t)).join('') : '<span class="rank-none">None</span>'}</div></div>
+      <div><div class="rank-info-section-title">⚔️ Effective against</div><div class="rank-badges-list">${info.strengths.length ? info.strengths.map(t=>typeBadge(t)).join('') : '<span class="rank-none">None</span>'}</div></div>
+    </div>`;
+  result.classList.remove('hidden');
+}
+function initDualTypeSelects() {
+  const typeNames = TYPES.map(t => t.name);
+  ['dual-type-1','dual-type-2'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (sel && sel.options.length === 1) {
+      typeNames.forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n.toLowerCase();
+        opt.textContent = n;
+        sel.appendChild(opt);
+      });
+    }
+  });
+}
+
+// ── BACK TO TOP SCROLL LISTENER ─────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('backToTop');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 300);
+});
 
 // Init theme from localStorage
 (function() {
