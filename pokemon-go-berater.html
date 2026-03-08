@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokémon GO PvP Berater</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f1a;
+    --bg2: #161728;
+    --bg3: #1e2038;
+    --bg4: #252745;
+    --surface: #1a1c30;
+    --border: #2e3158;
+    --border2: #3a3e6a;
+    --text: #e8eaf6;
+    --text2: #9fa3c7;
+    --text3: #6b6f99;
+    --accent: #7c83f5;
+    --accent2: #5a61e8;
+    --gold: #f5c842;
+    --green: #4caf7a;
+    --red: #e05252;
+    --shadow: rgba(0,0,0,0.5);
+
+    --c-normal:   #6b6b6b;
+    --c-fire:     #b83400;
+    --c-water:    #1258b0;
+    --c-grass:    #2a7228;
+    --c-electric: #a07800;
+    --c-ice:      #007d8c;
+    --c-fighting: #a31010;
+    --c-poison:   #5e0a9e;
+    --c-ground:   #7a4200;
+    --c-flying:   #3d5295;
+    --c-psychic:  #9c0d4a;
+    --c-bug:      #467520;
+    --c-rock:     #63432e;
+    --c-ghost:    #3e0f82;
+    --c-dragon:   #1b2880;
+    --c-dark:     #2c363d;
+    --c-steel:    #005545;
+    --c-fairy:    #7a0c44;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* ── NAVIGATION ─────────────────────────────────────────── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(14,15,26,0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 58px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-logo {
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-right: 8px;
+    user-select: none;
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.18s, color 0.18s;
+    user-select: none;
+  }
+  .nav-btn:hover { background: var(--bg3); color: var(--text); }
+  .nav-btn.active {
+    background: var(--accent2);
+    color: #fff;
+  }
+  .nav-btn .icon { font-size: 16px; }
+
+  /* ── MAIN ───────────────────────────────────────────────── */
+  main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  section.tab { display: none; }
+  section.tab.active { display: block; }
+
+  /* ── PAGE HEADER ────────────────────────────────────────── */
+  .page-header { margin-bottom: 24px; }
+  .page-header h1 {
+    font-family: 'Bangers', cursive;
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .page-header p { color: var(--text2); margin-top: 4px; font-size: 14px; }
+
+  /* ── CONTROLS ROW ───────────────────────────────────────── */
+  .controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+    align-items: center;
+  }
+
+  /* ── PILLS ──────────────────────────────────────────────── */
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    padding: 5px 14px;
+    border-radius: 16px;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .pill:hover { background: var(--bg4); color: var(--text); border-color: var(--accent); }
+  .pill.active { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+
+  /* ── SEARCH ─────────────────────────────────────────────── */
+  .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 360px; }
+  .search-wrap .icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 15px;
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 9px 14px 9px 36px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--text3); }
+
+  /* ── RESULT COUNT ───────────────────────────────────────── */
+  .result-count {
+    font-size: 13px;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+  .result-count strong { color: var(--accent); }
+
+  /* ── TABLE ──────────────────────────────────────────────── */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 520px;
+  }
+
+  thead {
+    position: sticky;
+    top: 58px;
+    z-index: 5;
+    background: var(--bg3);
+  }
+
+  thead th {
+    padding: 11px 14px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border2);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  thead th.sortable { cursor: pointer; }
+  thead th.sortable:hover { color: var(--text); }
+  thead th .sort-icon { margin-left: 4px; font-size: 10px; color: var(--accent); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+  tbody tr:hover { background: var(--bg3); }
+
+  tbody td {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  .td-name { font-weight: 600; }
+  .td-power { font-weight: 700; color: var(--text); }
+  .td-pvp { font-weight: 700; }
+  .pvp-pos { color: var(--green); }
+  .pvp-neg { color: var(--red); }
+  .pvp-eq  { color: var(--text2); }
+  .pvp-diff { font-size: 11px; margin-left: 4px; font-weight: 600; }
+  .td-note { font-size: 12px; color: var(--gold); }
+
+  /* ── TYPE BADGE ─────────────────────────────────────────── */
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 9px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+
+  /* ── CATEGORY BADGE ─────────────────────────────────────── */
+  .cat-badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .cat-fast   { background: rgba(164,207,80,0.18); color: #a4cf50; }
+  .cat-charge { background: rgba(124,131,245,0.18); color: #7c83f5; }
+
+  /* ── POKEMON ACCORDION ──────────────────────────────────── */
+  .pokemon-grid { display: flex; flex-direction: column; gap: 8px; }
+
+  .pk-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .pk-card:hover { border-color: var(--border2); }
+  .pk-card.open { border-color: var(--accent2); }
+
+  .pk-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.12s;
+  }
+  .pk-header:hover { background: var(--bg3); }
+
+  .pk-sprite {
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  .pk-title {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pk-name {
+    font-family: 'Bangers', cursive;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .pk-num { color: var(--text3); font-size: 12px; font-weight: 600; }
+  .pk-types { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .pk-chevron {
+    color: var(--text3);
+    font-size: 18px;
+    transition: transform 0.22s;
+    flex-shrink: 0;
+  }
+  .pk-card.open .pk-chevron { transform: rotate(180deg); }
+
+  .pk-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .pk-card.open .pk-body { max-height: 600px; }
+
+  .pk-body-inner {
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pk-moves-section { margin-top: 14px; }
+  .pk-moves-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .pk-move-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .pk-move-row:last-child { border-bottom: none; }
+
+  .pk-move-name { font-size: 14px; font-weight: 500; flex: 1; }
+  .pk-move-pvp { font-size: 13px; font-weight: 700; color: var(--text2); white-space: nowrap; }
+
+  .best-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 7px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(245,200,66,0.18);
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .pk-note {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: rgba(245,200,66,0.08);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: var(--gold);
+  }
+
+  /* ── TYPE GRID ──────────────────────────────────────────── */
+  .types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .type-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .type-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .type-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .type-emoji { font-size: 26px; line-height: 1; }
+  .type-name-big {
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .type-section { margin-bottom: 8px; }
+  .type-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text3);
+    margin-bottom: 5px;
+  }
+  .type-badges-list { display: flex; flex-wrap: wrap; gap: 4px; }
+  .type-none { font-size: 12px; color: var(--text3); font-style: italic; }
+
+  .types-note {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .types-note strong { color: var(--accent); }
+
+  /* ── TEAM TAB ───────────────────────────────────────────── */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .team-card:hover { border-color: var(--accent2); transform: translateY(-3px); }
+
+  .team-sprite {
+    width: 80px;
+    height: 80px;
+    image-rendering: pixelated;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
+
+  .team-name {
+    font-family: 'Bangers', cursive;
+    font-size: 24px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .team-num { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+
+  .team-types { display: flex; gap: 4px; justify-content: center; margin-bottom: 12px; }
+
+  .team-iv {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 10px;
+    padding: 3px 10px;
+    background: rgba(245,200,66,0.1);
+    border-radius: 8px;
+  }
+
+  .team-role {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .team-moves { width: 100%; text-align: left; margin-bottom: 12px; }
+  .team-moves-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+  .team-move-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+  .team-move-row:last-child { border-bottom: none; }
+  .team-move-label { color: var(--text3); font-size: 11px; font-weight: 700; width: 44px; flex-shrink: 0; }
+
+  .team-tip {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(124,131,245,0.08);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    font-size: 12px;
+    color: var(--text2);
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  /* ── SYNERGY TABLE ──────────────────────────────────────── */
+  .synergy-section { margin-top: 8px; }
+  .synergy-title {
+    font-family: 'Bangers', cursive;
+    font-size: 24px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .synergy-subtitle { font-size: 13px; color: var(--text2); margin-bottom: 16px; }
+
+  .synergy-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .synergy-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 400px;
+  }
+  .synergy-table th {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text2);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border2);
+    text-align: left;
+  }
+  .synergy-table td {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .synergy-table tr:last-child td { border-bottom: none; }
+  .synergy-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  .syn-member { font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .syn-mini-sprite { width: 32px; height: 32px; image-rendering: pixelated; object-fit: contain; }
+
+  .syn-cover { display: flex; flex-wrap: wrap; gap: 3px; }
+
+  .strategy-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .strategy-box h3 {
+    font-family: 'Bangers', cursive;
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    color: var(--accent);
+  }
+  .strategy-box p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .strategy-box p:last-child { margin-bottom: 0; }
+  .strategy-box strong { color: var(--text); }
+
+  /* ── EMPTY STATE ────────────────────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+  }
+  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; }
+
+  /* ── SCROLLBAR ──────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ── RESPONSIVE ─────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .page-header h1 { font-size: 28px; }
+    .controls-row { gap: 8px; }
+    .search-wrap { max-width: 100%; }
+    thead th { padding: 9px 10px; font-size: 11px; }
+    tbody td { padding: 8px 10px; font-size: 13px; }
+    .team-grid { grid-template-columns: 1fr; }
+    .types-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 400px) {
+    .nav-logo { font-size: 18px; }
+    main { padding: 16px 12px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">⚔️ PvP Berater</span>
+    <button class="nav-btn active" onclick="show('moves-tab')">
+      <span class="icon">⚡</span> Attacken
+    </button>
+    <button class="nav-btn" onclick="show('pokemon-tab')">
+      <span class="icon">🎯</span> Pokémon
+    </button>
+    <button class="nav-btn" onclick="show('types-tab')">
+      <span class="icon">🔮</span> Typen
+    </button>
+    <button class="nav-btn" onclick="show('team-tab')">
+      <span class="icon">🏆</span> Mein Team
+    </button>
+  </div>
+</nav>
+
+<main>
+  <!-- ── TAB 1: MOVES ──────────────────────────────────────── -->
+  <section id="moves-tab" class="tab active">
+    <div class="page-header">
+      <h1>⚡ Attacken-Datenbank</h1>
+      <p>Alle Schnell- und Lade-Attacken mit PvP-Werten im Vergleich</p>
+    </div>
+
+    <div class="controls-row">
+      <div class="pills" id="mv-pills">
+        <button class="pill active" onclick="setMvCat('all')">Alle</button>
+        <button class="pill" onclick="setMvCat('fast')">⚡ Schnell</button>
+        <button class="pill" onclick="setMvCat('charge')">💥 Ladung</button>
+      </div>
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input class="search-input" id="mv-search" type="text" placeholder="Attacke oder Typ suchen…" oninput="mvSearch=this.value; renderMoves()">
+      </div>
+    </div>
+
+    <div class="result-count" id="mv-count"></div>
+
+    <div class="table-wrap">
+      <table id="moves-table">
+        <thead>
+          <tr>
+            <th class="sortable" onclick="sortMoves('name')">Name <span class="sort-icon" id="s-name"></span></th>
+            <th class="sortable" onclick="sortMoves('type')">Typ <span class="sort-icon" id="s-type"></span></th>
+            <th class="sortable" onclick="sortMoves('cat')">Kategorie <span class="sort-icon" id="s-cat"></span></th>
+            <th class="sortable" onclick="sortMoves('power')">PvE <span class="sort-icon" id="s-power"></span></th>
+            <th class="sortable" onclick="sortMoves('pvp')">PvP-Stärke <span class="sort-icon" id="s-pvp"></span></th>
+            <th>Hinweis</th>
+          </tr>
+        </thead>
+        <tbody id="moves-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── TAB 2: POKEMON ────────────────────────────────────── -->
+  <section id="pokemon-tab" class="tab">
+    <div class="page-header">
+      <h1>🎯 Pokémon-Datenbank</h1>
+      <p>PvP-optimierte Movesets für alle wichtigen Pokémon</p>
+    </div>
+
+    <div class="controls-row">
+      <div class="pills" id="gen-pills">
+        <button class="pill active" onclick="setGen('all')">Alle</button>
+        <button class="pill" onclick="setGen(1)">Gen I</button>
+        <button class="pill" onclick="setGen(2)">Gen II</button>
+        <button class="pill" onclick="setGen(3)">Gen III</button>
+        <button class="pill" onclick="setGen(4)">Gen IV</button>
+        <button class="pill" onclick="setGen(5)">Gen V</button>
+        <button class="pill" onclick="setGen(6)">Gen VI</button>
+        <button class="pill" onclick="setGen(7)">Gen VII</button>
+        <button class="pill" onclick="setGen(8)">Gen VIII</button>
+        <button class="pill" onclick="setGen(9)">Gen IX</button>
+      </div>
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input class="search-input" id="pk-search" type="text" placeholder="Name, #Nr, Typ oder Attacke…" oninput="pkSearch=this.value; renderPokemon()">
+      </div>
+    </div>
+
+    <div class="result-count" id="pk-count"></div>
+    <div class="pokemon-grid" id="pokemon-grid"></div>
+  </section>
+
+  <!-- ── TAB 3: TYPES ──────────────────────────────────────── -->
+  <section id="types-tab" class="tab">
+    <div class="page-header">
+      <h1>🔮 Typ-Übersicht</h1>
+      <p>Stärken, Schwächen und Immunitäten aller 18 Typen in Pokémon GO</p>
+    </div>
+
+    <div class="controls-row">
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input class="search-input" id="type-search" type="text" placeholder="Typ suchen…" oninput="typeSearch=this.value; renderTypes()">
+      </div>
+    </div>
+
+    <div class="types-note">
+      <strong>Pokémon GO Multiplikatoren:</strong>
+      In Pokémon GO gelten vereinfachte Multiplikatoren: Sehr effektiv = <strong>×1.6</strong>,
+      nicht sehr effektiv = <strong>×0.625</strong>, immun/doppelt NVE = <strong>×0.390625</strong>.
+      Doppelte Stärke (dual type) entspricht <strong>×2.56</strong> (×1.6²).
+    </div>
+
+    <div class="types-grid" id="types-grid"></div>
+  </section>
+
+  <!-- ── TAB 4: MY TEAM ────────────────────────────────────── -->
+  <section id="team-tab" class="tab">
+    <div class="page-header">
+      <h1>🏆 Mein Superliga-Team</h1>
+      <p>Optimiertes Team für die Superliga (≤ 1500 WP)</p>
+    </div>
+
+    <div class="team-grid" id="team-grid"></div>
+
+    <div class="synergy-section">
+      <div class="synergy-title">🔗 Team-Synergie</div>
+      <div class="synergy-subtitle">Welches Teammitglied kontert welche Typen?</div>
+
+      <div class="synergy-wrap">
+        <table class="synergy-table">
+          <thead>
+            <tr>
+              <th>Pokémon</th>
+              <th>Konter gegen</th>
+              <th>Schwach gegen</th>
+            </tr>
+          </thead>
+          <tbody id="synergy-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="strategy-box">
+        <h3>📋 Team-Strategie</h3>
+        <p>
+          <strong>Azumarill</strong> ist der Anker des Teams. Mit <em>Bubble + Play Rough + Ice Beam</em> deckt es
+          Fighting-, Dragon-, Dark-, Ground- und Grass-Typen ab. Die optimalen IVs <em>0/15/15</em> erlauben maximale
+          WP unterhalb der 1500er-Grenze mit maximaler Verteidigung und Ausdauer.
+        </p>
+        <p>
+          <strong>Togedemaru</strong> fungiert als Überraschungs-Switch. Mit <em>Thunder Shock + Wild Charge + Fell Stinger</em>
+          trifft es Water-, Flying- und Steel-Typen hart und baut durch Fell Stinger einen Angriffs-Buff auf.
+          Die IVs <em>0/15/15</em> maximieren die Ausdauer bei niedriger CP-Grenze.
+        </p>
+        <p>
+          <strong>Clodsire</strong> ist der Abschluss des Teams. Als Poison/Ground-Typ immun gegen Electric-Attacken
+          deckt es Steel-, Fire- und Rock-Typen ab. Mit <em>Poison Sting + Sludge Bomb + Earthquake</em>
+          ist es ein starker Closer. Die IVs <em>0/13/15</em> erlauben maximale WP unter 1500.
+        </p>
+        <p>
+          <strong>Kernsynergie:</strong> Azumarill verliert gegen Steel und Electric →
+          Clodsire kontert Electric (immun), Togedemaru widersteht Steel-Attacken (eigener Steel-Typ)
+          und erzwingt günstige Matchups durch Fell Stinger-Buff. Clodsire verliert gegen Ground, Water, Psychic →
+          Azumarill und Togedemaru schaffen dort Gegengewichte. Das Team ist breit aufgestellt
+          mit minimalen gemeinsamen Schwächen.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+let mvCat    = 'all';
+let mvSort   = {col: 'name', dir: 1};
+let activeGen = 'all';
+let mvSearch  = '';
+let pkSearch  = '';
+let typeSearch = '';
+
+// ── MOVES DATA ─────────────────────────────────────────────────────────────
+const MOVES = [
+  // FAST MOVES
+  {name:'Mud Shot',       type:'ground',   cat:'fast',   power:5,   pvp:4.5},
+  {name:'Counter',        type:'fighting', cat:'fast',   power:12,  pvp:13.5},
+  {name:'Shadow Claw',    type:'ghost',    cat:'fast',   power:9,   pvp:6},
+  {name:'Bubble',         type:'water',    cat:'fast',   power:12,  pvp:7.5},
+  {name:'Thunder Shock',  type:'electric', cat:'fast',   power:5,   pvp:4.5},
+  {name:'Charm',          type:'fairy',    cat:'fast',   power:16,  pvp:16},
+  {name:'Poison Sting',   type:'poison',   cat:'fast',   power:6,   pvp:3},
+  {name:'Fire Spin',      type:'fire',     cat:'fast',   power:14,  pvp:10},
+  {name:'Vine Whip',      type:'grass',    cat:'fast',   power:7,   pvp:6},
+  {name:'Dragon Breath',  type:'dragon',   cat:'fast',   power:6,   pvp:4},
+  {name:'Lick',           type:'ghost',    cat:'fast',   power:5,   pvp:3},
+  {name:'Ice Shard',      type:'ice',      cat:'fast',   power:12,  pvp:8},
+  {name:'Powder Snow',    type:'ice',      cat:'fast',   power:6,   pvp:5},
+  {name:'Lock-On',        type:'normal',   cat:'fast',   power:1,   pvp:1},
+  {name:'Wing Attack',    type:'flying',   cat:'fast',   power:8,   pvp:7},
+  {name:'Steel Wing',     type:'steel',    cat:'fast',   power:11,  pvp:7},
+  {name:'Bite',           type:'dark',     cat:'fast',   power:6,   pvp:4},
+  {name:'Snarl',          type:'dark',     cat:'fast',   power:5,   pvp:5},
+  {name:'Quick Attack',   type:'normal',   cat:'fast',   power:8,   pvp:5},
+  {name:'Razor Leaf',     type:'grass',    cat:'fast',   power:13,  pvp:10.5},
+  {name:'Water Gun',      type:'water',    cat:'fast',   power:5,   pvp:3},
+  {name:'Ember',          type:'fire',     cat:'fast',   power:10,  pvp:7},
+  {name:'Spark',          type:'electric', cat:'fast',   power:6,   pvp:4.5},
+  {name:'Rock Throw',     type:'rock',     cat:'fast',   power:12,  pvp:8},
+  {name:'Confusion',      type:'psychic',  cat:'fast',   power:20,  pvp:16},
+  {name:'Psycho Cut',     type:'psychic',  cat:'fast',   power:7,   pvp:7},
+  {name:'Hex',            type:'ghost',    cat:'fast',   power:10,  pvp:6.3},
+  {name:'Fury Cutter',    type:'bug',      cat:'fast',   power:3,   pvp:2},
+  {name:'Metal Claw',     type:'steel',    cat:'fast',   power:8,   pvp:5},
+  {name:'Bullet Punch',   type:'steel',    cat:'fast',   power:9,   pvp:5},
+  {name:'Dragon Tail',    type:'dragon',   cat:'fast',   power:15,  pvp:13.5},
+  {name:'Extrasensory',   type:'psychic',  cat:'fast',   power:12,  pvp:8},
+  {name:'Astonish',       type:'ghost',    cat:'fast',   power:8,   pvp:2},
+  {name:'Low Kick',       type:'fighting', cat:'fast',   power:6,   pvp:4},
+  {name:'Smack Down',     type:'rock',     cat:'fast',   power:16,  pvp:12},
+  {name:'Waterfall',      type:'water',    cat:'fast',   power:16,  pvp:12},
+  {name:'Air Slash',      type:'flying',   cat:'fast',   power:14,  pvp:9},
+  {name:'Mud Slap',       type:'ground',   cat:'fast',   power:18,  pvp:11},
+  {name:'Peck',           type:'flying',   cat:'fast',   power:10,  pvp:6},
+  {name:'Poison Jab',     type:'poison',   cat:'fast',   power:12,  pvp:7.5},
+  {name:'Feint Attack',   type:'dark',     cat:'fast',   power:12,  pvp:7},
+  {name:'Ice Fang',       type:'ice',      cat:'fast',   power:12,  pvp:10},
+  {name:'Zen Headbutt',   type:'psychic',  cat:'fast',   power:12,  pvp:8},
+  {name:'Acid',           type:'poison',   cat:'fast',   power:9,   pvp:6.3},
+  {name:'Tackle',         type:'normal',   cat:'fast',   power:5,   pvp:3},
+  {name:'Scratch',        type:'normal',   cat:'fast',   power:6,   pvp:4},
+  {name:'Sucker Punch',   type:'dark',     cat:'fast',   power:7,   pvp:5},
+  {name:'Karate Chop',    type:'fighting', cat:'fast',   power:8,   pvp:6,   note:'(*) Elite TM'},
+  {name:'Thunder Fang',   type:'electric', cat:'fast',   power:12,  pvp:10},
+  {name:'Incinerate',     type:'fire',     cat:'fast',   power:20,  pvp:15.5},
+  {name:'Volt Switch',    type:'electric', cat:'fast',   power:20,  pvp:16},
+  {name:'Frost Breath',   type:'ice',      cat:'fast',   power:9,   pvp:7},
+  {name:'Rock Smash',     type:'fighting', cat:'fast',   power:15,  pvp:9},
+  {name:'Hidden Power',   type:'normal',   cat:'fast',   power:9,   pvp:9},
+  {name:'Cut',            type:'normal',   cat:'fast',   power:12,  pvp:5},
+  {name:'Bullet Seed',    type:'grass',    cat:'fast',   power:8,   pvp:9},
+  {name:'Fire Fang',      type:'fire',     cat:'fast',   power:11,  pvp:8},
+  {name:'Splash',         type:'water',    cat:'fast',   power:0,   pvp:0},
+  {name:'Struggle Bug',   type:'bug',      cat:'fast',   power:15,  pvp:9},
+  // CHARGE MOVES
+  {name:'Play Rough',        type:'fairy',    cat:'charge', power:90,  pvp:90},
+  {name:'Ice Beam',          type:'ice',      cat:'charge', power:90,  pvp:90},
+  {name:'Wild Charge',       type:'electric', cat:'charge', power:90,  pvp:100},
+  {name:'Fell Stinger',      type:'bug',      cat:'charge', power:50,  pvp:35},
+  {name:'Sludge Bomb',       type:'poison',   cat:'charge', power:80,  pvp:80},
+  {name:'Earthquake',        type:'ground',   cat:'charge', power:120, pvp:120},
+  {name:'Hydro Pump',        type:'water',    cat:'charge', power:130, pvp:130},
+  {name:'Surf',              type:'water',    cat:'charge', power:65,  pvp:65},
+  {name:'Aqua Tail',         type:'water',    cat:'charge', power:50,  pvp:50},
+  {name:'Thunderbolt',       type:'electric', cat:'charge', power:80,  pvp:80},
+  {name:'Thunder',           type:'electric', cat:'charge', power:100, pvp:100},
+  {name:'Fire Blast',        type:'fire',     cat:'charge', power:140, pvp:140},
+  {name:'Flamethrower',      type:'fire',     cat:'charge', power:70,  pvp:90},
+  {name:'Overheat',          type:'fire',     cat:'charge', power:160, pvp:130},
+  {name:'Solar Beam',        type:'grass',    cat:'charge', power:180, pvp:150},
+  {name:'Leaf Blade',        type:'grass',    cat:'charge', power:70,  pvp:70},
+  {name:'Power Whip',        type:'grass',    cat:'charge', power:90,  pvp:90},
+  {name:'Frenzy Plant',      type:'grass',    cat:'charge', power:100, pvp:100, note:'(*) Community Day'},
+  {name:'Psychic',           type:'psychic',  cat:'charge', power:90,  pvp:90},
+  {name:'Psyshock',          type:'psychic',  cat:'charge', power:65,  pvp:70},
+  {name:'Shadow Ball',       type:'ghost',    cat:'charge', power:100, pvp:100},
+  {name:'Outrage',           type:'dragon',   cat:'charge', power:110, pvp:110},
+  {name:'Dragon Claw',       type:'dragon',   cat:'charge', power:50,  pvp:50},
+  {name:'Draco Meteor',      type:'dragon',   cat:'charge', power:150, pvp:150},
+  {name:'Close Combat',      type:'fighting', cat:'charge', power:100, pvp:100},
+  {name:'Dynamic Punch',     type:'fighting', cat:'charge', power:90,  pvp:90},
+  {name:'Superpower',        type:'fighting', cat:'charge', power:85,  pvp:85},
+  {name:'Cross Chop',        type:'fighting', cat:'charge', power:50,  pvp:50},
+  {name:'Brick Break',       type:'fighting', cat:'charge', power:45,  pvp:45},
+  {name:'Crunch',            type:'dark',     cat:'charge', power:70,  pvp:70},
+  {name:'Foul Play',         type:'dark',     cat:'charge', power:70,  pvp:70},
+  {name:'Dark Pulse',        type:'dark',     cat:'charge', power:80,  pvp:80},
+  {name:'Rock Slide',        type:'rock',     cat:'charge', power:75,  pvp:80},
+  {name:'Stone Edge',        type:'rock',     cat:'charge', power:100, pvp:100},
+  {name:'Rock Blast',        type:'rock',     cat:'charge', power:50,  pvp:50},
+  {name:'Dig',               type:'ground',   cat:'charge', power:100, pvp:80},
+  {name:'Mud Bomb',          type:'ground',   cat:'charge', power:55,  pvp:55},
+  {name:'Bulldoze',          type:'ground',   cat:'charge', power:80,  pvp:80},
+  {name:'Poison Fang',       type:'poison',   cat:'charge', power:35,  pvp:40},
+  {name:'Gunk Shot',         type:'poison',   cat:'charge', power:130, pvp:130},
+  {name:'Sludge Wave',       type:'poison',   cat:'charge', power:110, pvp:110},
+  {name:'Iron Head',         type:'steel',    cat:'charge', power:60,  pvp:70},
+  {name:'Flash Cannon',      type:'steel',    cat:'charge', power:100, pvp:110},
+  {name:'Blizzard',          type:'ice',      cat:'charge', power:130, pvp:130},
+  {name:'Avalanche',         type:'ice',      cat:'charge', power:90,  pvp:90},
+  {name:'Weather Ball Ice',  type:'ice',      cat:'charge', power:55,  pvp:55},
+  {name:'Weather Ball Fire', type:'fire',     cat:'charge', power:55,  pvp:55},
+  {name:'Weather Ball Water',type:'water',    cat:'charge', power:55,  pvp:55},
+  {name:'Moonblast',         type:'fairy',    cat:'charge', power:130, pvp:130},
+  {name:'Dazzling Gleam',    type:'fairy',    cat:'charge', power:100, pvp:110},
+  {name:'Draining Kiss',     type:'fairy',    cat:'charge', power:60,  pvp:60},
+  {name:'Aerial Ace',        type:'flying',   cat:'charge', power:55,  pvp:55},
+  {name:'Hurricane',         type:'flying',   cat:'charge', power:110, pvp:110},
+  {name:'Brave Bird',        type:'flying',   cat:'charge', power:130, pvp:130},
+  {name:'Bug Buzz',          type:'bug',      cat:'charge', power:90,  pvp:100},
+  {name:'X-Scissor',         type:'bug',      cat:'charge', power:45,  pvp:45},
+  {name:'Signal Beam',       type:'bug',      cat:'charge', power:75,  pvp:75},
+  {name:'Shadow Punch',      type:'ghost',    cat:'charge', power:40,  pvp:40},
+  {name:'Energy Ball',       type:'grass',    cat:'charge', power:90,  pvp:90},
+  {name:'Seed Bomb',         type:'grass',    cat:'charge', power:55,  pvp:55},
+  {name:'Ice Punch',         type:'ice',      cat:'charge', power:50,  pvp:55},
+  {name:'Hyper Beam',        type:'normal',   cat:'charge', power:150, pvp:150},
+  {name:'Body Slam',         type:'normal',   cat:'charge', power:50,  pvp:60},
+  {name:'Return',            type:'normal',   cat:'charge', power:35,  pvp:35, note:'(*) Purified'},
+  {name:'Swift',             type:'normal',   cat:'charge', power:60,  pvp:60},
+  {name:'Frustration',       type:'normal',   cat:'charge', power:10,  pvp:10, note:'(*) Shadow'},
+  {name:'Psycho Boost',      type:'psychic',  cat:'charge', power:70,  pvp:70},
+  {name:'Bubble Beam',       type:'water',    cat:'charge', power:45,  pvp:45},
+  {name:'Scald',             type:'water',    cat:'charge', power:80,  pvp:80},
+  {name:'Liquidation',       type:'water',    cat:'charge', power:70,  pvp:70},
+  {name:'Flame Charge',      type:'fire',     cat:'charge', power:70,  pvp:70},
+  {name:'Blast Burn',        type:'fire',     cat:'charge', power:110, pvp:110, note:'(*) Community Day'},
+  {name:'Thunder Punch',     type:'electric', cat:'charge', power:45,  pvp:45},
+  {name:'Discharge',         type:'electric', cat:'charge', power:65,  pvp:65},
+  {name:'Zap Cannon',        type:'electric', cat:'charge', power:140, pvp:140},
+  {name:'Power-Up Punch',    type:'fighting', cat:'charge', power:20,  pvp:40},
+  {name:'Focus Blast',       type:'fighting', cat:'charge', power:140, pvp:140},
+  {name:'Sacred Sword',      type:'fighting', cat:'charge', power:55,  pvp:55},
+  {name:'Grass Knot',        type:'grass',    cat:'charge', power:90,  pvp:90},
+  {name:'Petal Blizzard',    type:'grass',    cat:'charge', power:110, pvp:110},
+  {name:'Razor Shell',       type:'water',    cat:'charge', power:65,  pvp:65},
+  {name:'Muddy Water',       type:'water',    cat:'charge', power:35,  pvp:35},
+  {name:'Water Pulse',       type:'water',    cat:'charge', power:70,  pvp:70},
+  {name:'Night Slash',       type:'dark',     cat:'charge', power:50,  pvp:50},
+  {name:'Payback',           type:'dark',     cat:'charge', power:100, pvp:100},
+  {name:'Lunge',             type:'bug',      cat:'charge', power:60,  pvp:60},
+  {name:'Night Shade',       type:'ghost',    cat:'charge', power:60,  pvp:60},
+  {name:'Shadow Sneak',      type:'ghost',    cat:'charge', power:50,  pvp:50},
+  {name:'Poltergeist',       type:'ghost',    cat:'charge', power:140, pvp:140},
+  {name:'Triple Axel',       type:'ice',      cat:'charge', power:60,  pvp:60},
+  {name:'Icicle Spear',      type:'ice',      cat:'charge', power:60,  pvp:60},
+  {name:'Skull Bash',        type:'normal',   cat:'charge', power:130, pvp:130},
+  {name:'Mirror Coat',       type:'psychic',  cat:'charge', power:60,  pvp:60},
+  {name:'Gyro Ball',         type:'steel',    cat:'charge', power:80,  pvp:80},
+  {name:'Hydro Cannon',      type:'water',    cat:'charge', power:90,  pvp:90, note:'(*) Community Day'},
+  {name:'Sky Attack',        type:'flying',   cat:'charge', power:70,  pvp:70, note:'(*) Elite TM'},
+  {name:'Dragon Pulse',      type:'dragon',   cat:'charge', power:90,  pvp:90},
+  {name:'Ominous Wind',      type:'ghost',    cat:'charge', power:50,  pvp:35},
+  {name:'Ancient Power',     type:'rock',     cat:'charge', power:70,  pvp:45},
+  {name:'Aura Sphere',       type:'fighting', cat:'charge', power:90,  pvp:90, note:'(*) Community Day'},
+  {name:'Brutal Swing',      type:'dark',     cat:'charge', power:65,  pvp:65},
+  {name:'Earth Power',       type:'ground',   cat:'charge', power:100, pvp:90},
+  {name:'Night Daze',        type:'dark',     cat:'charge', power:85,  pvp:80},
+  {name:'Hyper Voice',       type:'normal',   cat:'charge', power:90,  pvp:90},
+];
+
+// ── POKEMON DATA ───────────────────────────────────────────────────────────
+const POKEMON = [
+  // Gen 1
+  {num:3,   name:'Venusaur',   gen:1, types:['grass','poison'],    fast:['Vine Whip','Razor Leaf'],            charge:['Frenzy Plant*','Solar Beam','Sludge Bomb','Petal Blizzard'],      pvp:{f:'Vine Whip',      c1:'Frenzy Plant*',   c2:'Sludge Bomb'}},
+  {num:6,   name:'Charizard',  gen:1, types:['fire','flying'],     fast:['Fire Spin','Dragon Breath','Ember'], charge:['Blast Burn*','Overheat','Dragon Claw','Fire Blast'],              pvp:{f:'Dragon Breath',  c1:'Blast Burn*',     c2:'Dragon Claw'}},
+  {num:9,   name:'Blastoise',  gen:1, types:['water'],             fast:['Water Gun','Bite'],                  charge:['Hydro Pump','Ice Beam','Flash Cannon'],                           pvp:{f:'Water Gun',      c1:'Ice Beam',        c2:'Hydro Pump'}},
+  {num:65,  name:'Alakazam',   gen:1, types:['psychic'],           fast:['Confusion','Psycho Cut'],            charge:['Psychic','Shadow Ball','Focus Blast'],                            pvp:{f:'Psycho Cut',     c1:'Shadow Ball',     c2:'Psychic'}},
+  {num:68,  name:'Machamp',    gen:1, types:['fighting'],          fast:['Counter','Karate Chop*'],            charge:['Dynamic Punch','Cross Chop','Close Combat','Superpower'],         pvp:{f:'Counter',        c1:'Cross Chop',      c2:'Close Combat'}},
+  {num:94,  name:'Gengar',     gen:1, types:['ghost','poison'],    fast:['Shadow Claw','Lick'],                charge:['Shadow Ball','Sludge Bomb','Shadow Punch','Dark Pulse'],          pvp:{f:'Shadow Claw',    c1:'Shadow Ball',     c2:'Shadow Punch'}},
+  {num:131, name:'Lapras',     gen:1, types:['water','ice'],       fast:['Ice Shard','Water Gun'],             charge:['Surf','Ice Beam','Blizzard'],                                     pvp:{f:'Ice Shard',      c1:'Surf',            c2:'Ice Beam'}},
+  {num:143, name:'Snorlax',    gen:1, types:['normal'],            fast:['Lick','Tackle'],                     charge:['Body Slam','Superpower','Outrage'],                               pvp:{f:'Lick',           c1:'Body Slam',       c2:'Superpower'}},
+  {num:149, name:'Dragonite',  gen:1, types:['dragon','flying'],   fast:['Dragon Tail','Steel Wing'],          charge:['Draco Meteor','Hurricane','Outrage','Dragon Claw'],               pvp:{f:'Dragon Tail',    c1:'Dragon Claw',     c2:'Draco Meteor'}},
+  // Gen 2
+  {num:154, name:'Meganium',   gen:2, types:['grass'],             fast:['Vine Whip','Razor Leaf'],            charge:['Frenzy Plant*','Petal Blizzard','Earthquake'],                    pvp:{f:'Vine Whip',      c1:'Frenzy Plant*',   c2:'Earthquake'},     note:'Stark in Superliga'},
+  {num:160, name:'Feraligatr', gen:2, types:['water'],             fast:['Waterfall','Water Gun'],             charge:['Hydro Cannon*','Ice Beam','Crunch'],                              pvp:{f:'Waterfall',      c1:'Hydro Cannon*',   c2:'Ice Beam'}},
+  {num:184, name:'Azumarill',  gen:2, types:['water','fairy'],     fast:['Bubble','Rock Smash'],               charge:['Play Rough','Ice Beam','Hydro Pump'],                             pvp:{f:'Bubble',         c1:'Play Rough',      c2:'Ice Beam'},       note:'🏆 Superliga-Staple · 0/15/15 IVs'},
+  {num:196, name:'Espeon',     gen:2, types:['psychic'],           fast:['Confusion','Zen Headbutt'],          charge:['Psyshock','Shadow Ball','Psychic'],                               pvp:{f:'Confusion',      c1:'Psyshock',        c2:'Shadow Ball'}},
+  {num:197, name:'Umbreon',    gen:2, types:['dark'],              fast:['Snarl','Feint Attack'],              charge:['Foul Play','Dark Pulse','Psychic'],                               pvp:{f:'Snarl',          c1:'Foul Play',       c2:'Psychic'},        note:'Top Superliga-Pick'},
+  {num:202, name:'Wobbuffet',  gen:2, types:['psychic'],           fast:['Counter','Splash'],                  charge:['Mirror Coat','Return'],                                           pvp:{f:'Counter',        c1:'Mirror Coat',     c2:'Return'}},
+  {num:213, name:'Shuckle',    gen:2, types:['bug','rock'],        fast:['Rock Throw','Struggle Bug'],         charge:['Stone Edge','Rock Blast','Gyro Ball'],                            pvp:{f:'Rock Throw',     c1:'Stone Edge',      c2:'Rock Blast'}},
+  {num:221, name:'Piloswine',  gen:2, types:['ice','ground'],      fast:['Ice Shard','Powder Snow'],           charge:['Avalanche','Bulldoze','Stone Edge'],                              pvp:{f:'Powder Snow',    c1:'Avalanche',       c2:'Bulldoze'}},
+  // Gen 3
+  {num:260, name:'Swampert',   gen:3, types:['water','ground'],    fast:['Mud Shot','Water Gun'],              charge:['Hydro Cannon*','Surf','Earthquake','Sludge Wave'],                pvp:{f:'Mud Shot',       c1:'Hydro Cannon*',   c2:'Earthquake'}},
+  {num:257, name:'Blaziken',   gen:3, types:['fire','fighting'],   fast:['Counter','Fire Spin'],               charge:['Blast Burn*','Focus Blast','Stone Edge','Superpower'],            pvp:{f:'Counter',        c1:'Blast Burn*',     c2:'Stone Edge'}},
+  {num:282, name:'Gardevoir',  gen:3, types:['psychic','fairy'],   fast:['Charm','Confusion'],                 charge:['Dazzling Gleam','Psychic','Shadow Ball'],                         pvp:{f:'Charm',          c1:'Dazzling Gleam',  c2:'Shadow Ball'}},
+  {num:308, name:'Medicham',   gen:3, types:['fighting','psychic'],fast:['Counter','Psycho Cut'],              charge:['Power-Up Punch','Ice Punch','Dynamic Punch'],                     pvp:{f:'Counter',        c1:'Power-Up Punch',  c2:'Ice Punch'},      note:'Meta-Pick in Superliga'},
+  {num:334, name:'Altaria',    gen:3, types:['dragon','flying'],   fast:['Dragon Breath','Peck'],              charge:['Dazzling Gleam','Sky Attack','Dragon Pulse'],                     pvp:{f:'Dragon Breath',  c1:'Dazzling Gleam',  c2:'Sky Attack'}},
+  {num:350, name:'Milotic',    gen:3, types:['water'],             fast:['Waterfall','Dragon Tail'],           charge:['Surf','Blizzard','Hyper Beam'],                                   pvp:{f:'Waterfall',      c1:'Surf',            c2:'Blizzard'}},
+  {num:379, name:'Registeel',  gen:3, types:['steel'],             fast:['Metal Claw','Lock-On'],              charge:['Flash Cannon','Focus Blast','Hyper Beam'],                        pvp:{f:'Lock-On',        c1:'Flash Cannon',    c2:'Focus Blast'},    note:'Top Superliga-Pick'},
+  // Gen 4
+  {num:448, name:'Lucario',    gen:4, types:['fighting','steel'],  fast:['Counter','Bullet Punch'],            charge:['Aura Sphere','Power-Up Punch','Close Combat'],                    pvp:{f:'Counter',        c1:'Aura Sphere',     c2:'Power-Up Punch'}},
+  {num:454, name:'Toxicroak',  gen:4, types:['poison','fighting'], fast:['Counter','Poison Jab'],              charge:['Dynamic Punch','Mud Bomb','Sludge Bomb'],                         pvp:{f:'Counter',        c1:'Dynamic Punch',   c2:'Mud Bomb'}},
+  {num:460, name:'Abomasnow',  gen:4, types:['grass','ice'],       fast:['Razor Leaf','Powder Snow'],          charge:['Weather Ball Ice','Energy Ball','Blizzard','Outrage'],            pvp:{f:'Powder Snow',    c1:'Weather Ball Ice',c2:'Energy Ball'},   note:'Gut in Superliga (unter 1500 WP)'},
+  {num:468, name:'Togekiss',   gen:4, types:['fairy','flying'],    fast:['Charm','Air Slash'],                 charge:['Aerial Ace','Ancient Power','Dazzling Gleam','Flamethrower'],    pvp:{f:'Charm',          c1:'Aerial Ace',      c2:'Flamethrower'}},
+  {num:475, name:'Gallade',    gen:4, types:['psychic','fighting'],fast:['Confusion','Low Kick'],              charge:['Close Combat','Leaf Blade','Psychic'],                            pvp:{f:'Confusion',      c1:'Close Combat',    c2:'Leaf Blade'}},
+  {num:487, name:'Giratina',   gen:4, types:['ghost','dragon'],    fast:['Shadow Claw','Dragon Tail'],         charge:['Shadow Ball','Ominous Wind','Dragon Claw'],                       pvp:{f:'Shadow Claw',    c1:'Shadow Ball',     c2:'Dragon Claw'},    note:'Altered Form'},
+  // Gen 5
+  {num:534, name:'Conkeldurr', gen:5, types:['fighting'],          fast:['Counter','Rock Smash'],              charge:['Dynamic Punch','Stone Edge','Brutal Swing'],                      pvp:{f:'Counter',        c1:'Dynamic Punch',   c2:'Stone Edge'}},
+  {num:537, name:'Seismitoad', gen:5, types:['water','ground'],    fast:['Mud Shot','Water Gun'],              charge:['Earth Power','Muddy Water','Sludge Bomb'],                        pvp:{f:'Mud Shot',       c1:'Earth Power',     c2:'Sludge Bomb'}},
+  {num:571, name:'Zoroark',    gen:5, types:['dark'],              fast:['Shadow Claw','Snarl'],               charge:['Foul Play','Night Daze','Flamethrower'],                          pvp:{f:'Snarl',          c1:'Foul Play',       c2:'Flamethrower'}},
+  {num:596, name:'Galvantula', gen:5, types:['bug','electric'],    fast:['Volt Switch','Fury Cutter'],         charge:['Discharge','Lunge','Bug Buzz'],                                   pvp:{f:'Volt Switch',    c1:'Discharge',       c2:'Lunge'}},
+  {num:618, name:'Stunfisk',   gen:5, types:['ground','electric'], fast:['Mud Shot','Spark'],                  charge:['Discharge','Mud Bomb','Thunderbolt'],                             pvp:{f:'Mud Shot',       c1:'Discharge',       c2:'Mud Bomb'},       note:'Galarian Form besser in PvP'},
+  {num:621, name:'Druddigon',  gen:5, types:['dragon'],            fast:['Dragon Tail','Bite'],                charge:['Dragon Claw','Night Slash','Outrage'],                            pvp:{f:'Dragon Tail',    c1:'Dragon Claw',     c2:'Night Slash'}},
+  {num:635, name:'Hydreigon',  gen:5, types:['dark','dragon'],     fast:['Bite','Dragon Breath'],              charge:['Dark Pulse','Dragon Pulse','Hyper Voice'],                        pvp:{f:'Dragon Breath',  c1:'Dark Pulse',      c2:'Hyper Voice'}},
+  // Gen 6
+  {num:658, name:'Greninja',   gen:6, types:['water','dark'],      fast:['Bubble','Feint Attack'],             charge:['Surf','Night Slash','Hydro Pump'],                                pvp:{f:'Bubble',         c1:'Surf',            c2:'Night Slash'}},
+  {num:663, name:'Talonflame', gen:6, types:['fire','flying'],     fast:['Incinerate','Peck'],                 charge:['Flame Charge','Brave Bird','Aerial Ace'],                         pvp:{f:'Incinerate',     c1:'Flame Charge',    c2:'Brave Bird'}},
+  {num:700, name:'Sylveon',    gen:6, types:['fairy'],             fast:['Charm','Quick Attack'],              charge:['Moonblast','Dazzling Gleam','Psyshock'],                          pvp:{f:'Charm',          c1:'Moonblast',       c2:'Psyshock'}},
+  {num:706, name:'Goodra',     gen:6, types:['dragon'],            fast:['Dragon Breath','Water Gun'],         charge:['Draco Meteor','Muddy Water','Power Whip'],                        pvp:{f:'Dragon Breath',  c1:'Draco Meteor',    c2:'Muddy Water'}},
+  // Gen 7
+  {num:730, name:'Primarina',  gen:7, types:['water','fairy'],     fast:['Charm','Water Gun'],                 charge:['Moonblast','Hydro Pump','Psychic'],                               pvp:{f:'Charm',          c1:'Moonblast',       c2:'Hydro Pump'}},
+  {num:745, name:'Lycanroc',   gen:7, types:['rock'],              fast:['Rock Throw','Sucker Punch'],         charge:['Stone Edge','Rock Blast','Crunch'],                               pvp:{f:'Sucker Punch',   c1:'Stone Edge',      c2:'Crunch'}},
+  {num:758, name:'Salazzle',   gen:7, types:['poison','fire'],     fast:['Poison Jab','Fire Spin'],            charge:['Sludge Wave','Flamethrower','Poison Fang'],                       pvp:{f:'Poison Jab',     c1:'Sludge Wave',     c2:'Poison Fang'}},
+  {num:776, name:'Turtonator',  gen:7, types:['fire','dragon'],    fast:['Incinerate','Dragon Tail'],          charge:['Overheat','Dragon Pulse','Flash Cannon'],                         pvp:{f:'Incinerate',     c1:'Overheat',        c2:'Dragon Pulse'}},
+  {num:777, name:'Togedemaru', gen:7, types:['electric','steel'],  fast:['Thunder Shock','Spark'],             charge:['Wild Charge','Fell Stinger','Discharge'],                         pvp:{f:'Thunder Shock',  c1:'Wild Charge',     c2:'Fell Stinger'},   note:'🏆 Superliga-Switch · 0/15/15 IVs'},
+  {num:788, name:'Tapu Fini',  gen:7, types:['water','fairy'],     fast:['Water Gun','Hidden Power'],          charge:['Moonblast','Surf','Ice Beam'],                                    pvp:{f:'Water Gun',      c1:'Moonblast',       c2:'Ice Beam'}},
+  {num:809, name:'Melmetal',   gen:7, types:['steel'],             fast:['Thunder Shock','Rock Smash'],        charge:['Thunderbolt','Rock Slide','Flash Cannon','Superpower'],           pvp:{f:'Thunder Shock',  c1:'Thunderbolt',     c2:'Superpower'},     note:'Hyperliga/Ultraliga Top-Pick'},
+  // Gen 8
+  {num:818, name:'Inteleon',   gen:8, types:['water'],             fast:['Water Gun','Feint Attack'],          charge:['Hydro Pump','Blizzard','Night Slash'],                            pvp:{f:'Water Gun',      c1:'Hydro Pump',      c2:'Blizzard'}},
+  {num:830, name:'Eldegoss',   gen:8, types:['grass'],             fast:['Razor Leaf','Bullet Seed'],          charge:['Energy Ball','Leaf Blade','Hyper Beam'],                          pvp:{f:'Bullet Seed',    c1:'Energy Ball',     c2:'Leaf Blade'}},
+  {num:849, name:'Toxtricity', gen:8, types:['electric','poison'], fast:['Spark','Poison Jab'],                charge:['Wild Charge','Sludge Bomb','Discharge'],                          pvp:{f:'Spark',          c1:'Wild Charge',     c2:'Sludge Bomb'}},
+  {num:869, name:'Alcremie',   gen:8, types:['fairy'],             fast:['Charm','Quick Attack'],              charge:['Moonblast','Dazzling Gleam','Energy Ball'],                       pvp:{f:'Charm',          c1:'Moonblast',       c2:'Dazzling Gleam'}},
+  {num:879, name:'Copperajah', gen:8, types:['steel'],             fast:['Bullet Punch','Metal Claw'],         charge:['Iron Head','Body Slam','Bulldoze'],                               pvp:{f:'Bullet Punch',   c1:'Iron Head',       c2:'Body Slam'}},
+  {num:884, name:'Duraludon',  gen:8, types:['steel','dragon'],    fast:['Dragon Tail','Metal Claw'],          charge:['Dragon Claw','Flash Cannon','Iron Head'],                         pvp:{f:'Dragon Tail',    c1:'Dragon Claw',     c2:'Flash Cannon'}},
+  // Gen 9
+  {num:908, name:'Clodsire',   gen:9, types:['poison','ground'],   fast:['Poison Sting','Acid'],               charge:['Sludge Bomb','Earthquake','Mud Bomb'],                            pvp:{f:'Poison Sting',   c1:'Sludge Bomb',     c2:'Earthquake'},     note:'🏆 Superliga-Closer · 0/13/15 IVs'},
+  {num:914, name:'Tinkaton',   gen:9, types:['fairy','steel'],     fast:['Charm','Metal Claw'],                charge:['Play Rough','Flash Cannon','Rock Blast'],                         pvp:{f:'Charm',          c1:'Play Rough',      c2:'Rock Blast'}},
+  {num:918, name:'Kilowattrel',gen:9, types:['electric','flying'], fast:['Volt Switch','Air Slash'],           charge:['Discharge','Hurricane','Aerial Ace'],                             pvp:{f:'Volt Switch',    c1:'Discharge',       c2:'Hurricane'}},
+  {num:925, name:'Mabosstiff', gen:9, types:['dark'],              fast:['Bite','Snarl'],                      charge:['Crunch','Payback','Outrage'],                                     pvp:{f:'Snarl',          c1:'Crunch',          c2:'Payback'}},
+  {num:976, name:'Dondozo',    gen:9, types:['water'],             fast:['Waterfall','Water Gun'],             charge:['Surf','Body Slam','Earthquake'],                                  pvp:{f:'Waterfall',      c1:'Surf',            c2:'Earthquake'}},
+];
+
+// ── TYPES DATA ─────────────────────────────────────────────────────────────
+const TYPES = [
+  {name:'Normal',   emoji:'⬜', color:'#6b6b6b', strong:[],                                          weak:['Fighting'],                         immune:['Ghost']},
+  {name:'Fire',     emoji:'🔥', color:'#b83400', strong:['Grass','Ice','Bug','Steel'],                weak:['Water','Ground','Rock'],             immune:[]},
+  {name:'Water',    emoji:'💧', color:'#1258b0', strong:['Fire','Ground','Rock'],                     weak:['Grass','Electric'],                 immune:[]},
+  {name:'Grass',    emoji:'🌿', color:'#2a7228', strong:['Water','Ground','Rock'],                    weak:['Fire','Ice','Poison','Flying','Bug'],immune:[]},
+  {name:'Electric', emoji:'⚡', color:'#a07800', strong:['Water','Flying'],                           weak:['Ground'],                           immune:[]},
+  {name:'Ice',      emoji:'❄️', color:'#007d8c', strong:['Grass','Ground','Flying','Dragon'],         weak:['Fire','Fighting','Rock','Steel'],    immune:[]},
+  {name:'Fighting', emoji:'🥊', color:'#a31010', strong:['Normal','Ice','Rock','Dark','Steel'],       weak:['Flying','Psychic','Fairy'],          immune:[]},
+  {name:'Poison',   emoji:'☠️', color:'#5e0a9e', strong:['Grass','Fairy'],                           weak:['Ground','Psychic'],                 immune:[]},
+  {name:'Ground',   emoji:'⛰️', color:'#7a4200', strong:['Fire','Electric','Poison','Rock','Steel'],  weak:['Water','Grass','Ice'],               immune:['Electric']},
+  {name:'Flying',   emoji:'🦅', color:'#3d5295', strong:['Grass','Fighting','Bug'],                   weak:['Rock','Electric','Ice'],             immune:['Ground']},
+  {name:'Psychic',  emoji:'🔮', color:'#9c0d4a', strong:['Fighting','Poison'],                        weak:['Bug','Ghost','Dark'],               immune:[]},
+  {name:'Bug',      emoji:'🐛', color:'#467520', strong:['Grass','Psychic','Dark'],                   weak:['Fire','Flying','Rock'],              immune:[]},
+  {name:'Rock',     emoji:'🪨', color:'#63432e', strong:['Fire','Ice','Flying','Bug'],                weak:['Water','Grass','Fighting','Ground','Steel'],immune:[]},
+  {name:'Ghost',    emoji:'👻', color:'#3e0f82', strong:['Psychic','Ghost'],                          weak:['Dark'],                             immune:['Normal','Fighting']},
+  {name:'Dragon',   emoji:'🐉', color:'#1b2880', strong:['Dragon'],                                   weak:['Ice','Dragon','Fairy'],             immune:[]},
+  {name:'Dark',     emoji:'🌑', color:'#2c363d', strong:['Psychic','Ghost'],                          weak:['Fighting','Bug','Fairy'],           immune:[]},
+  {name:'Steel',    emoji:'⚙️', color:'#005545', strong:['Ice','Rock','Fairy'],                       weak:['Fire','Fighting','Ground'],          immune:['Poison']},
+  {name:'Fairy',    emoji:'✨', color:'#7a0c44', strong:['Fighting','Dragon','Dark'],                  weak:['Poison','Steel'],                   immune:[]},
+];
+
+// ── MY TEAM DATA ───────────────────────────────────────────────────────────
+const MY_TEAM = [
+  {
+    num: 184,
+    name: 'Azumarill',
+    types: ['water','fairy'],
+    ivs: '0 / 15 / 15',
+    role: 'Anker / Opener',
+    tip: 'Eröffnet gegen Dark-, Dragon- und Fighting-Typen. Bubble generiert schnell Energie für Play Rough. Mit Ice Beam trifft es Grass- und Dragon-Konter.'
+  },
+  {
+    num: 777,
+    name: 'Togedemaru',
+    types: ['electric','steel'],
+    ivs: '0 / 15 / 15',
+    role: 'Switch / Überraschung',
+    tip: 'Ideal als zweiter Switch. Fell Stinger baut Angriffs-Buff auf. Immun gegen Poison-Typen durch Steel-Typ. Konter Water- und Flying-Matchups für Azumarill.'
+  },
+  {
+    num: 908,
+    name: 'Clodsire',
+    types: ['poison','ground'],
+    ivs: '0 / 13 / 15',
+    role: 'Closer / Abschluss',
+    tip: 'Immun gegen Electric-Attacken. Sludge Bomb + Earthquake bieten breite Abdeckung. Schlägt Steel- und Poison-Konter. Stark als letztes Pokémon im Kampf.'
+  }
+];
+
+// ── HELPER FUNCTIONS ───────────────────────────────────────────────────────
+function getTypeColor(typeName) {
+  const map = {
+    normal:'#6b6b6b', fire:'#b83400', water:'#1258b0', grass:'#2a7228',
+    electric:'#a07800', ice:'#007d8c', fighting:'#a31010', poison:'#5e0a9e',
+    ground:'#7a4200', flying:'#3d5295', psychic:'#9c0d4a', bug:'#467520',
+    rock:'#63432e', ghost:'#3e0f82', dragon:'#1b2880', dark:'#2c363d',
+    steel:'#005545', fairy:'#7a0c44'
+  };
+  return map[(typeName || '').toLowerCase()] || '#444';
+}
+
+function typeBadge(typeName) {
+  const color = getTypeColor(typeName);
+  const cap = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+  return `<span class="type-badge" style="background:${color}">${cap}</span>`;
+}
+
+function getMoveData(moveName) {
+  const cleanName = moveName.replace(/\*/g, '').trim();
+  return MOVES.find(m => m.name.toLowerCase() === cleanName.toLowerCase()) || null;
+}
+
+function pvpDiffHtml(pvp, power) {
+  if (pvp === power) return `<span class="pvp-eq">${pvp}</span>`;
+  const diff = pvp - power;
+  if (diff > 0) return `<span class="pvp-pos">${pvp}</span><span class="pvp-diff pvp-pos">(+${diff})</span>`;
+  return `<span class="pvp-neg">${pvp}</span><span class="pvp-diff pvp-neg">(${diff})</span>`;
+}
+
+function show(tabId) {
+  document.querySelectorAll('section.tab').forEach(s => s.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const tabIndex = {
+    'moves-tab': 0,
+    'pokemon-tab': 1,
+    'types-tab': 2,
+    'team-tab': 3
+  };
+  const idx = tabIndex[tabId];
+  if (idx !== undefined) {
+    document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  }
+  if (tabId === 'moves-tab')   renderMoves();
+  if (tabId === 'pokemon-tab') renderPokemon();
+  if (tabId === 'types-tab')   renderTypes();
+  if (tabId === 'team-tab')    renderTeam();
+}
+
+function toggleCard(num) {
+  document.getElementById('pc' + num).classList.toggle('open');
+}
+
+// ── TAB 1: MOVES ───────────────────────────────────────────────────────────
+function setMvCat(cat) {
+  mvCat = cat;
+  document.querySelectorAll('#mv-pills .pill').forEach((p, i) => {
+    p.classList.toggle('active', ['all','fast','charge'][i] === cat);
+  });
+  renderMoves();
+}
+
+function sortMoves(col) {
+  if (mvSort.col === col) {
+    mvSort.dir *= -1;
+  } else {
+    mvSort.col = col;
+    mvSort.dir = 1;
+  }
+  renderMoves();
+}
+
+function renderMoves() {
+  // Use the pre-deduplicated array (initialized at startup)
+  let data = MOVES_DEDUPED.slice();
+
+  // Filter by category
+  if (mvCat !== 'all') data = data.filter(m => m.cat === mvCat);
+
+  // Filter by search
+  const q = mvSearch.trim().toLowerCase();
+  if (q) {
+    data = data.filter(m =>
+      m.name.toLowerCase().includes(q) ||
+      m.type.toLowerCase().includes(q) ||
+      (m.cat === 'fast' ? 'schnell' : 'ladung').includes(q)
+    );
+  }
+
+  // Sort
+  data.sort((a, b) => {
+    let av = a[mvSort.col], bv = b[mvSort.col];
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    if (av < bv) return -1 * mvSort.dir;
+    if (av > bv) return  1 * mvSort.dir;
+    return 0;
+  });
+
+  // Update sort icons
+  ['name','type','cat','power','pvp'].forEach(col => {
+    const el = document.getElementById('s-' + col);
+    if (!el) return;
+    if (mvSort.col === col) {
+      el.textContent = mvSort.dir === 1 ? '▲' : '▼';
+    } else {
+      el.textContent = '';
+    }
+  });
+
+  // Count
+  document.getElementById('mv-count').innerHTML = `<strong>${data.length}</strong> Attacken`;
+
+  // Render rows
+  const tbody = document.getElementById('moves-tbody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="emoji">🔍</div><p>Keine Attacken gefunden</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(m => {
+    const catBadge = m.cat === 'fast'
+      ? `<span class="cat-badge cat-fast">Schnell</span>`
+      : `<span class="cat-badge cat-charge">Ladung</span>`;
+    const pvpHtml = pvpDiffHtml(m.pvp, m.power);
+    const noteHtml = m.note ? `<span class="td-note">${m.note}</span>` : '—';
+    return `
+    <tr>
+      <td class="td-name">${m.name}</td>
+      <td>${typeBadge(m.type)}</td>
+      <td>${catBadge}</td>
+      <td class="td-power">${m.power}</td>
+      <td class="td-pvp">${pvpHtml}</td>
+      <td>${noteHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── TAB 2: POKEMON ─────────────────────────────────────────────────────────
+function setGen(gen) {
+  activeGen = gen;
+  document.querySelectorAll('#gen-pills .pill').forEach((p, i) => {
+    const vals = ['all',1,2,3,4,5,6,7,8,9];
+    p.classList.toggle('active', vals[i] === gen);
+  });
+  renderPokemon();
+}
+
+function renderPokemon() {
+  let data = POKEMON.slice();
+
+  // Filter by gen
+  if (activeGen !== 'all') data = data.filter(p => p.gen === activeGen);
+
+  // Filter by search
+  const q = pkSearch.trim().toLowerCase();
+  if (q) {
+    data = data.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      String(p.num).includes(q) ||
+      p.types.some(t => t.toLowerCase().includes(q)) ||
+      p.fast.some(m => m.replace(/\*/g,'').toLowerCase().includes(q)) ||
+      p.charge.some(m => m.replace(/\*/g,'').toLowerCase().includes(q))
+    );
+  }
+
+  document.getElementById('pk-count').innerHTML = `<strong>${data.length}</strong> Pokémon`;
+
+  const grid = document.getElementById('pokemon-grid');
+  if (!data.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>Keine Pokémon gefunden</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map(p => {
+    const typesBadges = p.types.map(t => typeBadge(t)).join('');
+    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.num}.png`;
+
+    // Fast moves rows
+    const fastRows = p.fast.map(mname => {
+      const clean = mname.replace(/\*/g,'').trim();
+      const mv = getMoveData(mname);
+      const isBest = clean === p.pvp.f.replace(/\*/g,'').trim();
+      const typeTag = mv ? typeBadge(mv.type) : '';
+      const pvpVal = mv ? `PvP: ${mv.pvp}` : '';
+      const bestTag = isBest ? `<span class="best-badge">★ Best PvP</span>` : '';
+      return `
+        <div class="pk-move-row">
+          ${typeTag}
+          <span class="pk-move-name">${clean}${mname.includes('*') ? ' <span style="color:var(--gold);font-size:11px">✦</span>' : ''}</span>
+          <span class="pk-move-pvp">${pvpVal}</span>
+          ${bestTag}
+        </div>`;
+    }).join('');
+
+    // Charge moves rows
+    const chargeRows = p.charge.map(mname => {
+      const clean = mname.replace(/\*/g,'').trim();
+      const mv = getMoveData(mname);
+      const isBest = clean === p.pvp.c1.replace(/\*/g,'').trim() || clean === p.pvp.c2.replace(/\*/g,'').trim();
+      const typeTag = mv ? typeBadge(mv.type) : '';
+      const pvpVal = mv ? `PvP: ${mv.pvp}` : '';
+      const bestTag = isBest ? `<span class="best-badge">★ Best PvP</span>` : '';
+      return `
+        <div class="pk-move-row">
+          ${typeTag}
+          <span class="pk-move-name">${clean}${mname.includes('*') ? ' <span style="color:var(--gold);font-size:11px">✦</span>' : ''}</span>
+          <span class="pk-move-pvp">${pvpVal}</span>
+          ${bestTag}
+        </div>`;
+    }).join('');
+
+    const noteHtml = p.note ? `<div class="pk-note">💡 ${p.note}</div>` : '';
+
+    return `
+    <div class="pk-card" id="pc${p.num}">
+      <div class="pk-header" onclick="toggleCard(${p.num})">
+        <img class="pk-sprite" src="${spriteUrl}" alt="${p.name}" onerror="this.style.display='none'">
+        <div class="pk-title">
+          <span class="pk-num">#${String(p.num).padStart(3,'0')}</span>
+          <div class="pk-name">${p.name}</div>
+          <div class="pk-types">${typesBadges}</div>
+        </div>
+        <span class="pk-chevron">▼</span>
+      </div>
+      <div class="pk-body">
+        <div class="pk-body-inner">
+          <div class="pk-moves-section">
+            <div class="pk-moves-title">⚡ Schnellattacken</div>
+            ${fastRows}
+          </div>
+          <div class="pk-moves-section">
+            <div class="pk-moves-title">💥 Ladeattacken</div>
+            ${chargeRows}
+          </div>
+          ${noteHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── TAB 3: TYPES ───────────────────────────────────────────────────────────
+function renderTypes() {
+  const q = typeSearch.trim().toLowerCase();
+  let data = TYPES;
+  if (q) data = data.filter(t => t.name.toLowerCase().includes(q));
+
+  const grid = document.getElementById('types-grid');
+  if (!data.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>Kein Typ gefunden</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map(t => {
+    const strongHtml = t.strong.length
+      ? t.strong.map(s => typeBadge(s)).join('')
+      : `<span class="type-none">Keine</span>`;
+    const weakHtml = t.weak.length
+      ? t.weak.map(s => typeBadge(s)).join('')
+      : `<span class="type-none">Keine</span>`;
+    const immuneHtml = t.immune.length
+      ? t.immune.map(s => `<span class="type-badge" style="background:${getTypeColor(s)};opacity:0.8">${s} ×0.390625</span>`).join('')
+      : `<span class="type-none">Keine</span>`;
+
+    return `
+    <div class="type-card">
+      <div class="type-card-header">
+        <span class="type-emoji">${t.emoji}</span>
+        <span class="type-name-big" style="color:${t.color}">${t.name}</span>
+      </div>
+      <div class="type-section">
+        <div class="type-section-label">✅ Stark gegen (×1.6)</div>
+        <div class="type-badges-list">${strongHtml}</div>
+      </div>
+      <div class="type-section">
+        <div class="type-section-label">⚠️ Schwach gegen (×0.625)</div>
+        <div class="type-badges-list">${weakHtml}</div>
+      </div>
+      <div class="type-section">
+        <div class="type-section-label">🛡️ Immun gegen (×0.390625)</div>
+        <div class="type-badges-list">${immuneHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── TAB 4: TEAM ────────────────────────────────────────────────────────────
+function renderTeam() {
+  // Main team cards
+  const teamGrid = document.getElementById('team-grid');
+  teamGrid.innerHTML = MY_TEAM.map(member => {
+    const pkData = POKEMON.find(p => p.num === member.num);
+    if (!pkData) return '';
+    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${member.num}.png`;
+    const typesBadges = member.types.map(t => typeBadge(t)).join('');
+
+    // Get pvp moves
+    const bestFast   = pkData.pvp.f.replace(/\*/g,'').trim();
+    const bestCharge1 = pkData.pvp.c1.replace(/\*/g,'').trim();
+    const bestCharge2 = pkData.pvp.c2.replace(/\*/g,'').trim();
+
+    const mvFast   = getMoveData(pkData.pvp.f);
+    const mvCharge1 = getMoveData(pkData.pvp.c1);
+    const mvCharge2 = getMoveData(pkData.pvp.c2);
+
+    return `
+    <div class="team-card">
+      <img class="team-sprite" src="${spriteUrl}" alt="${member.name}" onerror="this.style.display='none'">
+      <div class="team-name">${member.name}</div>
+      <div class="team-num">#${String(member.num).padStart(3,'0')}</div>
+      <div class="team-types">${typesBadges}</div>
+      <div class="team-iv">⚙️ IVs: ${member.ivs}</div>
+      <div class="team-role">🎯 ${member.role}</div>
+      <div class="team-moves">
+        <div class="team-moves-title">Empfohlenes Moveset</div>
+        <div class="team-move-row">
+          <span class="team-move-label">Schnell</span>
+          ${mvFast ? typeBadge(mvFast.type) : ''}
+          <span>${bestFast}</span>
+          ${pkData.pvp.f.includes('*') ? '<span style="color:var(--gold);font-size:11px;margin-left:2px">✦</span>' : ''}
+        </div>
+        <div class="team-move-row">
+          <span class="team-move-label">Ladung 1</span>
+          ${mvCharge1 ? typeBadge(mvCharge1.type) : ''}
+          <span>${bestCharge1}</span>
+          ${pkData.pvp.c1.includes('*') ? '<span style="color:var(--gold);font-size:11px;margin-left:2px">✦</span>' : ''}
+        </div>
+        <div class="team-move-row">
+          <span class="team-move-label">Ladung 2</span>
+          ${mvCharge2 ? typeBadge(mvCharge2.type) : ''}
+          <span>${bestCharge2}</span>
+          ${pkData.pvp.c2.includes('*') ? '<span style="color:var(--gold);font-size:11px;margin-left:2px">✦</span>' : ''}
+        </div>
+      </div>
+      <div class="team-tip">💡 ${member.tip}</div>
+    </div>`;
+  }).join('');
+
+  // Synergy table
+  const synergyData = [
+    {
+      num: 184,
+      name: 'Azumarill',
+      counters: ['Fighting','Dragon','Dark','Ground','Rock'],
+      weakTo: ['Grass','Electric','Poison']
+    },
+    {
+      num: 777,
+      name: 'Togedemaru',
+      counters: ['Water','Flying','Ice','Rock','Fairy'],
+      weakTo: ['Fire','Fighting','Ground']
+    },
+    {
+      num: 908,
+      name: 'Clodsire',
+      counters: ['Electric','Steel','Fire','Rock','Poison'],
+      weakTo: ['Ground','Water','Psychic','Ice']
+    }
+  ];
+
+  const tbody = document.getElementById('synergy-tbody');
+  tbody.innerHTML = synergyData.map(s => {
+    const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${s.num}.png`;
+    const counterBadges = s.counters.map(t => typeBadge(t)).join('');
+    const weakBadges = s.weakTo.map(t => typeBadge(t)).join('');
+    return `
+    <tr>
+      <td>
+        <div class="syn-member">
+          <img class="syn-mini-sprite" src="${spriteUrl}" alt="${s.name}" onerror="this.style.display='none'">
+          ${s.name}
+        </div>
+      </td>
+      <td><div class="syn-cover">${counterBadges}</div></td>
+      <td><div class="syn-cover">${weakBadges}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+// Deduplicate MOVES once at init (defensive, ensures no duplicate key errors)
+const _moveSeen = new Set();
+const MOVES_DEDUPED = MOVES.filter(m => {
+  const k = m.name.toLowerCase() + '|' + m.cat;
+  if (_moveSeen.has(k)) return false;
+  _moveSeen.add(k);
+  return true;
+});
+
+function buildGenTabs() {
+  // Gen I–IX pills are static HTML; 'Alle' pill is pre-activated in HTML
+}
+buildGenTabs();
+renderMoves();
+renderPokemon();
+</script>
+</body>
+</html>
