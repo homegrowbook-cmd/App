@@ -819,14 +819,14 @@
     --surface: #eaecf9;
     --border: #c5c9e8;
     --border2: #9fa3cc;
-    --text: #1a1c30;
-    --text2: #3d4060;
-    --text3: #6b6f99;
-    --accent: #5a61e8;
-    --accent2: #3a42d0;
-    --gold: #b07500;
-    --green: #2a7248;
-    --red: #b03030;
+    --text: #0e1028;
+    --text2: #2a2e50;
+    --text3: #555880;
+    --accent: #4a52d8;
+    --accent2: #2e36c0;
+    --gold: #8a5a00;
+    --green: #1e5c38;
+    --red: #a02020;
     --shadow: rgba(0,0,0,0.15);
   }
   body.light-theme nav {
@@ -1010,7 +1010,7 @@
     <button class="nav-btn" onclick="show('calc-tab')">
       <span class="icon">🧮</span> Rechner
     </button>
-    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Hell/Dunkel-Modus wechseln">☀️</button>
+    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Hell/Dunkel-Modus wechseln" title="Hell/Dunkel-Modus wechseln">☀️</button>
   </div>
 </nav>
 
@@ -1240,7 +1240,7 @@
               <input class="calc-input" id="iv-sta" type="number" min="0" max="15" placeholder="0–15" value="15">
             </div>
           </div>
-          <button class="calc-btn" onclick="calcIVRank()">🏅 Rang berechnen</button>
+          <button class="calc-btn" id="iv-rank-btn" onclick="calcIVRank()">🏅 Rang berechnen</button>
         </div>
         <div class="calc-result hidden" id="iv-result"></div>
       </div>
@@ -3584,6 +3584,10 @@ function cpFormula(baseAtk, baseDef, baseSta, ivAtk, ivDef, ivSta, cpm) {
   ));
 }
 
+function clampIV(value) {
+  return Math.max(0, Math.min(15, parseInt(value) || 0));
+}
+
 function renderCalc() {
   const sel = document.getElementById('cp-level');
   if (sel && sel.options.length === 0) {
@@ -3620,9 +3624,9 @@ function calcCP() {
   const baseAtk = parseInt(document.getElementById('cp-base-atk').value);
   const baseDef = parseInt(document.getElementById('cp-base-def').value);
   const baseSta = parseInt(document.getElementById('cp-base-sta').value);
-  const ivAtk   = Math.max(0, Math.min(15, parseInt(document.getElementById('cp-iv-atk').value) || 0));
-  const ivDef   = Math.max(0, Math.min(15, parseInt(document.getElementById('cp-iv-def').value) || 0));
-  const ivSta   = Math.max(0, Math.min(15, parseInt(document.getElementById('cp-iv-sta').value) || 0));
+  const ivAtk   = clampIV(document.getElementById('cp-iv-atk').value);
+  const ivDef   = clampIV(document.getElementById('cp-iv-def').value);
+  const ivSta   = clampIV(document.getElementById('cp-iv-sta').value);
   const level   = parseFloat(document.getElementById('cp-level').value);
   const result  = document.getElementById('cp-result');
 
@@ -3656,10 +3660,11 @@ function calcCP() {
 function calcIVRank() {
   const pokNum  = document.getElementById('iv-pokemon').value;
   const cpLimit = parseInt(document.getElementById('iv-league').value);
-  const myIVAtk = Math.max(0, Math.min(15, parseInt(document.getElementById('iv-atk').value) || 0));
-  const myIVDef = Math.max(0, Math.min(15, parseInt(document.getElementById('iv-def').value) || 0));
-  const myIVSta = Math.max(0, Math.min(15, parseInt(document.getElementById('iv-sta').value) || 0));
+  const myIVAtk = clampIV(document.getElementById('iv-atk').value);
+  const myIVDef = clampIV(document.getElementById('iv-def').value);
+  const myIVSta = clampIV(document.getElementById('iv-sta').value);
   const result  = document.getElementById('iv-result');
+  const btn     = document.getElementById('iv-rank-btn');
 
   if (!pokNum) {
     result.innerHTML = `<span style="color:var(--red)">⚠️ Bitte ein Pokémon wählen.</span>`;
