@@ -124,6 +124,14 @@
   section.tab { display: none; }
   section.tab.active { display: block; }
 
+  /* ── TAB TRANSITIONS ────────────────────────────────────────────────────── */
+  section.tab { animation: none; }
+  section.tab.active { animation: fadeInTab 0.25s ease; }
+  @keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   /* ── PAGE HEADER ────────────────────────────────────────── */
   .page-header { margin-bottom: 24px; }
   .page-header h1 {
@@ -1411,6 +1419,60 @@
   .dual-type-row { display:flex; align-items:center; margin:12px 0; flex-wrap:wrap; gap:8px; }
   .dual-type-result { margin-top:12px; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:14px; }
   .dual-type-result.hidden { display:none; }
+
+  /* ── WEATHER GRID ───────────────────────────────────────────────────────── */
+  .weather-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .weather-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .weather-icon { font-size: 26px; margin-bottom: 6px; }
+  .weather-name { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
+  .weather-types { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+
+  /* ── TYPE WEATHER BADGE ─────────────────────────────────────────────────── */
+  .type-weather { font-size: 10px; margin-left: 3px; vertical-align: middle; line-height: 1; }
+
+  /* ── META SPOTLIGHT ─────────────────────────────────────────────────────── */
+  .meta-spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .meta-spotlight-card {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg3) 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .meta-spotlight-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+  .meta-spotlight-sprite { width: 64px; height: 64px; image-rendering: pixelated; }
+  .meta-spotlight-name { font-weight: 700; font-size: 14px; margin: 6px 0 4px; }
+  .meta-spotlight-types { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
+  .meta-spotlight-tier { font-size: 11px; font-weight: 700; color: var(--gold); }
+  @media (max-width: 480px) { .meta-spotlight-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; } .meta-spotlight-sprite { width: 48px; height: 48px; } }
+
+  /* ── ENHANCED ANIMATIONS & POLISH ─────────────────────────────────────── */
+  .pk-card { transition: box-shadow 0.15s; }
+  .pk-card:hover { box-shadow: 0 4px 20px var(--shadow); }
+  .rank-card:hover { box-shadow: 0 4px 16px var(--shadow); }
+  .home-feature-card { transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+  .home-feature-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px var(--shadow); }
+  .pill { transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .calc-btn { transition: background 0.15s, transform 0.1s; }
+  .calc-btn:active { transform: scale(0.97); }
 </style>
 </head>
 <body>
@@ -1552,6 +1614,18 @@
         <div class="home-stat-number" id="stat-ranked">—</div>
         <div class="home-stat-label">Ranked Pokémon</div>
       </div>
+    </div>
+    <div class="home-section-title">⭐ Meta Spotlight</div>
+    <div class="meta-spotlight-grid" id="meta-spotlight"></div>
+    <div class="home-section-title">🌤️ Weather Boosts</div>
+    <div class="weather-grid">
+      <div class="weather-card"><div class="weather-icon">☀️</div><div class="weather-name">Sunny / Clear</div><div class="weather-types"><span class="type-badge" style="background:#b83400">Fire</span><span class="type-badge" style="background:#2a7228">Grass</span><span class="type-badge" style="background:#7a4200">Ground</span></div></div>
+      <div class="weather-card"><div class="weather-icon">🌧️</div><div class="weather-name">Rainy</div><div class="weather-types"><span class="type-badge" style="background:#1258b0">Water</span><span class="type-badge" style="background:#a07800">Electric</span><span class="type-badge" style="background:#467520">Bug</span></div></div>
+      <div class="weather-card"><div class="weather-icon">⛅</div><div class="weather-name">Partly Cloudy</div><div class="weather-types"><span class="type-badge" style="background:#6b6b6b">Normal</span><span class="type-badge" style="background:#63432e">Rock</span></div></div>
+      <div class="weather-card"><div class="weather-icon">☁️</div><div class="weather-name">Cloudy</div><div class="weather-types"><span class="type-badge" style="background:#7a0c44">Fairy</span><span class="type-badge" style="background:#a31010">Fighting</span><span class="type-badge" style="background:#5e0a9e">Poison</span></div></div>
+      <div class="weather-card"><div class="weather-icon">🌬️</div><div class="weather-name">Windy</div><div class="weather-types"><span class="type-badge" style="background:#1b2880">Dragon</span><span class="type-badge" style="background:#3d5295">Flying</span><span class="type-badge" style="background:#9c0d4a">Psychic</span></div></div>
+      <div class="weather-card"><div class="weather-icon">❄️</div><div class="weather-name">Snow</div><div class="weather-types"><span class="type-badge" style="background:#007d8c">Ice</span><span class="type-badge" style="background:#005545">Steel</span></div></div>
+      <div class="weather-card"><div class="weather-icon">🌫️</div><div class="weather-name">Fog</div><div class="weather-types"><span class="type-badge" style="background:#2c363d">Dark</span><span class="type-badge" style="background:#3e0f82">Ghost</span></div></div>
     </div>
   </section>
 
@@ -3107,6 +3181,17 @@ const TYPES = [
   {name:'Fairy',    emoji:'✨', color:'#7a0c44', strong:['Fighting','Dragon','Dark'],                  weak:['Poison','Steel'],                   immune:[]},
 ];
 
+// ── WEATHER BOOST DATA ────────────────────────────────────────────────────
+const WEATHER_BOOST = {
+  fire: '☀️', grass: '☀️', ground: '☀️',
+  water: '🌧️', electric: '🌧️', bug: '🌧️',
+  normal: '⛅', rock: '⛅',
+  fairy: '☁️', fighting: '☁️', poison: '☁️',
+  dragon: '🌬️', flying: '🌬️', psychic: '🌬️',
+  ice: '❄️', steel: '❄️',
+  dark: '🌫️', ghost: '🌫️'
+};
+
 // ── META TEAMS DATA ────────────────────────────────────────────────────────
 const META_TEAMS = {
   gl: [
@@ -3498,6 +3583,14 @@ function typeBadge(typeName) {
   return `<span class="type-badge" style="background:${color}">${cap}</span>`;
 }
 
+function typeBadgeWeather(typeName) {
+  const color = getTypeColor(typeName);
+  const cap = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+  const weather = WEATHER_BOOST[typeName.toLowerCase()] || '';
+  const titleAttr = weather ? ` title="Weather boost: ${weather}"` : '';
+  return `<span class="type-badge" style="background:${color}"${titleAttr}>${cap}${weather ? '<span class="type-weather">'+weather+'</span>' : ''}</span>`;
+}
+
 function getMoveData(moveName) {
   const cleanName = moveName.replace(/\*/g, '').trim();
   return MOVES.find(m => m.name.toLowerCase() === cleanName.toLowerCase()) || null;
@@ -3616,7 +3709,7 @@ function renderMoves() {
     return `
     <tr>
       <td class="td-name">${m.name}</td>
-      <td>${typeBadge(m.type)}</td>
+      <td>${typeBadgeWeather(m.type)}</td>
       <td>${catBadge}</td>
       <td class="td-power">${m.power}</td>
       <td class="td-pvp">${pvpHtml}</td>
@@ -3665,7 +3758,10 @@ function renderPokemon() {
 
   const grid = document.getElementById('pokemon-grid');
   if (!data.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="emoji">🔍</div><p>No Pokémon found</p></div>`;
+    const emptyMsg = ligaFilter === 'fav'
+      ? `<div class="empty-state"><div class="emoji">💔</div><p>No favorites yet!</p><p style="font-size:13px;color:var(--text3);margin-top:8px">Tap the ♥ button on any Pokémon card to save it here.</p></div>`
+      : `<div class="empty-state"><div class="emoji">🔍</div><p>No Pokémon found</p></div>`;
+    grid.innerHTML = emptyMsg;
     return;
   }
 
@@ -4491,10 +4587,11 @@ function calcCP() {
   const pct  = Math.round(((ivAtk + ivDef + ivSta) / 45) * 100);
 
   result.innerHTML = `
-    <span class="calc-result-big">CP ${cp.toLocaleString('de-DE')}</span>
+    <span class="calc-result-big">CP ${cp.toLocaleString('en-US')}</span>
     <span class="calc-result-sub">
       Level ${level} · IVs: ${ivAtk}/${ivDef}/${ivSta} (${pct}% perfection)<br>
-      Max CP at Level ${level}: <strong>${cpPerfect.toLocaleString('de-DE')}</strong>
+      Max CP at Level ${level}: <strong>${cpPerfect.toLocaleString('en-US')}</strong><br>
+      ${cp <= 1500 ? `✅ Valid in <strong>Great League</strong>${cp <= 500 ? ' and Little Cup' : ''}` : cp <= 2500 ? `✅ Valid in <strong>Ultra League</strong>` : `✅ Valid in <strong>Master League</strong> only`}
     </span>`;
   result.classList.remove('hidden');
 }
@@ -4562,17 +4659,27 @@ function calcIVRank() {
   const leagueLabel = cpLimit === 1500 ? 'Great League' : cpLimit === 2500 ? 'Ultra League' : 'Master League';
   const pct         = Math.round((mySP / bestSP) * 1000) / 10;
 
+  const shareText = `${poke.name} ${leagueLabel}: Rank ${rank}/4096 | IVs ${myIVAtk}/${myIVDef}/${myIVSta} | Level ${myResult.level} | ${pct}% of max`;
   result.innerHTML = `
     <span class="calc-result-big">
-      <span class="${rankClass}">🏅 Rang ${rank} / 4096</span>
+      <span class="${rankClass}">🏅 Rank ${rank} / 4096</span>
     </span>
     <span class="calc-result-sub">
       <strong>${poke.name}</strong> · ${leagueLabel} · IVs: ${myIVAtk}/${myIVDef}/${myIVSta}<br>
-      Optimal Level: <strong>${myResult.level}</strong> · Stat Product: <strong>${Math.round(mySP).toLocaleString('de-DE')}</strong><br>
+      Optimal Level: <strong>${myResult.level}</strong> · Stat Product: <strong>${Math.round(mySP).toLocaleString('en-US')}</strong><br>
       Best IVs: ${bestIVs.atk}/${bestIVs.def}/${bestIVs.sta} (Level ${bestLevel}) · ${pct}% of maximum
-    </span>`;
+    </span>
+    <button class="calc-btn" style="margin-top:8px;padding:6px 14px;font-size:13px" onclick="navigator.clipboard?.writeText('${shareText.replace(/'/g, "\\'")}').then(()=>this.textContent='✅ Copied!').catch(()=>this.textContent='❌ Copy failed'); return false;">📋 Copy Result</button>`;
   result.classList.remove('hidden');
 }
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
+  const shortcuts = { '1': 'home-tab', '2': 'moves-tab', '3': 'pokemon-tab', '4': 'types-tab', '5': 'team-tab', '6': 'ranking-tab', '7': 'calc-tab' };
+  if (shortcuts[e.key]) { e.preventDefault(); show(shortcuts[e.key]); }
+});
 
 function buildGenTabs() {
   // Gen I–IX pills are static HTML; 'Alle' pill is pre-activated in HTML
@@ -4598,6 +4705,19 @@ function updateHomeStats() {
   if (statMoves)   statMoves.textContent   = MOVES_DEDUPED ? MOVES_DEDUPED.length : MOVES.length;
   const allRanked = new Set([...Object.values(RANKING_DATA).flat().map(e => e.num)]);
   if (statRanked)  statRanked.textContent  = allRanked.size;
+
+  // Meta Spotlight
+  const spotlightEl = document.getElementById('meta-spotlight');
+  if (spotlightEl && spotlightEl.children.length === 0) {
+    const glSTier = (RANKING_DATA['gl'] || []).filter(e => e.tier === 'S').slice(0, 3);
+    spotlightEl.innerHTML = glSTier.map(e => `
+      <div class="meta-spotlight-card" onclick="show('ranking-tab')">
+        <img class="meta-spotlight-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${e.num}.png" alt="${e.name}" onerror="this.style.opacity=0.3">
+        <div class="meta-spotlight-name">${e.name}</div>
+        <div class="meta-spotlight-types">${e.types.map(t=>typeBadge(t)).join('')}</div>
+        <div class="meta-spotlight-tier">⭐ GL S-Tier</div>
+      </div>`).join('');
+  }
 }
 updateHomeStats();
 
