@@ -1771,28 +1771,28 @@
 <nav>
   <div class="nav-inner">
     <span class="nav-logo">⚔️ PvP Advisor</span>
-    <button class="nav-btn active" onclick="show('ranking-tab')">
+    <button class="nav-btn active" data-tab="ranking-tab" onclick="show('ranking-tab')">
       <span class="icon">📊</span> Pokémon
     </button>
-    <button class="nav-btn" onclick="show('moves-tab')">
+    <button class="nav-btn" data-tab="moves-tab" onclick="show('moves-tab')">
       <span class="icon">⚡</span> Moves
     </button>
-    <button class="nav-btn" onclick="show('home-tab')">
+    <button class="nav-btn" data-tab="home-tab" onclick="show('home-tab')">
       <span class="icon">🏠</span> Home
     </button>
-    <button class="nav-btn" onclick="show('pokemon-tab')">
+    <button class="nav-btn" data-tab="pokemon-tab" onclick="show('pokemon-tab')">
       <span class="icon">🎯</span> Pokédex
     </button>
-    <button class="nav-btn" onclick="show('types-tab')">
+    <button class="nav-btn" data-tab="types-tab" onclick="show('types-tab')">
       <span class="icon">🔮</span> Types
     </button>
-    <button class="nav-btn" onclick="show('team-tab')">
+    <button class="nav-btn" data-tab="team-tab" onclick="show('team-tab')">
       <span class="icon">🏆</span> Teams
     </button>
-    <button class="nav-btn" onclick="show('calc-tab')">
+    <button class="nav-btn" data-tab="calc-tab" onclick="show('calc-tab')">
       <span class="icon">🧮</span> Calculator
     </button>
-    <button class="nav-btn" onclick="show('battle-tab')">
+    <button class="nav-btn" data-tab="battle-tab" onclick="show('battle-tab')">
       <span class="icon">⚔️</span> Battle
     </button>
     <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">☀️</button>
@@ -2036,11 +2036,11 @@
     <div class="liga-filter-row">
       <span class="liga-filter-label">🏆 League:</span>
       <div class="pills" id="liga-pills">
-        <button class="pill active" onclick="setLigaFilter('all')">All</button>
-        <button class="pill" onclick="setLigaFilter('gl')">🌿 GL</button>
-        <button class="pill" onclick="setLigaFilter('ul')">💎 UL</button>
-        <button class="pill" onclick="setLigaFilter('ml')">👑 ML</button>
-        <button class="pill" onclick="setLigaFilter('fav')">⭐ Favorites</button>
+        <button class="pill active" data-liga="all" onclick="setLigaFilter('all')">All</button>
+        <button class="pill" data-liga="gl" onclick="setLigaFilter('gl')">🌿 GL</button>
+        <button class="pill" data-liga="ul" onclick="setLigaFilter('ul')">💎 UL</button>
+        <button class="pill" data-liga="ml" onclick="setLigaFilter('ml')">👑 ML</button>
+        <button class="pill" data-liga="fav" onclick="setLigaFilter('fav')">⭐ Favorites</button>
       </div>
     </div>
 
@@ -2151,15 +2151,15 @@
         <div class="calc-form">
           <div class="calc-form-row">
             <span class="calc-label">Base Attack</span>
-            <input class="calc-input" id="cp-base-atk" type="number" min="1" max="400" placeholder="z.B. 208">
+            <input class="calc-input" id="cp-base-atk" type="number" min="1" max="400" placeholder="e.g. 208">
           </div>
           <div class="calc-form-row">
             <span class="calc-label">Base Defense</span>
-            <input class="calc-input" id="cp-base-def" type="number" min="1" max="400" placeholder="z.B. 175">
+            <input class="calc-input" id="cp-base-def" type="number" min="1" max="400" placeholder="e.g. 175">
           </div>
           <div class="calc-form-row">
             <span class="calc-label">Base HP</span>
-            <input class="calc-input" id="cp-base-sta" type="number" min="1" max="500" placeholder="z.B. 225">
+            <input class="calc-input" id="cp-base-sta" type="number" min="1" max="500" placeholder="e.g. 225">
           </div>
           <div class="iv-trio">
             <div>
@@ -4011,20 +4011,8 @@ function show(tabId) {
   document.querySelectorAll('section.tab').forEach(s => s.classList.remove('active'));
   document.getElementById(tabId).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const tabIndex = {
-    'ranking-tab': 0,
-    'moves-tab':   1,
-    'home-tab':    2,
-    'pokemon-tab': 3,
-    'types-tab':   4,
-    'team-tab':    5,
-    'calc-tab':    6,
-    'battle-tab':  7
-  };
-  const idx = tabIndex[tabId];
-  if (idx !== undefined) {
-    document.querySelectorAll('.nav-btn')[idx].classList.add('active');
-  }
+  const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
   if (tabId === 'moves-tab')    renderMoves();
   if (tabId === 'pokemon-tab')  renderPokemon();
   if (tabId === 'types-tab')    { renderTypes(); initDualTypeSelects(); }
@@ -4905,8 +4893,8 @@ const MOVES_DEDUPED = MOVES.filter(m => {
 // ── LIGA-VIABILITÄT FILTER ─────────────────────────────────────────────────
 function setLigaFilter(liga) {
   ligaFilter = liga;
-  document.querySelectorAll('#liga-pills .pill').forEach((p, i) => {
-    p.classList.toggle('active', ['all','gl','ul','ml','fav'][i] === liga);
+  document.querySelectorAll('#liga-pills .pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.liga === liga);
   });
   renderPokemon();
 }
