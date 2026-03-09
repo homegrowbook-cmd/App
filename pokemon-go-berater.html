@@ -1494,23 +1494,23 @@
 <nav>
   <div class="nav-inner">
     <span class="nav-logo">⚔️ PvP Advisor</span>
-    <button class="nav-btn active" onclick="show('home-tab')">
-      <span class="icon">🏠</span> Home
+    <button class="nav-btn active" onclick="show('ranking-tab')">
+      <span class="icon">📊</span> Pokémon
     </button>
     <button class="nav-btn" onclick="show('moves-tab')">
       <span class="icon">⚡</span> Moves
     </button>
+    <button class="nav-btn" onclick="show('home-tab')">
+      <span class="icon">🏠</span> Home
+    </button>
     <button class="nav-btn" onclick="show('pokemon-tab')">
-      <span class="icon">🎯</span> Pokémon
+      <span class="icon">🎯</span> Pokédex
     </button>
     <button class="nav-btn" onclick="show('types-tab')">
       <span class="icon">🔮</span> Types
     </button>
     <button class="nav-btn" onclick="show('team-tab')">
       <span class="icon">🏆</span> Teams
-    </button>
-    <button class="nav-btn" onclick="show('ranking-tab')">
-      <span class="icon">📊</span> League Rankings
     </button>
     <button class="nav-btn" onclick="show('calc-tab')">
       <span class="icon">🧮</span> Calculator
@@ -1521,7 +1521,7 @@
 
 <main>
   <!-- ── STARTSEITE ────────────────────────────────────────── -->
-  <section id="home-tab" class="tab active">
+  <section id="home-tab" class="tab">
     <div class="home-hero">
       <span class="home-hero-icon">⚔️</span>
       <h1>Pokémon GO PvP Advisor</h1>
@@ -1780,7 +1780,7 @@
   </section>
 
   <!-- ── TAB 5: LIGA-RANGLISTE ─────────────────────────────── -->
-  <section id="ranking-tab" class="tab">
+  <section id="ranking-tab" class="tab active">
     <div class="page-header">
       <h1>📊 League Rankings</h1>
       <p>Top Pokémon for Great League, Ultra League and Master League – based on PVPoke &amp; GamePress</p>
@@ -1908,7 +1908,7 @@
           as a lower Attack IV allows a Pokémon to be played under the CP cap at a higher level.
           The rank is based on the stat product at optimal level.<br><br>
           <strong>✦</strong> = Community Day / Elite TM Move &nbsp;&nbsp; <strong>★</strong> = Recommended PvP Moveset<br><br>
-          <strong>⌨️ Keyboard Shortcuts:</strong> Press keys <kbd>1</kbd>–<kbd>7</kbd> to quickly switch between tabs (Home, Moves, Pokémon, Types, Teams, Rankings, Calculator).
+          <strong>⌨️ Keyboard Shortcuts:</strong> Press keys <kbd>1</kbd>–<kbd>7</kbd> to quickly switch between tabs (Pokémon, Moves, Home, Pokédex, Types, Teams, Calculator).
         </div>
       </div>
     </div>
@@ -3623,12 +3623,12 @@ function show(tabId) {
   document.getElementById(tabId).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const tabIndex = {
-    'home-tab':    0,
+    'ranking-tab': 0,
     'moves-tab':   1,
-    'pokemon-tab': 2,
-    'types-tab':   3,
-    'team-tab':    4,
-    'ranking-tab': 5,
+    'home-tab':    2,
+    'pokemon-tab': 3,
+    'types-tab':   4,
+    'team-tab':    5,
     'calc-tab':    6
   };
   const idx = tabIndex[tabId];
@@ -4692,7 +4692,7 @@ function calcIVRank() {
 document.addEventListener('keydown', e => {
   const tag = e.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
-  const shortcuts = { '1': 'home-tab', '2': 'moves-tab', '3': 'pokemon-tab', '4': 'types-tab', '5': 'team-tab', '6': 'ranking-tab', '7': 'calc-tab' };
+  const shortcuts = { '1': 'ranking-tab', '2': 'moves-tab', '3': 'home-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'calc-tab' };
   if (shortcuts[e.key]) { e.preventDefault(); show(shortcuts[e.key]); }
 });
 
@@ -4743,6 +4743,7 @@ function updateHomeStats() {
   }
 }
 updateHomeStats();
+renderRanking();
 
 // ── DUAL TYPE MATCHER ───────────────────────────────────────────────────────
 function renderDualType() {
