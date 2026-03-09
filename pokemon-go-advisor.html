@@ -2181,6 +2181,7 @@
     <div class="controls-row" style="margin-top:8px">
       <button class="calc-btn" id="refresh-meta-btn" onclick="refreshMetaFromAPI()" style="max-width:220px">🔄 Refresh from PVPoke</button>
     </div>
+    <div id="refresh-meta-info" style="margin-top:6px;font-size:12px;color:var(--text3);padding:0 4px"></div>
     <div class="controls-row" style="margin-top:8px">
       <div class="search-wrap">
         <span class="icon">🔍</span>
@@ -5655,7 +5656,6 @@ function simulateBattle() {
   const fastB   = getMoveData(fastNameB);
   const chargeB = getMoveData(chargeNameB);
 
-  const STAB = 1.2;
   const hasStab = (move, types) => move && types.some(t => t.toLowerCase() === move.type.toLowerCase());
 
   const effFA_vsB  = fastA   ? getBattleTypeEff(fastA.type,   pokeB.types) : 1;
@@ -5663,10 +5663,10 @@ function simulateBattle() {
   const effFB_vsA  = fastB   ? getBattleTypeEff(fastB.type,   pokeA.types) : 1;
   const effCB_vsA  = chargeB ? getBattleTypeEff(chargeB.type, pokeA.types) : 1;
 
-  const scoreA = (fastA   ? fastA.pvp   * effFA_vsB * (hasStab(fastA, pokeA.types)   ? STAB : 1) : 0)
-               + (chargeA ? chargeA.pvp * effCA_vsB * (hasStab(chargeA, pokeA.types) ? STAB : 1) : 0);
-  const scoreB = (fastB   ? fastB.pvp   * effFB_vsA * (hasStab(fastB, pokeB.types)   ? STAB : 1) : 0)
-               + (chargeB ? chargeB.pvp * effCB_vsA * (hasStab(chargeB, pokeB.types) ? STAB : 1) : 0);
+  const scoreA = (fastA   ? fastA.pvp   * effFA_vsB * (hasStab(fastA, pokeA.types)   ? PVP_STAB : 1) : 0)
+               + (chargeA ? chargeA.pvp * effCA_vsB * (hasStab(chargeA, pokeA.types) ? PVP_STAB : 1) : 0);
+  const scoreB = (fastB   ? fastB.pvp   * effFB_vsA * (hasStab(fastB, pokeB.types)   ? PVP_STAB : 1) : 0)
+               + (chargeB ? chargeB.pvp * effCB_vsA * (hasStab(chargeB, pokeB.types) ? PVP_STAB : 1) : 0);
 
   const typeInfoA = getRankingTypeInfo(pokeA.types);
   const typeInfoB = getRankingTypeInfo(pokeB.types);
@@ -5797,6 +5797,12 @@ function simulateBattle() {
   runShieldBattleDisplay(numA, numB, fastNameA, chargeNameA, fastNameB, chargeNameB);
 }
 
+// ── SHIELD SIMULATION CONSTANTS ───────────────────────────────────────────
+const DEFAULT_FAST_EPT    = 8;   // default energy per turn for unknown fast moves
+const DEFAULT_CHARGE_EC   = 55;  // default energy cost for unknown charge moves
+const SHIELD_SIM_MAX_TURNS = 500; // safety cap to prevent infinite loops
+const PVP_STAB = 1.2;            // STAB multiplier used in all PvP damage calculations
+
 // ── MOVE ENERGY DATA ──────────────────────────────────────────────────────
 const MOVE_ENERGY_DATA = {
   fast: {
@@ -5812,7 +5818,7 @@ const MOVE_ENERGY_DATA = {
     'Acid':8,'Tackle':4,'Scratch':5,'Sucker Punch':7,'Karate Chop':5,
     'Thunder Fang':10,'Incinerate':12,'Volt Switch':16,'Frost Breath':8,
     'Rock Smash':7,'Hidden Power':15,'Cut':5,'Bullet Seed':11,'Fire Fang':10,
-    'Poison Sting':5,'Bug Bite':6,'Volt Switch':16
+    'Poison Sting':5,'Bug Bite':6
   },
   charge: {
     'Play Rough':60,'Ice Beam':55,'Wild Charge':45,'Fell Stinger':45,
@@ -5853,11 +5859,11 @@ const MOVE_ENERGY_DATA = {
 
 function getEPT(moveName) {
   const clean = moveName.replace(/\*/g,'').trim();
-  return MOVE_ENERGY_DATA.fast[clean] || 8;
+  return MOVE_ENERGY_DATA.fast[clean] || DEFAULT_FAST_EPT;
 }
 function getEC(moveName) {
   const clean = moveName.replace(/\*/g,'').trim();
-  return MOVE_ENERGY_DATA.charge[clean] || 55;
+  return MOVE_ENERGY_DATA.charge[clean] || DEFAULT_CHARGE_EC;
 }
 
 function runShieldBattle(baseA, baseB, fastNameA, chargeNameA, fastNameB, chargeNameB, shieldsA, shieldsB) {
@@ -5874,13 +5880,12 @@ function runShieldBattle(baseA, baseB, fastNameA, chargeNameA, fastNameB, charge
   const fastBData   = getMoveData(fastNameB);
   const chargeBData = getMoveData(chargeNameB);
 
-  const STAB = 1.2;
   function hasStabLocal(move, types) { return move && types.some(t => t.toLowerCase() === move.type.toLowerCase()); }
 
   function calcDmg(attacker, move, defenderBase, defenderTypes) {
     if (!move) return 1;
     const eff = getBattleTypeEff(move.type, defenderTypes);
-    const stab = hasStabLocal(move, attacker.types || []) ? STAB : 1;
+    const stab = hasStabLocal(move, attacker.types || []) ? PVP_STAB : 1;
     const power = move.pvp || move.power || 1;
     const def = defenderBase.def + IV_DEF;
     return Math.max(1, Math.floor(0.5 * power * (attacker.atk / def) * eff * stab) + 1);
@@ -5904,9 +5909,8 @@ function runShieldBattle(baseA, baseB, fastNameA, chargeNameA, fastNameB, charge
   const ecB  = getEC(chargeNameB);
 
   let turns = 0;
-  const MAX_TURNS = 500;
 
-  while (hpA > 0 && hpB > 0 && turns < MAX_TURNS) {
+  while (hpA > 0 && hpB > 0 && turns < SHIELD_SIM_MAX_TURNS) {
     turns++;
     enA += eptA;
     hpB -= dmgFast_A_on_B;
@@ -6011,20 +6015,28 @@ function runShieldBattleDisplay(numA, numB, fastNameA, chargeNameA, fastNameB, c
 }
 
 // ── REFRESH META (PVPoke API) ─────────────────────────────────────────────
+// NOTE: PVPoke.com does not allow cross-origin requests (CORS). This function
+// attempts the request to check connectivity and shows a user-friendly message.
+// Full automatic meta updates would require a server-side proxy.
 async function refreshMetaFromAPI() {
   const btn = document.getElementById('refresh-meta-btn');
+  const infoEl = document.getElementById('refresh-meta-info');
   if (btn) { btn.textContent = '⏳ Fetching…'; btn.disabled = true; }
   try {
     const r = await fetch('https://pvpoke.com/data/rankings/all/overall/rankings-1500.json', { mode: 'cors' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
-    await r.json();
-    if (btn) { btn.textContent = '✅ Updated!'; }
-    setTimeout(() => { if (btn) { btn.textContent = '🔄 Refresh from PVPoke'; btn.disabled = false; } }, 3000);
+    const data = await r.json();
+    // If CORS is ever resolved, data would be used to refresh RANKING_DATA here.
+    // For now, confirm connectivity succeeded.
+    if (btn) { btn.textContent = '✅ Reachable!'; }
+    if (infoEl) infoEl.textContent = 'PVPoke data reached (' + (data.length || 0) + ' entries). Full integration requires a server-side proxy due to browser CORS restrictions.';
+    setTimeout(() => { if (btn) { btn.textContent = '🔄 Refresh from PVPoke'; btn.disabled = false; } }, 4000);
   } catch(e) {
     if (btn) {
       btn.textContent = '⚠️ Unavailable (CORS)';
       setTimeout(() => { btn.textContent = '🔄 Refresh from PVPoke'; btn.disabled = false; }, 3000);
     }
+    if (infoEl) infoEl.textContent = 'PVPoke API is blocked by CORS in the browser. A server-side proxy would be needed for automatic meta updates.';
   }
 }
 
