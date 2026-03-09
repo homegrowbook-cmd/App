@@ -1,0 +1,10 @@
+{
+  "name": "Pokémon GO PvP Advisor",
+  "short_name": "PvP Advisor",
+  "description": "Pokémon GO PvP tier lists, rankings, calculators and battle tools",
+  "start_url": "./pokemon-go-advisor.html",
+  "display": "standalone",
+  "background_color": "#0e0f1a",
+  "theme_color": "#7c83f5",
+  "icons": [{"src": "logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
+}
