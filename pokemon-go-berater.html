@@ -941,6 +941,19 @@
     .team-card { padding: 16px; }
     .synergy-table th, .synergy-table td { padding: 8px 10px; font-size: 12px; }
     .table-wrap { max-height: 55vh; }
+    /* Stardust table on mobile: hide # col + desktop value col; show inline badge */
+    .sd-table .sd-num,
+    .sd-table thead th:first-child,
+    .sd-col-val { display: none; }
+    .sd-sprite { width: 28px; height: 28px; }
+    .sd-table .sd-mobile-val {
+      display: inline-block;
+      font-family: 'Bangers', cursive;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
   }
 
   @media (max-width: 400px) {
@@ -1589,11 +1602,14 @@
   .sd-num { color: var(--text3); font-size: 11px; }
   .sd-sprite { width: 36px; height: 36px; image-rendering: pixelated; }
   .sd-name { font-weight: 600; }
+  .sd-sort-label { font-size: .85rem; opacity: .7; white-space: nowrap; }
   .sd-val-1500 { color: #f5c842; }
   .sd-val-1000 { color: #e07b40; }
   .sd-val-750  { color: #9cb8ff; }
   .sd-val-500  { color: #7ec880; }
   .sd-val-100  { color: var(--text2); }
+  /* inline stardust badge (shown only on mobile) */
+  .sd-mobile-val { display: none; }
 
   /* ── HERO GRADIENT ANIMATION ─────────────────────────────────── */
   @keyframes heroGradientShift {
@@ -2345,11 +2361,13 @@
       </div>
     </div>
 
-    <div class="controls-row" style="margin-top:8px;gap:8px">
-      <span style="font-size:.85rem;opacity:.7">Sort:</span>
-      <button class="pill active" id="sd-sort-num"  onclick="setSdSort('num')">📋 No.</button>
-      <button class="pill"        id="sd-sort-name" onclick="setSdSort('name')">🔤 Name</button>
-      <button class="pill"        id="sd-sort-sd"   onclick="setSdSort('sd')">⭐ Stardust ↓</button>
+    <div class="controls-row" style="margin-top:8px">
+      <span class="sd-sort-label">Sort:</span>
+      <div class="pills">
+        <button class="pill"        id="sd-sort-num"  onclick="setSdSort('num')">📋 No.</button>
+        <button class="pill"        id="sd-sort-name" onclick="setSdSort('name')">🔤 Name</button>
+        <button class="pill active" id="sd-sort-sd"   onclick="setSdSort('sd')">⭐ Stardust ↓</button>
+      </div>
     </div>
 
     <div class="result-count" id="sd-count"></div>
@@ -2360,7 +2378,7 @@
             <th style="width:52px">#</th>
             <th style="width:44px"></th>
             <th>Pokémon &amp; Type</th>
-            <th style="text-align:right">⭐ Stardust</th>
+            <th class="sd-col-val" style="text-align:right">⭐ Stardust</th>
           </tr>
         </thead>
         <tbody id="stardust-tbody"></tbody>
@@ -5610,7 +5628,7 @@ function getStardust(num) {
 
 let sdTierFilter = 'all';
 let sdSearch     = '';
-let sdSort       = 'num';
+let sdSort       = 'sd';
 
 function setSdTier(tier) {
   sdTierFilter = tier;
@@ -5657,8 +5675,8 @@ function renderStardust() {
     <tr>
       <td class="sd-num">#${String(p.num).padStart(3,'0')}</td>
       <td><img class="sd-sprite" src="${SPRITE}${p.num}.png" alt="${p.name}" loading="lazy" onerror="this.style.opacity=0.3"></td>
-      <td class="sd-name">${p.name} ${p.types.map(t=>typeBadge(t)).join('')}</td>
-      <td class="${sdClass(p.sd)}">${p.sd} ⭐</td>
+      <td class="sd-name">${p.name} ${p.types.map(t=>typeBadge(t)).join('')}<span class="sd-mobile-val ${sdClass(p.sd)}">${p.sd}⭐</span></td>
+      <td class="${sdClass(p.sd)} sd-col-val">${p.sd} ⭐</td>
     </tr>`).join('');
 }
 
