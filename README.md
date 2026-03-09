@@ -1,14 +1,16 @@
 # Pokémon GO PvP Berater
 
-Ein browserbasierter Pokémon GO PvP-Berater mit Attacken-Datenbank, Pokémon-Datenbank, Typ-Übersicht, auswählbaren Meta-Teams und Liga-Ranglisten.
+Ein browserbasierter Pokémon GO PvP-Berater mit Attacken-Datenbank, Pokémon-Datenbank, Typ-Übersicht, auswählbaren Meta-Teams, Liga-Ranglisten, Battle Simulator und Rechnern.
 
 ## Features
 
 - **⚡ Attacken-Datenbank** – Alle Schnell- und Ladeattacken mit PvE- und PvP-Werten, durchsuch- und sortierbar
 - **🎯 Pokémon-Datenbank** – Pokédex-Einträge mit Typen, besten PvP-Movesets und Generationsfilter (Gen I–IX)
-- **🔮 Typ-Übersicht** – Vollständige Typ-Stärken- und Schwächentabelle für alle 18 Typen mit Pokémon GO Multiplikatoren
+- **🔮 Typ-Übersicht** – Vollständige Typ-Stärken- und Schwächentabelle für alle 18 Typen mit Pokémon GO Multiplikatoren; Dual-Typ-Matcher
 - **🏆 Meta-Teams** – Auswählbare Top-Teams für Superliga, Hyperliga und Meisterliga mit Synergie-Analyse und Strategie-Tipps
-- **📊 Liga-Rangliste** – S/A/B-Tier-Liste der besten Pokémon für alle drei Ligen
+- **📊 Liga-Rangliste** – S/A/B-Tier-Liste der besten Pokémon für alle drei Ligen mit Typ-Infos und Counter-Empfehlungen
+- **⚔️ Battle Simulator** *(NEU)* – Wähle zwei Pokémon aus, analysiere Typ-Vorteile, Angriffs-Effektivität und Basiswert-Vergleich
+- **🧮 Rechner** – CP-Rechner und IV-Rang-Rechner für alle Ligen; inkl. **Shadow/Purified-Vergleich** *(NEU)*
 
 ## Verwendung
 
