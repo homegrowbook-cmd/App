@@ -1488,6 +1488,125 @@
   .calc-btn { transition: background 0.15s, transform 0.1s; }
   .calc-btn:active { transform: scale(0.97); }
 
+  /* ── BATTLE SIMULATOR ───────────────────────────────────────── */
+  .battle-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: start;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 700px) {
+    .battle-grid { grid-template-columns: 1fr; }
+    .battle-vs-divider { padding: 6px; font-size: 28px; }
+  }
+  .battle-pokemon-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .battle-vs-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bangers', cursive;
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    padding: 60px 8px;
+    text-shadow: 0 0 20px rgba(245,200,66,0.4);
+  }
+  .battle-panel-header {
+    font-family: 'Bangers', cursive;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    color: var(--accent);
+  }
+  .battle-result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .battle-result-card.hidden { display: none; }
+  .battle-winner-banner {
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .battle-winner-a, .battle-winner-b { background: rgba(76,175,122,0.15); color: var(--green); border: 1px solid rgba(76,175,122,0.3); }
+  .battle-winner-neutral { background: rgba(159,163,199,0.1); color: var(--text2); border: 1px solid var(--border2); }
+  .battle-attack-panel { background: var(--bg3); border-radius: 12px; padding: 14px; }
+  .battle-attack-title { font-size: 12px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .battle-move-row { margin-bottom: 10px; }
+  .battle-move-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .battle-eff-label { font-size: 12px; color: var(--text2); }
+  .battle-stats-panel { background: var(--bg3); border-radius: 12px; padding: 14px; margin-top: 16px; }
+  .battle-stats-title { font-size: 12px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+  .battle-stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .battle-stat-label { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
+  .battle-stat-value { font-family: 'Bangers', cursive; font-size: 24px; letter-spacing: 1px; line-height: 1; }
+  .battle-adv-up { color: var(--green); }
+  .battle-adv-down { color: var(--red); }
+  .battle-adv-eq { color: var(--text2); }
+  .battle-stab { background: rgba(245,200,66,0.15); color: var(--gold); font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 4px; margin-left: 2px; white-space: nowrap; }
+  .battle-poke-preview { text-align: center; min-height: 90px; padding: 8px 0; }
+  .battle-poke-preview img { display: block; margin: 0 auto 8px; image-rendering: pixelated; width: 72px; height: 72px; }
+  .battle-poke-name { font-family: 'Bangers', cursive; font-size: 20px; letter-spacing: 1px; margin-bottom: 6px; }
+  .battle-poke-types { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+
+  /* ── SHADOW CALCULATOR ───────────────────────────────────────── */
+  .shadow-compare-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  @media (max-width: 500px) { .shadow-compare-grid { grid-template-columns: 1fr; } }
+  .shadow-card { border-radius: 10px; padding: 12px; text-align: center; }
+  .shadow-normal { background: var(--bg3); border: 1px solid var(--border2); }
+  .shadow-shadow { background: rgba(60,0,80,0.25); border: 1px solid rgba(150,0,230,0.35); }
+  .shadow-purified { background: rgba(0,60,90,0.25); border: 1px solid rgba(0,160,220,0.35); }
+  .shadow-card-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .shadow-normal .shadow-card-label { color: var(--text2); }
+  .shadow-shadow .shadow-card-label { color: #c080ff; }
+  .shadow-purified .shadow-card-label { color: #40c8ff; }
+  .shadow-stat-value { font-family: 'Bangers', cursive; font-size: 26px; letter-spacing: 1px; line-height: 1; margin: 4px 0 2px; }
+  .shadow-stat-desc { font-size: 10px; color: var(--text3); }
+  .shadow-atk-up { color: var(--green); }
+  .shadow-def-down { color: var(--red); }
+  .shadow-stat-neutral { color: var(--text); }
+
+  /* ── HERO GRADIENT ANIMATION ─────────────────────────────────── */
+  @keyframes heroGradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .home-hero {
+    background: linear-gradient(270deg,
+      rgba(124,131,245,0.14) 0%,
+      rgba(245,200,66,0.06) 33%,
+      rgba(76,175,122,0.09) 66%,
+      rgba(90,97,232,0.14) 100%
+    );
+    background-size: 300% 300%;
+    animation: heroGradientShift 12s ease infinite;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+  }
+  body.light-theme .home-hero {
+    background: linear-gradient(270deg,
+      rgba(74,82,216,0.08) 0%,
+      rgba(138,90,0,0.04) 33%,
+      rgba(30,92,56,0.06) 66%,
+      rgba(74,82,216,0.08) 100%
+    );
+    background-size: 300% 300%;
+    animation: heroGradientShift 12s ease infinite;
+  }
+
   /* ── CURRENT EVENTS ─────────────────────────────────────────────────────── */
   .events-grid {
     display: grid;
@@ -1621,6 +1740,9 @@
     <button class="nav-btn" onclick="show('calc-tab')">
       <span class="icon">🧮</span> Calculator
     </button>
+    <button class="nav-btn" onclick="show('battle-tab')">
+      <span class="icon">⚔️</span> Battle
+    </button>
     <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">☀️</button>
   </div>
 </nav>
@@ -1705,6 +1827,13 @@
         <span class="home-feature-icon">🧮</span>
         <div class="home-feature-title">Calculator</div>
         <div class="home-feature-desc">CP Calculator and IV Rank Calculator: Find the optimal IVs for your Pokémon in any league.</div>
+        <button class="home-feature-action">Open →</button>
+      </div>
+
+      <div class="home-feature-card" onclick="show('battle-tab')">
+        <span class="home-feature-icon">⚔️</span>
+        <div class="home-feature-title">Battle Simulator</div>
+        <div class="home-feature-desc">Analyze Pokémon matchups – see type advantages, move effectiveness and base stat comparisons.</div>
         <button class="home-feature-action">Open →</button>
       </div>
     </div>
@@ -2025,6 +2154,27 @@
       </div>
     </div>
 
+    <!-- Shadow/Purified Bonus Calculator -->
+    <div style="margin-top:16px">
+      <div class="calc-card">
+        <div class="calc-card-title">👤 Shadow &amp; Purified Bonus</div>
+        <div class="calc-card-desc">Compare Shadow vs. Normal vs. Purified stats for any Pokémon.</div>
+        <div class="calc-form">
+          <div class="calc-form-row">
+            <span class="calc-label">Pokémon</span>
+            <select class="calc-select" id="shadow-pokemon" onchange="calcShadow()">
+              <option value="">– Select Pokémon –</option>
+            </select>
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Level</span>
+            <select class="calc-select" id="shadow-level" onchange="calcShadow()"></select>
+          </div>
+        </div>
+        <div class="calc-result hidden" id="shadow-result"></div>
+      </div>
+    </div>
+
     <div style="margin-top:16px">
       <div class="calc-card">
         <div class="calc-card-title">💡 Notes</div>
@@ -2036,11 +2186,52 @@
           <strong>IV Rank:</strong> Rank 1 = 15/15/15 is rarely optimal! For Great League, 0/15/15 or similar is often better,
           as a lower Attack IV allows a Pokémon to be played under the CP cap at a higher level.
           The rank is based on the stat product at optimal level.<br><br>
+          <strong>Shadow:</strong> +20% more damage dealt, +20% more damage received. Great for offense-heavy Pokémon.<br>
+          <strong>Purified:</strong> All IVs boosted by +1 (max 15/15/15), 10% cheaper to Power Up, gets <em>Return</em>.<br><br>
           <strong>✦</strong> = Community Day / Elite TM Move &nbsp;&nbsp; <strong>★</strong> = Recommended PvP Moveset<br><br>
-          <strong>⌨️ Keyboard Shortcuts:</strong> Press keys <kbd>1</kbd>–<kbd>7</kbd> to quickly switch between tabs (Pokémon, Moves, Home, Pokédex, Types, Teams, Calculator).
+          <strong>⌨️ Keyboard Shortcuts:</strong> Press keys <kbd>1</kbd>–<kbd>8</kbd> to switch tabs (Pokémon, Moves, Home, Pokédex, Types, Teams, Calculator, Battle).
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ── TAB 7: BATTLE SIMULATOR ──────────────────────────────── -->
+  <section id="battle-tab" class="tab">
+    <div class="page-header">
+      <h1>⚔️ Battle Simulator</h1>
+      <p>Select two Pokémon, choose their moves and analyze the matchup – type advantages, effectiveness and stat comparison</p>
+    </div>
+
+    <div class="battle-grid">
+      <!-- Pokémon A -->
+      <div class="battle-pokemon-panel">
+        <div class="battle-panel-header">🔵 Pokémon A</div>
+        <select class="calc-select" id="battle-poke-a" onchange="onBattlePokeChange('a')" style="width:100%;margin-bottom:12px">
+          <option value="">– Select Pokémon –</option>
+        </select>
+        <div class="battle-poke-preview" id="battle-poke-a-preview"></div>
+        <div id="battle-moves-a" style="margin-top:12px"></div>
+      </div>
+
+      <!-- VS divider -->
+      <div class="battle-vs-divider">VS</div>
+
+      <!-- Pokémon B -->
+      <div class="battle-pokemon-panel">
+        <div class="battle-panel-header">🔴 Pokémon B</div>
+        <select class="calc-select" id="battle-poke-b" onchange="onBattlePokeChange('b')" style="width:100%;margin-bottom:12px">
+          <option value="">– Select Pokémon –</option>
+        </select>
+        <div class="battle-poke-preview" id="battle-poke-b-preview"></div>
+        <div id="battle-moves-b" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:24px">
+      <button class="calc-btn" onclick="simulateBattle()" style="max-width:320px;display:inline-block">⚔️ Analyze Matchup</button>
+    </div>
+
+    <div id="battle-result" class="battle-result-card hidden"></div>
   </section>
 </main>
 <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top" title="Back to top">↑</button>
@@ -3758,7 +3949,8 @@ function show(tabId) {
     'pokemon-tab': 3,
     'types-tab':   4,
     'team-tab':    5,
-    'calc-tab':    6
+    'calc-tab':    6,
+    'battle-tab':  7
   };
   const idx = tabIndex[tabId];
   if (idx !== undefined) {
@@ -3771,6 +3963,7 @@ function show(tabId) {
   if (tabId === 'ranking-tab')  renderRanking();
   if (tabId === 'calc-tab')     renderCalc();
   if (tabId === 'home-tab')     updateHomeStats();
+  if (tabId === 'battle-tab')   initBattleSelects();
 }
 
 function toggleCard(num) {
@@ -4760,6 +4953,7 @@ function renderCalc() {
       pokSel.appendChild(opt);
     }
   }
+  initShadowCalc();
 }
 
 function onIVPokemonChange() {
@@ -4887,11 +5081,339 @@ function calcIVRank() {
   result.classList.remove('hidden');
 }
 
-// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────────────
+// ── BATTLE SIMULATOR ──────────────────────────────────────────────────────
+let battleInitialized = false;
+
+function initBattleSelects() {
+  if (battleInitialized) return;
+  battleInitialized = true;
+  ['a','b'].forEach(side => {
+    const sel = document.getElementById(`battle-poke-${side}`);
+    if (!sel) return;
+    POKEMON.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.num;
+      opt.textContent = `#${String(p.num).padStart(3,'0')} ${p.name}`;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+function onBattlePokeChange(side) {
+  const sel = document.getElementById(`battle-poke-${side}`);
+  const num = parseInt(sel.value);
+  const poke = POKEMON.find(p => p.num === num);
+  const previewEl = document.getElementById(`battle-poke-${side}-preview`);
+  const movesEl   = document.getElementById(`battle-moves-${side}`);
+
+  if (!poke) {
+    previewEl.innerHTML = '';
+    movesEl.innerHTML   = '';
+    return;
+  }
+
+  const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.num}.png`;
+  previewEl.innerHTML = `
+    <img src="${spriteUrl}" alt="${poke.name}" onerror="this.style.opacity=0.3">
+    <div class="battle-poke-name">${poke.name}</div>
+    <div class="battle-poke-types">${poke.types.map(t => typeBadge(t)).join('')}</div>`;
+
+  movesEl.innerHTML = `
+    <div style="margin-bottom:10px">
+      <div class="calc-label" style="font-size:12px;margin-bottom:6px">⚡ Fast Move:</div>
+      <select class="calc-select" id="battle-fast-${side}" style="width:100%">
+        ${poke.fast.map(m => {
+          const clean = m.replace(/\*/g,'').trim();
+          return `<option value="${clean}">${clean}${m.includes('*') ? ' ✦' : ''}</option>`;
+        }).join('')}
+      </select>
+    </div>
+    <div>
+      <div class="calc-label" style="font-size:12px;margin-bottom:6px">💥 Charge Move:</div>
+      <select class="calc-select" id="battle-charge-${side}" style="width:100%">
+        ${poke.charge.map(m => {
+          const clean = m.replace(/\*/g,'').trim();
+          return `<option value="${clean}">${clean}${m.includes('*') ? ' ✦' : ''}</option>`;
+        }).join('')}
+      </select>
+    </div>`;
+}
+
+function getBattleTypeEff(attackType, defenderTypes) {
+  const info = getRankingTypeInfo(defenderTypes);
+  const atl  = attackType.toLowerCase();
+  if (info.immunities.some(i => i.toLowerCase() === atl))  return 0.390625;
+  if (info.weaknesses.some(w => w.toLowerCase() === atl))  return 1.6;
+  if (info.resistances.some(r => r.toLowerCase() === atl)) return 0.625;
+  return 1.0;
+}
+
+function simulateBattle() {
+  const numA = parseInt(document.getElementById('battle-poke-a').value);
+  const numB = parseInt(document.getElementById('battle-poke-b').value);
+  const result = document.getElementById('battle-result');
+
+  if (!numA || !numB) {
+    result.innerHTML = `<div style="color:var(--red);padding:8px">⚠️ Please select both Pokémon.</div>`;
+    result.classList.remove('hidden');
+    return;
+  }
+  if (numA === numB) {
+    result.innerHTML = `<div style="color:var(--gold);padding:8px">💡 Select two different Pokémon for a meaningful matchup.</div>`;
+    result.classList.remove('hidden');
+    return;
+  }
+
+  const pokeA = POKEMON.find(p => p.num === numA);
+  const pokeB = POKEMON.find(p => p.num === numB);
+  if (!pokeA || !pokeB) return;
+
+  const fastNameA   = document.getElementById('battle-fast-a')?.value   || pokeA.fast[0].replace(/\*/g,'').trim();
+  const chargeNameA = document.getElementById('battle-charge-a')?.value || pokeA.charge[0].replace(/\*/g,'').trim();
+  const fastNameB   = document.getElementById('battle-fast-b')?.value   || pokeB.fast[0].replace(/\*/g,'').trim();
+  const chargeNameB = document.getElementById('battle-charge-b')?.value || pokeB.charge[0].replace(/\*/g,'').trim();
+
+  const fastA   = getMoveData(fastNameA);
+  const chargeA = getMoveData(chargeNameA);
+  const fastB   = getMoveData(fastNameB);
+  const chargeB = getMoveData(chargeNameB);
+
+  const STAB = 1.2;
+  const hasStab = (move, types) => move && types.some(t => t.toLowerCase() === move.type.toLowerCase());
+
+  const effFA_vsB  = fastA   ? getBattleTypeEff(fastA.type,   pokeB.types) : 1;
+  const effCA_vsB  = chargeA ? getBattleTypeEff(chargeA.type, pokeB.types) : 1;
+  const effFB_vsA  = fastB   ? getBattleTypeEff(fastB.type,   pokeA.types) : 1;
+  const effCB_vsA  = chargeB ? getBattleTypeEff(chargeB.type, pokeA.types) : 1;
+
+  const scoreA = (fastA   ? fastA.pvp   * effFA_vsB * (hasStab(fastA, pokeA.types)   ? STAB : 1) : 0)
+               + (chargeA ? chargeA.pvp * effCA_vsB * (hasStab(chargeA, pokeA.types) ? STAB : 1) : 0);
+  const scoreB = (fastB   ? fastB.pvp   * effFB_vsA * (hasStab(fastB, pokeB.types)   ? STAB : 1) : 0)
+               + (chargeB ? chargeB.pvp * effCB_vsA * (hasStab(chargeB, pokeB.types) ? STAB : 1) : 0);
+
+  const typeInfoA = getRankingTypeInfo(pokeA.types);
+  const typeInfoB = getRankingTypeInfo(pokeB.types);
+  const baseA = POKE_BASE_STATS.find(p => p.num === numA);
+  const baseB = POKE_BASE_STATS.find(p => p.num === numB);
+
+  function effLabel(mult) {
+    if (mult >= 1.6)    return `<span style="color:var(--green);font-weight:700">×${mult} ⬆ Super Effective</span>`;
+    if (mult <= 0.39)   return `<span style="color:var(--red);font-weight:700">×${mult} ⬇ Immune</span>`;
+    if (mult < 1.0)     return `<span style="color:var(--red)">×${mult} ↓ Not Very Effective</span>`;
+    return `<span style="color:var(--text3)">×${mult} Neutral</span>`;
+  }
+  function stabTag(move, types) {
+    return hasStab(move, types) ? `<span class="battle-stab">STAB</span>` : '';
+  }
+
+  let winnerClass, winnerText;
+  if (scoreA > scoreB * 1.12) {
+    winnerClass = 'battle-winner-a';
+    winnerText  = `🏆 ${pokeA.name} has the type advantage`;
+  } else if (scoreB > scoreA * 1.12) {
+    winnerClass = 'battle-winner-b';
+    winnerText  = `🏆 ${pokeB.name} has the type advantage`;
+  } else {
+    winnerClass = 'battle-winner-neutral';
+    winnerText  = `⚖️ Balanced matchup – no clear type advantage`;
+  }
+
+  const sprA = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${numA}.png`;
+  const sprB = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${numB}.png`;
+
+  function statAdv(vA, vB) {
+    if (!vA || !vB) return '';
+    if (vA > vB) return `<span class="battle-adv-up">▲</span>`;
+    if (vA < vB) return `<span class="battle-adv-down">▼</span>`;
+    return `<span class="battle-adv-eq">—</span>`;
+  }
+
+  result.innerHTML = `
+    <!-- header -->
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="${sprA}" width="56" height="56" style="image-rendering:pixelated" onerror="this.style.opacity=0.3" alt="${pokeA.name}">
+        <div>
+          <div style="font-family:'Bangers',cursive;font-size:20px">${pokeA.name}</div>
+          <div style="display:flex;gap:3px;margin-top:3px">${pokeA.types.map(t => typeBadge(t)).join('')}</div>
+        </div>
+      </div>
+      <div style="font-family:'Bangers',cursive;font-size:28px;color:var(--gold);flex:1;text-align:center">VS</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="text-align:right">
+          <div style="font-family:'Bangers',cursive;font-size:20px">${pokeB.name}</div>
+          <div style="display:flex;gap:3px;justify-content:flex-end;margin-top:3px">${pokeB.types.map(t => typeBadge(t)).join('')}</div>
+        </div>
+        <img src="${sprB}" width="56" height="56" style="image-rendering:pixelated" onerror="this.style.opacity=0.3" alt="${pokeB.name}">
+      </div>
+    </div>
+
+    <!-- winner banner -->
+    <div class="battle-winner-banner ${winnerClass}">${winnerText}</div>
+
+    <!-- attack panels -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="battle-attack-panel">
+        <div class="battle-attack-title">${pokeA.name} attacks ${pokeB.name}</div>
+        ${fastA ? `<div class="battle-move-row">
+          <div class="battle-move-name">${typeBadge(fastA.type)} ${fastA.name}${stabTag(fastA, pokeA.types)}</div>
+          <div class="battle-eff-label">${effLabel(effFA_vsB)} &nbsp; PvP: ${fastA.pvp}</div>
+        </div>` : ''}
+        ${chargeA ? `<div class="battle-move-row">
+          <div class="battle-move-name">${typeBadge(chargeA.type)} ${chargeA.name}${stabTag(chargeA, pokeA.types)}</div>
+          <div class="battle-eff-label">${effLabel(effCA_vsB)} &nbsp; PvP: ${chargeA.pvp}</div>
+        </div>` : ''}
+      </div>
+      <div class="battle-attack-panel">
+        <div class="battle-attack-title">${pokeB.name} attacks ${pokeA.name}</div>
+        ${fastB ? `<div class="battle-move-row">
+          <div class="battle-move-name">${typeBadge(fastB.type)} ${fastB.name}${stabTag(fastB, pokeB.types)}</div>
+          <div class="battle-eff-label">${effLabel(effFB_vsA)} &nbsp; PvP: ${fastB.pvp}</div>
+        </div>` : ''}
+        ${chargeB ? `<div class="battle-move-row">
+          <div class="battle-move-name">${typeBadge(chargeB.type)} ${chargeB.name}${stabTag(chargeB, pokeB.types)}</div>
+          <div class="battle-eff-label">${effLabel(effCB_vsA)} &nbsp; PvP: ${chargeB.pvp}</div>
+        </div>` : ''}
+      </div>
+    </div>
+
+    <!-- weaknesses -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+      <div class="battle-attack-panel">
+        <div class="battle-attack-title">⚠️ ${pokeA.name} Weak to</div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px">${typeInfoA.weaknesses.length ? typeInfoA.weaknesses.map(t => typeBadge(t)).join('') : '<span style="color:var(--text3);font-size:12px">None</span>'}</div>
+      </div>
+      <div class="battle-attack-panel">
+        <div class="battle-attack-title">⚠️ ${pokeB.name} Weak to</div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px">${typeInfoB.weaknesses.length ? typeInfoB.weaknesses.map(t => typeBadge(t)).join('') : '<span style="color:var(--text3);font-size:12px">None</span>'}</div>
+      </div>
+    </div>
+
+    ${baseA && baseB ? `
+    <!-- stats comparison -->
+    <div class="battle-stats-panel">
+      <div class="battle-stats-title">📊 Base Stats Comparison</div>
+      <div style="display:grid;grid-template-columns:auto 1fr auto 1fr;gap:6px 12px;align-items:center;font-size:13px">
+        <span style="color:var(--text3);font-size:11px;font-weight:700">⚔️ ATK</span>
+        <span><strong>${baseA.atk}</strong> ${statAdv(baseA.atk, baseB.atk)}</span>
+        <span style="color:var(--text3);font-size:11px;font-weight:700">⚔️ ATK</span>
+        <span><strong>${baseB.atk}</strong> ${statAdv(baseB.atk, baseA.atk)}</span>
+        <span style="color:var(--text3);font-size:11px;font-weight:700">🛡️ DEF</span>
+        <span><strong>${baseA.def}</strong> ${statAdv(baseA.def, baseB.def)}</span>
+        <span style="color:var(--text3);font-size:11px;font-weight:700">🛡️ DEF</span>
+        <span><strong>${baseB.def}</strong> ${statAdv(baseB.def, baseA.def)}</span>
+        <span style="color:var(--text3);font-size:11px;font-weight:700">❤️ HP</span>
+        <span><strong>${baseA.sta}</strong> ${statAdv(baseA.sta, baseB.sta)}</span>
+        <span style="color:var(--text3);font-size:11px;font-weight:700">❤️ HP</span>
+        <span><strong>${baseB.sta}</strong> ${statAdv(baseB.sta, baseA.sta)}</span>
+      </div>
+    </div>` : ''}
+
+    <!-- note -->
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(124,131,245,0.07);border:1px solid rgba(124,131,245,0.2);border-radius:8px;font-size:12px;color:var(--text2)">
+      💡 <strong>Note:</strong> This is a type-based matchup analysis. Actual PvP results also depend on energy generation, shields, IVs and play style. For full simulations visit <a href="https://pvpoke.com" target="_blank" rel="noopener" style="color:var(--accent)">PVPoke.com</a>.
+    </div>`;
+
+  result.classList.remove('hidden');
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── SHADOW BONUS CALCULATOR ───────────────────────────────────────────────
+function initShadowCalc() {
+  const pokSel = document.getElementById('shadow-pokemon');
+  if (pokSel && pokSel.options.length <= 1) {
+    POKE_BASE_STATS.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.num;
+      opt.textContent = `#${String(p.num).padStart(3,'0')} ${p.name}`;
+      pokSel.appendChild(opt);
+    });
+  }
+  const lvlSel = document.getElementById('shadow-level');
+  if (lvlSel && lvlSel.options.length === 0) {
+    [15, 20, 25, 30, 35, 40, 41, 45, 50, 51].forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l;
+      opt.textContent = `Level ${l}`;
+      if (l === 40) opt.selected = true;
+      lvlSel.appendChild(opt);
+    });
+  }
+}
+
+function calcShadow() {
+  const pokNum  = document.getElementById('shadow-pokemon').value;
+  const level   = parseFloat(document.getElementById('shadow-level')?.value || 40);
+  const result  = document.getElementById('shadow-result');
+  if (!pokNum) { result.classList.add('hidden'); return; }
+
+  const poke = POKE_BASE_STATS.find(p => p.num === parseInt(pokNum));
+  if (!poke) return;
+
+  const cpmEntry = CPM_LEVELS.find(([l]) => l === level);
+  const cpm = cpmEntry ? cpmEntry[1] : 0.8456;
+
+  // Use IV 14 as typical "good shadow" baseline so purification (+1 → 15) has visible effect
+  const shadowIV = 14;
+  const maxIV    = 15;
+  const normAtk = Math.round((poke.atk + maxIV) * cpm * 10) / 10;
+  const normDef = Math.round((poke.def + maxIV) * cpm * 10) / 10;
+  // Shadow: +20% ATK multiplier, defense multiplier = 1/1.2 ≈ 0.833 (takes 20% more damage)
+  const shadowAtk = Math.round((poke.atk + shadowIV) * cpm * 1.2 * 10) / 10;
+  const shadowDef = Math.round((poke.def + shadowIV) * cpm * (1 / 1.2) * 10) / 10;
+  // Purified: shadow IVs +1 each (capped at 15), so 14→15 is the typical benefit
+  const purIV  = Math.min(shadowIV + 1, 15);
+  const purAtk = Math.round((poke.atk + purIV) * cpm * 10) / 10;
+  const purDef = Math.round((poke.def + purIV) * cpm * 10) / 10;
+
+  const hp       = Math.floor((poke.sta + maxIV)    * cpm);
+  const shadowHp = Math.floor((poke.sta + shadowIV)  * cpm);
+  const purHp    = Math.floor((poke.sta + purIV)     * cpm);
+
+  result.innerHTML = `
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;font-style:italic">
+      Shadow/Purified shown at IV ${shadowIV}/15/15 → Purified IV ${purIV}/15/15. Normal shown at 15/15/15.
+    </div>
+    <div class="shadow-compare-grid">
+      <div class="shadow-card shadow-normal">
+        <div class="shadow-card-label">Normal</div>
+        <div class="shadow-stat-value shadow-stat-neutral">${normAtk}</div>
+        <div class="shadow-stat-desc">Eff. Attack</div>
+        <div class="shadow-stat-value shadow-stat-neutral" style="margin-top:8px">${normDef}</div>
+        <div class="shadow-stat-desc">Eff. Defense</div>
+        <div class="shadow-stat-value shadow-stat-neutral" style="margin-top:8px">${hp}</div>
+        <div class="shadow-stat-desc">Eff. HP</div>
+      </div>
+      <div class="shadow-card shadow-shadow">
+        <div class="shadow-card-label">👤 Shadow</div>
+        <div class="shadow-stat-value shadow-atk-up">${shadowAtk}</div>
+        <div class="shadow-stat-desc">+20% Attack</div>
+        <div class="shadow-stat-value shadow-def-down" style="margin-top:8px">${shadowDef}</div>
+        <div class="shadow-stat-desc">−17% Defense</div>
+        <div class="shadow-stat-value shadow-stat-neutral" style="margin-top:8px">${shadowHp}</div>
+        <div class="shadow-stat-desc">Eff. HP</div>
+      </div>
+      <div class="shadow-card shadow-purified">
+        <div class="shadow-card-label">✨ Purified</div>
+        <div class="shadow-stat-value shadow-atk-up">${purAtk}</div>
+        <div class="shadow-stat-desc">ATK (+1 IV)</div>
+        <div class="shadow-stat-value shadow-atk-up" style="margin-top:8px">${purDef}</div>
+        <div class="shadow-stat-desc">DEF (+1 IV)</div>
+        <div class="shadow-stat-value shadow-atk-up" style="margin-top:8px">${purHp}</div>
+        <div class="shadow-stat-desc">HP (+1 IV)</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7;background:var(--bg3);border-radius:8px;padding:10px 12px">
+      <strong>🟣 Shadow</strong> deals +20% more damage but also takes +20% more. Best for heavy attackers in raids and offense-heavy PvP strategies.<br>
+      <strong>🔵 Purified</strong> gets +1 to all IVs (up to 15), costs 10% less Stardust to Power Up, and unlocks the move <em>Return</em>.<br>
+      <strong>💡 PvP Tip:</strong> Shadow is often stronger in Master League where raw power matters. In Great/Ultra League, consider the IV changes when purifying.
+    </div>`;
+  result.classList.remove('hidden');
+}
 document.addEventListener('keydown', e => {
   const tag = e.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
-  const shortcuts = { '1': 'ranking-tab', '2': 'moves-tab', '3': 'home-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'calc-tab' };
+  const shortcuts = { '1': 'ranking-tab', '2': 'moves-tab', '3': 'home-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'calc-tab', '8': 'battle-tab' };
   if (shortcuts[e.key]) { e.preventDefault(); show(shortcuts[e.key]); }
 });
 
