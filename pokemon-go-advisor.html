@@ -1716,6 +1716,7 @@
   }
   .raid-sprite { width: 32px; height: 32px; image-rendering: pixelated; flex-shrink: 0; }
   .raid-name { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .raid-note { font-size: 10px; color: var(--text3); font-weight: 400; margin-left: 4px; }
   .raid-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .raid-types { display: flex; gap: 3px; flex-wrap: wrap; }
   .raid-weak-row { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
@@ -1889,6 +1890,7 @@
       <a href="https://leekduck.com/events/" target="_blank" rel="noopener">Leek Duck Events</a> ·
       <a href="https://pokemongohub.net/category/event/" target="_blank" rel="noopener">GO Hub</a>
       · Last verified: <span id="events-last-updated"></span>
+      <span id="events-live-badge" style="display:none;margin-left:6px;font-size:11px;font-weight:700;background:rgba(76,175,122,0.15);color:var(--green);border:1px solid var(--green);border-radius:10px;padding:1px 7px;vertical-align:middle"></span>
     </div>
 
     <div class="events-grid">
@@ -2063,6 +2065,15 @@
         </thead>
         <tbody id="moves-tbody"></tbody>
       </table>
+    </div>
+
+    <!-- ── ELITE TM COMPARISON ──────────────────────────────── -->
+    <div style="margin-top:32px">
+      <div class="home-section-title">✦ Elite TM Comparison</div>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:16px">
+        Elite TMs unlock exclusive Community Day and legacy moves. This table shows which Pokémon benefit most from using one, and whether the upgrade is worth the investment.
+      </p>
+      <div id="elite-tm-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
     </div>
   </section>
 
@@ -4412,7 +4423,7 @@ function show(tabId) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
   if (activeBtn) activeBtn.classList.add('active');
-  if (tabId === 'moves-tab')    renderMoves();
+  if (tabId === 'moves-tab')    { renderMoves(); renderEliteTMGuide(); }
   if (tabId === 'pokemon-tab')  renderPokemon();
   if (tabId === 'types-tab')    { renderTypes(); initDualTypeSelects(); }
   if (tabId === 'team-tab')     renderTeam();
@@ -4514,6 +4525,98 @@ function renderMoves() {
       <td class="td-pvp">${pvpHtml}</td>
       <td>${noteHtml}</td>
     </tr>`;
+  }).join('');
+}
+
+// ── ELITE TM COMPARISON ─────────────────────────────────────────────────────
+// Verdict thresholds (PvP power difference Elite move vs. best standard move)
+const ELITE_TM_WORTH_IT_THRESHOLD = 10; // ≥10 PvP power advantage → "Worth It"
+
+let eliteTMRendered = false;
+function renderEliteTMGuide() {
+  if (eliteTMRendered) return;
+  eliteTMRendered = true;
+  const grid = document.getElementById('elite-tm-grid');
+  if (!grid) return;
+
+  // Collect all Pokémon that have at least one starred (*) move (CD / legacy / Elite TM)
+  const entries = [];
+  POKEMON.forEach(pk => {
+    const allMoves = [...(pk.fast || []), ...(pk.charge || [])];
+    const eliteMoves = allMoves.filter(m => m.includes('*'));
+    if (!eliteMoves.length) return;
+
+    eliteMoves.forEach(rawEM => {
+      const emName = rawEM.replace(/\*/g, '').trim();
+      const emData = MOVES.find(m => m.name.toLowerCase() === emName.toLowerCase());
+      if (!emData) return;
+      // Skip if PvP data is unavailable for the elite move
+      if (emData.pvp == null) return;
+
+      // Find best non-elite move of same category
+      const sameCat = (pk.charge || []).concat(pk.fast || [])
+        .filter(m => !m.includes('*'))
+        .map(m => {
+          const clean = m.replace(/\*/g, '').trim();
+          return MOVES.find(mv => mv.name.toLowerCase() === clean.toLowerCase());
+        })
+        .filter(Boolean)
+        .filter(mv => mv.cat === emData.cat);
+
+      sameCat.sort((a, b) => (b.pvp || 0) - (a.pvp || 0));
+      const bestStd = sameCat[0] || null;
+
+      const pvpDiff = bestStd ? (emData.pvp || 0) - (bestStd.pvp || 0) : 0;
+      const isLegacy = emData.note && emData.note.includes('Elite TM');
+      const isCDMove = emData.note && emData.note.includes('Community Day');
+
+      entries.push({ pk, emName, emData, bestStd, pvpDiff, isLegacy, isCDMove });
+    });
+  });
+
+  // Sort: highest PvP advantage first
+  entries.sort((a, b) => b.pvpDiff - a.pvpDiff);
+
+  if (!entries.length) {
+    grid.innerHTML = '<p style="color:var(--text3)">No Elite TM data available.</p>';
+    return;
+  }
+
+  const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+
+  grid.innerHTML = entries.map(({ pk, emName, emData, bestStd, pvpDiff, isLegacy, isCDMove }) => {
+    const verdict =
+      pvpDiff >= ELITE_TM_WORTH_IT_THRESHOLD ? { label: '✅ Worth It', color: 'var(--green)' } :
+      pvpDiff > 0                            ? { label: '⚖️ Situational', color: 'var(--gold)' } :
+                                               { label: '⚠️ Niche Use',  color: 'var(--text3)' };
+    const moveTag = isLegacy ? '🔒 Legacy' : isCDMove ? '🌟 Community Day' : '✦ Exclusive';
+    const altHtml = bestStd
+      ? `<span style="color:var(--text3)">${bestStd.name} (${bestStd.pvp ?? '?'} PvP)</span>`
+      : '<span style="color:var(--text3)">—</span>';
+
+    return `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="${SPRITE_BASE}${pk.num}.png" alt="${pk.name}" style="width:48px;height:48px;image-rendering:pixelated" onerror="this.style.opacity=0.3">
+        <div>
+          <div style="font-weight:700;font-size:14px">${pk.name}</div>
+          <div>${pk.types.map(t => typeBadge(t)).join('')}</div>
+        </div>
+        <div style="margin-left:auto;font-size:12px;font-weight:700;color:${verdict.color}">${verdict.label}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+        <div style="background:var(--bg3);border-radius:6px;padding:6px 8px">
+          <div style="color:var(--text3);margin-bottom:2px">${moveTag}</div>
+          <div style="font-weight:600">${escHtml(emName)}</div>
+          <div style="color:var(--text2)">${typeBadge(emData.type)} · ${emData.pvp ?? '?'} PvP</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:6px;padding:6px 8px">
+          <div style="color:var(--text3);margin-bottom:2px">Best Standard</div>
+          <div style="font-weight:600">${altHtml}</div>
+          <div style="color:var(--accent);font-size:11px;margin-top:2px">${pvpDiff > 0 ? '+' + pvpDiff + ' PvP advantage' : pvpDiff < 0 ? pvpDiff + ' PvP' : 'Equal'}</div>
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
 
@@ -4911,7 +5014,7 @@ const CURRENT_EVENTS = {
   // Authoritative source URLs for each section
   sources: {
     wildnis:      'https://leekduck.com/events/',
-    raids:        'https://leekduck.com/boss/',
+    raids:        'https://leekduck.com/raid-bosses/',
     bonuses:      'https://pokemongolive.com',
     futureEvents: 'https://leekduck.com/events/',
   },
@@ -4926,25 +5029,37 @@ const CURRENT_EVENTS = {
     { num: 810,  name: 'Grookey',   types: ['grass'],          from: '14.03.2026', to: '22.03.2026', note: 'Community Day Week',source: 'https://pokemongolive.com/post/community-day-march-2026/' },
     { num: 133,  name: 'Eevee',     types: ['normal'],         from: '14.03.2026', to: '17.03.2026', note: 'Spotlight Hour',    source: 'https://pokemongolive.com/post/spotlight-hour-march-2026/' },
   ],
-  // Raid bosses per tier (1-star to Mega)
+  // Raid bosses per tier (1-star to Shadow) – verified 2026-03-09
   raids: {
     '1★': [
-      { num: 396, name: 'Starly',    types: ['normal','flying'], source: 'https://leekduck.com/boss/' },
-      { num: 293, name: 'Whismur',   types: ['normal'],          source: 'https://leekduck.com/boss/' },
-      { num: 410, name: 'Shieldon',  types: ['rock','steel'],    source: 'https://leekduck.com/boss/' },
+      { num: 25, name: 'Pikachu (Red\'s Hat)',     types: ['electric'], note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
+      { num: 25, name: 'Pikachu (Leaf\'s Hat)',    types: ['electric'], note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
+      { num: 25, name: 'Pikachu (Ethan\'s Hat)',   types: ['electric'], note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
+      { num: 25, name: 'Pikachu (Brendan\'s Hat)', types: ['electric'], note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
+      { num: 25, name: 'Pikachu (Lucas\'s Hat)',   types: ['electric'], note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
+      { num: 25, name: 'Pikachu (Hilbert\'s Hat)', types: ['electric'], note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
+      { num: 25, name: 'Pikachu (Calem\'s Hat)',   types: ['electric'], note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
     ],
     '3★': [
-      { num: 143, name: 'Snorlax',   types: ['normal'],          source: 'https://leekduck.com/boss/' },
-      { num: 131, name: 'Lapras',    types: ['water','ice'],     source: 'https://leekduck.com/boss/' },
-      { num: 373, name: 'Salamence', types: ['dragon','flying'], source: 'https://leekduck.com/boss/' },
+      { num: 3,  name: 'Venusaur',  types: ['grass','poison'],  note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
+      { num: 6,  name: 'Charizard', types: ['fire','flying'],   note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
+      { num: 9,  name: 'Blastoise', types: ['water'],           note: '30th Anniversary', source: 'https://leekduck.com/raid-bosses/' },
     ],
     '5★': [
-      { num: 644, name: 'Thundurus', types: ['electric','flying'], source: 'https://pokemongolive.com/post/thundurus-therian-raids-2026/' },
-      { num: 641, name: 'Tornadus',  types: ['flying'],            source: 'https://pokemongolive.com/post/tornadus-therian-raids-2026/' },
+      { num: 144, name: 'Articuno', types: ['ice','flying'],     source: 'https://leekduck.com/raid-bosses/' },
+      { num: 145, name: 'Zapdos',   types: ['electric','flying'],source: 'https://leekduck.com/raid-bosses/' },
+      { num: 146, name: 'Moltres',  types: ['fire','flying'],    source: 'https://leekduck.com/raid-bosses/' },
     ],
     'Mega': [
-      { num: 6,   name: 'Mega Charizard Y', types: ['fire','flying'], source: 'https://leekduck.com/boss/' },
-    ]
+      { num: 127, name: 'Mega Pinsir', types: ['bug','flying'], note: 'until 10 Mar', source: 'https://leekduck.com/raid-bosses/' },
+    ],
+    'Shadow': [
+      { num: 380, name: 'Shadow Latias',        types: ['dragon','psychic'],  note: '5★ – all month',  source: 'https://leekduck.com/raid-bosses/' },
+      { num: 147, name: 'Shadow Dratini',       types: ['dragon'],            note: '1★ Shadow',       source: 'https://leekduck.com/raid-bosses/' },
+      { num: 207, name: 'Shadow Gligar',        types: ['ground','flying'],   note: '1★ Shadow',       source: 'https://leekduck.com/raid-bosses/' },
+      { num: 105, name: 'Shadow Alolan Marowak',types: ['fire','ghost'],      note: '3★ Shadow',       source: 'https://leekduck.com/raid-bosses/' },
+      { num: 131, name: 'Shadow Lapras',        types: ['water','ice'],       note: '3★ Shadow',       source: 'https://leekduck.com/raid-bosses/' },
+    ],
   },
   // Current event bonuses
   bonuses: [
@@ -6874,6 +6989,7 @@ function buildGenTabs() {
 }
 buildGenTabs();
 renderMoves();
+renderEliteTMGuide();
 renderPokemon();
 
 // ── STARDUST DATA ─────────────────────────────────────────────────────────────
@@ -7053,7 +7169,7 @@ function renderCurrentEvents() {
   // Raids
   const raidsEl = document.getElementById('raids-grid');
   if (raidsEl && raidsEl.children.length === 0) {
-    const tierOrder = ['1★', '3★', '5★', 'Mega'];
+    const tierOrder = ['1★', '3★', '5★', 'Mega', 'Shadow'];
     raidsEl.innerHTML = tierOrder
       .filter(t => CURRENT_EVENTS.raids[t] && CURRENT_EVENTS.raids[t].length > 0)
       .map(tier => `
@@ -7066,7 +7182,7 @@ function renderCurrentEvents() {
             <div class="raid-item">
               <img class="raid-sprite" src="${SPRITE_BASE}${p.num}.png" alt="${p.name}" onerror="this.style.opacity=0.3">
               <div class="raid-info">
-                <div class="raid-name">${p.name}</div>
+                <div class="raid-name">${p.name}${p.note ? `<span class="raid-note">(${p.note})</span>` : ''}</div>
                 <div class="raid-types">${p.types.map(t => typeBadge(t)).join('')}</div>
                 ${weakHtml ? `<div class="raid-weak-row"><span class="raid-weak-label">Weak:</span>${weakHtml}</div>` : ''}
               </div>
@@ -7179,6 +7295,48 @@ window.addEventListener('scroll', () => {
     document.body.classList.add('light-theme');
     const btn = document.getElementById('theme-toggle-btn');
     if (btn) btn.textContent = '🌙';
+  }
+})();
+
+// ── AUTO-FETCH events.json from GitHub (keeps news current without PRs) ──────
+// Tries to load the latest events.json from the repository.
+// On success the in-memory CURRENT_EVENTS is updated and the Home tab
+// re-renders – no page reload required.
+(async function fetchRemoteEvents() {
+  const RAW_URL =
+    'https://raw.githubusercontent.com/homegrowbook-cmd/App/main/events.json';
+  try {
+    const resp = await fetch(RAW_URL, { cache: 'no-store' });
+    if (!resp.ok) return;
+    const data = await resp.json();
+    // Basic sanity-check: must have at least raids and lastUpdated
+    if (!data || !data.raids || !data.lastUpdated) return;
+
+    // Merge remote data into CURRENT_EVENTS
+    Object.assign(CURRENT_EVENTS, data);
+
+    // Re-render the home tab with fresh data
+    const wildnisEl  = document.getElementById('wildnis-list');
+    const raidsEl    = document.getElementById('raids-grid');
+    const bonusEl    = document.getElementById('bonus-list');
+    const futureEl   = document.getElementById('future-events-list');
+    if (wildnisEl)  wildnisEl.innerHTML  = '';
+    if (raidsEl)    raidsEl.innerHTML    = '';
+    if (bonusEl)    bonusEl.innerHTML    = '';
+    if (futureEl)   futureEl.innerHTML   = '';
+
+    renderCurrentEvents();
+    checkEventDataFreshness();
+
+    // Show a subtle "Live data loaded" indicator on the events panel
+    const badge = document.getElementById('events-live-badge');
+    if (badge) {
+      badge.textContent = '🟢 Live';
+      badge.title = 'Events loaded from GitHub – last updated ' + data.lastUpdated;
+      badge.style.display = 'inline-block';
+    }
+  } catch (_) {
+    // Network unavailable or CORS – silently fall back to hardcoded data
   }
 })();
 </script>

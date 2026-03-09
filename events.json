@@ -1,0 +1,358 @@
+{
+  "lastUpdated": "2026-03-09",
+  "autoUpdated": true,
+  "sources": {
+    "wildnis": "https://leekduck.com/events/",
+    "raids": "https://leekduck.com/raid-bosses/",
+    "bonuses": "https://pokemongolive.com",
+    "futureEvents": "https://leekduck.com/events/"
+  },
+  "wildnis": [
+    {
+      "num": 1,
+      "name": "Bulbasaur",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Spring Season",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    },
+    {
+      "num": 152,
+      "name": "Chikorita",
+      "types": [
+        "grass"
+      ],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Spring Season",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    },
+    {
+      "num": 252,
+      "name": "Treecko",
+      "types": [
+        "grass"
+      ],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Spring Season",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    },
+    {
+      "num": 387,
+      "name": "Turtwig",
+      "types": [
+        "grass"
+      ],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Spring Season",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    },
+    {
+      "num": 495,
+      "name": "Snivy",
+      "types": [
+        "grass"
+      ],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Spring Season",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    },
+    {
+      "num": 650,
+      "name": "Chespin",
+      "types": [
+        "grass"
+      ],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Spring Season",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    },
+    {
+      "num": 810,
+      "name": "Grookey",
+      "types": [
+        "grass"
+      ],
+      "from": "14.03.2026",
+      "to": "22.03.2026",
+      "note": "Community Day Week",
+      "source": "https://pokemongolive.com/post/community-day-march-2026/"
+    },
+    {
+      "num": 133,
+      "name": "Eevee",
+      "types": [
+        "normal"
+      ],
+      "from": "14.03.2026",
+      "to": "17.03.2026",
+      "note": "Spotlight Hour",
+      "source": "https://pokemongolive.com/post/spotlight-hour-march-2026/"
+    }
+  ],
+  "raids": {
+    "1★": [
+      {
+        "num": 25,
+        "name": "Pikachu (Red's Hat)",
+        "types": [
+          "electric"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 25,
+        "name": "Pikachu (Leaf's Hat)",
+        "types": [
+          "electric"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 25,
+        "name": "Pikachu (Ethan's Hat)",
+        "types": [
+          "electric"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 25,
+        "name": "Pikachu (Brendan's Hat)",
+        "types": [
+          "electric"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 25,
+        "name": "Pikachu (Lucas's Hat)",
+        "types": [
+          "electric"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 25,
+        "name": "Pikachu (Hilbert's Hat)",
+        "types": [
+          "electric"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 25,
+        "name": "Pikachu (Calem's Hat)",
+        "types": [
+          "electric"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      }
+    ],
+    "3★": [
+      {
+        "num": 3,
+        "name": "Venusaur",
+        "types": [
+          "grass",
+          "poison"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 6,
+        "name": "Charizard",
+        "types": [
+          "fire",
+          "flying"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 9,
+        "name": "Blastoise",
+        "types": [
+          "water"
+        ],
+        "note": "30th Anniversary",
+        "source": "https://leekduck.com/raid-bosses/"
+      }
+    ],
+    "5★": [
+      {
+        "num": 144,
+        "name": "Articuno",
+        "types": [
+          "ice",
+          "flying"
+        ],
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 145,
+        "name": "Zapdos",
+        "types": [
+          "electric",
+          "flying"
+        ],
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 146,
+        "name": "Moltres",
+        "types": [
+          "fire",
+          "flying"
+        ],
+        "source": "https://leekduck.com/raid-bosses/"
+      }
+    ],
+    "Mega": [
+      {
+        "num": 127,
+        "name": "Mega Pinsir",
+        "types": [
+          "bug",
+          "flying"
+        ],
+        "note": "until 10 Mar",
+        "source": "https://leekduck.com/raid-bosses/"
+      }
+    ],
+    "Shadow": [
+      {
+        "num": 380,
+        "name": "Shadow Latias",
+        "types": [
+          "dragon",
+          "psychic"
+        ],
+        "note": "5★ Shadow – all month",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 147,
+        "name": "Shadow Dratini",
+        "types": [
+          "dragon"
+        ],
+        "note": "1★ Shadow",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 207,
+        "name": "Shadow Gligar",
+        "types": [
+          "ground",
+          "flying"
+        ],
+        "note": "1★ Shadow",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 105,
+        "name": "Shadow Alolan Marowak",
+        "types": [
+          "fire",
+          "ghost"
+        ],
+        "note": "3★ Shadow",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 131,
+        "name": "Shadow Lapras",
+        "types": [
+          "water",
+          "ice"
+        ],
+        "note": "3★ Shadow",
+        "source": "https://leekduck.com/raid-bosses/"
+      }
+    ]
+  },
+  "bonuses": [
+    {
+      "icon": "⭐",
+      "text": "2× Stardust for catching Pokémon",
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    },
+    {
+      "icon": "🥚",
+      "text": "Half egg hatch distance",
+      "from": "01.03.2026",
+      "to": "14.03.2026",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    },
+    {
+      "icon": "🍬",
+      "text": "3× XP for evolutions",
+      "from": "14.03.2026",
+      "to": "17.03.2026",
+      "source": "https://pokemongolive.com/post/community-day-march-2026/"
+    },
+    {
+      "icon": "🎁",
+      "text": "3× Candy for catching Pokémon (Community Day)",
+      "from": "16.03.2026",
+      "to": "16.03.2026",
+      "source": "https://pokemongolive.com/post/community-day-march-2026/"
+    },
+    {
+      "icon": "🔋",
+      "text": "Charge move costume bonus active",
+      "from": "07.03.2026",
+      "to": "21.03.2026",
+      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+    }
+  ],
+  "futureEvents": [
+    {
+      "icon": "🌸",
+      "name": "Spring Community Day – Grookey",
+      "date": "16 Mar 2026, 14:00–17:00",
+      "desc": "Grookey with exclusive move Razor Leaf in the wild & raids.",
+      "source": "https://pokemongolive.com/post/community-day-march-2026/"
+    },
+    {
+      "icon": "⚡",
+      "name": "GO Battle League – Season 17 Start",
+      "date": "22 Mar 2026",
+      "desc": "New league season with Premiere Cup and Pokémon GO Cup.",
+      "source": "https://pokemongolive.com/post/go-battle-league-season-17/"
+    },
+    {
+      "icon": "🌍",
+      "name": "GO Fest 2026 – Global",
+      "date": "19–21 Jul 2026",
+      "desc": "Worldwide simultaneous event – special spawns, raids & field research.",
+      "source": "https://pokemongolive.com/post/go-fest-2026-global/"
+    },
+    {
+      "icon": "🏟️",
+      "name": "GO Fest 2026 – Live Madrid",
+      "date": "30 May–01 Jun 2026",
+      "desc": "In-person event in Madrid with exclusive spawns and raids.",
+      "source": "https://pokemongolive.com/post/go-fest-2026-madrid/"
+    }
+  ]
+}
