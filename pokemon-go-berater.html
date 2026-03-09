@@ -1676,7 +1676,11 @@
     padding: 5px 8px;
   }
   .raid-sprite { width: 32px; height: 32px; image-rendering: pixelated; flex-shrink: 0; }
-  .raid-name { font-size: 12px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .raid-name { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .raid-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .raid-types { display: flex; gap: 3px; flex-wrap: wrap; }
+  .raid-weak-row { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+  .raid-weak-label { font-size: 9px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.4px; flex-shrink: 0; }
   .raid-stars { font-size: 10px; color: var(--gold); }
 
   /* Bonus list */
@@ -1762,27 +1766,27 @@
       </div>
     </div>
 
-    <div class="home-section-title">🌍 Aktuell in Pokémon GO</div>
+    <div class="home-section-title">🌍 Currently in Pokémon GO</div>
 
     <div class="events-grid">
-      <!-- Wildnis -->
+      <!-- Wild Spawns -->
       <div class="event-panel">
-        <div class="event-panel-title">🌿 Wildnis</div>
+        <div class="event-panel-title">🌿 Wild Spawns</div>
         <div class="wildnis-list" id="wildnis-list"></div>
       </div>
       <!-- Raids -->
       <div class="event-panel">
-        <div class="event-panel-title">⚔️ Aktuelle Raids</div>
+        <div class="event-panel-title">⚔️ Current Raids</div>
         <div class="raids-grid" id="raids-grid"></div>
       </div>
-      <!-- Boni -->
+      <!-- Bonuses -->
       <div class="event-panel">
-        <div class="event-panel-title">🎁 Aktuelle Boni</div>
+        <div class="event-panel-title">🎁 Active Bonuses</div>
         <div class="bonus-list" id="bonus-list"></div>
       </div>
     </div>
 
-    <div class="home-section-title">📅 Kommende Events</div>
+    <div class="home-section-title">📅 Upcoming Events</div>
     <div class="future-events-list" id="future-events-list" style="margin-bottom:32px"></div>
 
     <div class="home-section-title">🗂️ Features</div>
@@ -4446,68 +4450,68 @@ const RANKING_DATA = {
 const CURRENT_EVENTS = {
   // Wild Pokémon spawns: num = Pokédex number, name, types, from/to dates
   wildnis: [
-    { num: 1,   name: 'Bisasam',     types: ['grass','poison'], from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
-    { num: 152,  name: 'Endivie',    types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
-    { num: 252,  name: 'Geckarbor',  types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
-    { num: 387,  name: 'Chelast',    types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
-    { num: 495,  name: 'Serpifeu',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
-    { num: 650,  name: 'Igamaro',    types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
-    { num: 810,  name: 'Chimpep',    types: ['grass'],          from: '14.03.2026', to: '22.03.2026', note: 'Community Day Woche' },
-    { num: 133,  name: 'Evoli',      types: ['normal'],         from: '14.03.2026', to: '17.03.2026', note: 'Spotlight Hour' },
+    { num: 1,   name: 'Bulbasaur',  types: ['grass','poison'], from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
+    { num: 152,  name: 'Chikorita', types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
+    { num: 252,  name: 'Treecko',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
+    { num: 387,  name: 'Turtwig',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
+    { num: 495,  name: 'Snivy',     types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
+    { num: 650,  name: 'Chespin',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
+    { num: 810,  name: 'Grookey',   types: ['grass'],          from: '14.03.2026', to: '22.03.2026', note: 'Community Day Week' },
+    { num: 133,  name: 'Eevee',     types: ['normal'],         from: '14.03.2026', to: '17.03.2026', note: 'Spotlight Hour' },
   ],
   // Raid bosses per tier (1-star to Mega)
   raids: {
     '1★': [
-      { num: 396, name: 'Staralili', types: ['normal','flying'] },
-      { num: 293, name: 'Rasaff',    types: ['normal'] },
-      { num: 403, name: 'Shieldon',  types: ['rock','steel'] },
+      { num: 396, name: 'Starly',    types: ['normal','flying'] },
+      { num: 293, name: 'Whismur',   types: ['normal'] },
+      { num: 410, name: 'Shieldon',  types: ['rock','steel'] },
     ],
     '3★': [
-      { num: 143, name: 'Relaxo',    types: ['normal'] },
+      { num: 143, name: 'Snorlax',   types: ['normal'] },
       { num: 131, name: 'Lapras',    types: ['water','ice'] },
-      { num: 373, name: 'Brutalanda',types: ['dragon','flying'] },
+      { num: 373, name: 'Salamence', types: ['dragon','flying'] },
     ],
     '5★': [
-      { num: 644, name: 'Voltolos',  types: ['electric','flying'] },
-      { num: 641, name: 'Boreos',    types: ['flying'] },
+      { num: 644, name: 'Thundurus', types: ['electric','flying'] },
+      { num: 641, name: 'Tornadus',  types: ['flying'] },
     ],
     'Mega': [
-      { num: 6,   name: 'Mega-Glurak Y', types: ['fire','flying'] },
+      { num: 6,   name: 'Mega Charizard Y', types: ['fire','flying'] },
     ]
   },
   // Current event bonuses
   bonuses: [
-    { icon: '⭐', text: '2× Sternenstaub beim Fangen',          from: '01.03.2026', to: '31.03.2026' },
-    { icon: '🥚', text: 'Halbe Brutdistanz für Eier',            from: '01.03.2026', to: '14.03.2026' },
-    { icon: '🍬', text: '3× EP beim Entwickeln',                 from: '14.03.2026', to: '17.03.2026' },
-    { icon: '🎁', text: '3× Bonbons beim Fangen (Community Day)',from: '16.03.2026', to: '16.03.2026' },
-    { icon: '🔋', text: 'Ladungsangriff-Kostüm-Bonus aktiv',     from: '07.03.2026', to: '21.03.2026' },
+    { icon: '⭐', text: '2× Stardust for catching Pokémon',      from: '01.03.2026', to: '31.03.2026' },
+    { icon: '🥚', text: 'Half egg hatch distance',                from: '01.03.2026', to: '14.03.2026' },
+    { icon: '🍬', text: '3× XP for evolutions',                  from: '14.03.2026', to: '17.03.2026' },
+    { icon: '🎁', text: '3× Candy for catching Pokémon (Community Day)', from: '16.03.2026', to: '16.03.2026' },
+    { icon: '🔋', text: 'Charge move costume bonus active',       from: '07.03.2026', to: '21.03.2026' },
   ],
   // Upcoming events
   futureEvents: [
     {
       icon: '🌸',
-      name: 'Frühlings-Community-Day – Chimpep',
-      date: '16.03.2026, 14:00–17:00 Uhr',
-      desc: 'Chimpep mit Exklusiv-Attacke Pflanzklinge in Wildnis & Raids.'
+      name: 'Spring Community Day – Grookey',
+      date: '16 Mar 2026, 14:00–17:00',
+      desc: 'Grookey with exclusive move Razor Leaf in the wild & raids.'
     },
     {
       icon: '⚡',
-      name: 'Go Battle League – Season 17 Start',
-      date: '22.03.2026',
-      desc: 'Neue Liga-Saison mit Premiere-Cup und Pokémon GO-Cup.'
+      name: 'GO Battle League – Season 17 Start',
+      date: '22 Mar 2026',
+      desc: 'New league season with Premiere Cup and Pokémon GO Cup.'
     },
     {
       icon: '🌍',
-      name: 'GO-Fest 2026 – Global',
-      date: '19.–21.07.2026',
-      desc: 'Weltweit gleichzeitig – spezielle Spawns, Raids & Feldforschungen.'
+      name: 'GO Fest 2026 – Global',
+      date: '19–21 Jul 2026',
+      desc: 'Worldwide simultaneous event – special spawns, raids & field research.'
     },
     {
       icon: '🏟️',
-      name: 'GO-Fest 2026 – Live Madrid',
-      date: '30.05.–01.06.2026',
-      desc: 'Präsenz-Event in Madrid mit exklusiven Spawns und Raids.'
+      name: 'GO Fest 2026 – Live Madrid',
+      date: '30 May–01 Jun 2026',
+      desc: 'In-person event in Madrid with exclusive spawns and raids.'
     },
   ]
 };
@@ -5495,11 +5499,19 @@ function renderCurrentEvents() {
       .map(tier => `
         <div class="raid-tier-block">
           <div class="raid-tier-label">${tier}</div>
-          ${CURRENT_EVENTS.raids[tier].map(p => `
+          ${CURRENT_EVENTS.raids[tier].map(p => {
+            const info = getRankingTypeInfo(p.types);
+            const weakHtml = info.weaknesses.slice(0,3).map(t => typeBadge(t)).join('');
+            return `
             <div class="raid-item">
               <img class="raid-sprite" src="${SPRITE_BASE}${p.num}.png" alt="${p.name}" onerror="this.style.opacity=0.3">
-              <div class="raid-name">${p.name}</div>
-            </div>`).join('')}
+              <div class="raid-info">
+                <div class="raid-name">${p.name}</div>
+                <div class="raid-types">${p.types.map(t => typeBadge(t)).join('')}</div>
+                ${weakHtml ? `<div class="raid-weak-row"><span class="raid-weak-label">Weak:</span>${weakHtml}</div>` : ''}
+              </div>
+            </div>`;
+          }).join('')}
         </div>`).join('');
   }
 
