@@ -1487,6 +1487,112 @@
   .pill { transition: background 0.15s, color 0.15s, border-color 0.15s; }
   .calc-btn { transition: background 0.15s, transform 0.1s; }
   .calc-btn:active { transform: scale(0.97); }
+
+  /* ── CURRENT EVENTS ─────────────────────────────────────────────────────── */
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .event-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .event-panel-title {
+    font-family: 'Bangers', cursive;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Wild spawn cards */
+  .wildnis-list { display: flex; flex-direction: column; gap: 6px; }
+  .wildnis-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 7px 10px;
+  }
+  .wildnis-sprite { width: 40px; height: 40px; image-rendering: pixelated; flex-shrink: 0; }
+  .wildnis-info { flex: 1; min-width: 0; }
+  .wildnis-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .wildnis-date { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .wildnis-types { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 3px; }
+
+  /* Raid boss cards */
+  .raids-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .raid-tier-block { display: flex; flex-direction: column; gap: 4px; }
+  .raid-tier-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text3);
+    padding-bottom: 2px;
+  }
+  .raid-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 5px 8px;
+  }
+  .raid-sprite { width: 32px; height: 32px; image-rendering: pixelated; flex-shrink: 0; }
+  .raid-name { font-size: 12px; font-weight: 600; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .raid-stars { font-size: 10px; color: var(--gold); }
+
+  /* Bonus list */
+  .bonus-list { display: flex; flex-direction: column; gap: 6px; }
+  .bonus-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.45;
+  }
+  .bonus-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+  .bonus-dates { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* Future events list */
+  .future-events-list { display: flex; flex-direction: column; gap: 8px; }
+  .future-event-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .future-event-icon { font-size: 22px; flex-shrink: 0; }
+  .future-event-info { flex: 1; }
+  .future-event-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .future-event-date { font-size: 11px; color: var(--accent); margin-top: 2px; font-weight: 600; }
+  .future-event-desc { font-size: 12px; color: var(--text3); margin-top: 3px; line-height: 1.4; }
+
+  @media (max-width: 640px) {
+    .events-grid { grid-template-columns: 1fr; }
+    .raids-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -1533,6 +1639,29 @@
         <span class="home-hero-badge">🇬🇧 In English</span>
       </div>
     </div>
+
+    <div class="home-section-title">🌍 Aktuell in Pokémon GO</div>
+
+    <div class="events-grid">
+      <!-- Wildnis -->
+      <div class="event-panel">
+        <div class="event-panel-title">🌿 Wildnis</div>
+        <div class="wildnis-list" id="wildnis-list"></div>
+      </div>
+      <!-- Raids -->
+      <div class="event-panel">
+        <div class="event-panel-title">⚔️ Aktuelle Raids</div>
+        <div class="raids-grid" id="raids-grid"></div>
+      </div>
+      <!-- Boni -->
+      <div class="event-panel">
+        <div class="event-panel-title">🎁 Aktuelle Boni</div>
+        <div class="bonus-list" id="bonus-list"></div>
+      </div>
+    </div>
+
+    <div class="home-section-title">📅 Kommende Events</div>
+    <div class="future-events-list" id="future-events-list" style="margin-bottom:32px"></div>
 
     <div class="home-section-title">🗂️ Features</div>
 
@@ -4120,6 +4249,76 @@ const RANKING_DATA = {
   ]
 };
 
+// ── CURRENT EVENTS DATA ─────────────────────────────────────────────────────
+const CURRENT_EVENTS = {
+  // Wild Pokémon spawns: num = Pokédex number, name, types, from/to dates
+  wildnis: [
+    { num: 1,   name: 'Bisasam',     types: ['grass','poison'], from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
+    { num: 152,  name: 'Endivie',    types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
+    { num: 252,  name: 'Geckarbor',  types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
+    { num: 387,  name: 'Chelast',    types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
+    { num: 495,  name: 'Serpifeu',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
+    { num: 650,  name: 'Igamaro',    types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Frühlings-Saison' },
+    { num: 810,  name: 'Chimpep',    types: ['grass'],          from: '14.03.2026', to: '22.03.2026', note: 'Community Day Woche' },
+    { num: 133,  name: 'Evoli',      types: ['normal'],         from: '14.03.2026', to: '17.03.2026', note: 'Spotlight Hour' },
+  ],
+  // Raid bosses per tier (1-star to Mega)
+  raids: {
+    '1★': [
+      { num: 396, name: 'Staralili', types: ['normal','flying'] },
+      { num: 293, name: 'Rasaff',    types: ['normal'] },
+      { num: 403, name: 'Shieldon',  types: ['rock','steel'] },
+    ],
+    '3★': [
+      { num: 143, name: 'Relaxo',    types: ['normal'] },
+      { num: 131, name: 'Lapras',    types: ['water','ice'] },
+      { num: 373, name: 'Brutalanda',types: ['dragon','flying'] },
+    ],
+    '5★': [
+      { num: 644, name: 'Voltolos',  types: ['electric','flying'] },
+      { num: 641, name: 'Boreos',    types: ['flying'] },
+    ],
+    'Mega': [
+      { num: 6,   name: 'Mega-Glurak Y', types: ['fire','flying'] },
+    ]
+  },
+  // Current event bonuses
+  bonuses: [
+    { icon: '⭐', text: '2× Sternenstaub beim Fangen',          from: '01.03.2026', to: '31.03.2026' },
+    { icon: '🥚', text: 'Halbe Brutdistanz für Eier',            from: '01.03.2026', to: '14.03.2026' },
+    { icon: '🍬', text: '3× EP beim Entwickeln',                 from: '14.03.2026', to: '17.03.2026' },
+    { icon: '🎁', text: '3× Bonbons beim Fangen (Community Day)',from: '16.03.2026', to: '16.03.2026' },
+    { icon: '🔋', text: 'Ladungsangriff-Kostüm-Bonus aktiv',     from: '07.03.2026', to: '21.03.2026' },
+  ],
+  // Upcoming events
+  futureEvents: [
+    {
+      icon: '🌸',
+      name: 'Frühlings-Community-Day – Chimpep',
+      date: '16.03.2026, 14:00–17:00 Uhr',
+      desc: 'Chimpep mit Exklusiv-Attacke Pflanzklinge in Wildnis & Raids.'
+    },
+    {
+      icon: '⚡',
+      name: 'Go Battle League – Season 17 Start',
+      date: '22.03.2026',
+      desc: 'Neue Liga-Saison mit Premiere-Cup und Pokémon GO-Cup.'
+    },
+    {
+      icon: '🌍',
+      name: 'GO-Fest 2026 – Global',
+      date: '19.–21.07.2026',
+      desc: 'Weltweit gleichzeitig – spezielle Spawns, Raids & Feldforschungen.'
+    },
+    {
+      icon: '🏟️',
+      name: 'GO-Fest 2026 – Live Madrid',
+      date: '30.05.–01.06.2026',
+      desc: 'Präsenz-Event in Madrid mit exklusiven Spawns und Raids.'
+    },
+  ]
+};
+
 function setLeague(league) {
   activeLeague = league;
   document.querySelectorAll('#league-pills .pill').forEach((p, i) => {
@@ -4741,9 +4940,74 @@ function updateHomeStats() {
         <div class="meta-spotlight-tier">⭐ GL S-Tier</div>
       </div>`).join('');
   }
+
+  renderCurrentEvents();
 }
 updateHomeStats();
 renderRanking();
+
+// ── CURRENT EVENTS RENDERER ──────────────────────────────────────────────────
+function renderCurrentEvents() {
+  const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+
+  // Wildnis
+  const wildnisEl = document.getElementById('wildnis-list');
+  if (wildnisEl && wildnisEl.children.length === 0) {
+    wildnisEl.innerHTML = CURRENT_EVENTS.wildnis.map(p => `
+      <div class="wildnis-item">
+        <img class="wildnis-sprite" src="${SPRITE_BASE}${p.num}.png" alt="${p.name}" onerror="this.style.opacity=0.3">
+        <div class="wildnis-info">
+          <div class="wildnis-name">${p.name}</div>
+          <div class="wildnis-types">${p.types.map(t => typeBadge(t)).join('')}</div>
+          <div class="wildnis-date">${p.from} – ${p.to}${p.note ? ' · ' + p.note : ''}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Raids
+  const raidsEl = document.getElementById('raids-grid');
+  if (raidsEl && raidsEl.children.length === 0) {
+    const tierOrder = ['1★', '3★', '5★', 'Mega'];
+    raidsEl.innerHTML = tierOrder
+      .filter(t => CURRENT_EVENTS.raids[t] && CURRENT_EVENTS.raids[t].length > 0)
+      .map(tier => `
+        <div class="raid-tier-block">
+          <div class="raid-tier-label">${tier}</div>
+          ${CURRENT_EVENTS.raids[tier].map(p => `
+            <div class="raid-item">
+              <img class="raid-sprite" src="${SPRITE_BASE}${p.num}.png" alt="${p.name}" onerror="this.style.opacity=0.3">
+              <div class="raid-name">${p.name}</div>
+            </div>`).join('')}
+        </div>`).join('');
+  }
+
+  // Bonuses
+  const bonusEl = document.getElementById('bonus-list');
+  if (bonusEl && bonusEl.children.length === 0) {
+    bonusEl.innerHTML = CURRENT_EVENTS.bonuses.map(b => `
+      <div class="bonus-item">
+        <span class="bonus-icon">${b.icon}</span>
+        <div>
+          <div>${b.text}</div>
+          ${b.from ? `<div class="bonus-dates">${b.from}${b.to && b.to !== b.from ? ' – ' + b.to : ''}</div>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  // Future Events
+  const futureEl = document.getElementById('future-events-list');
+  if (futureEl && futureEl.children.length === 0) {
+    futureEl.innerHTML = CURRENT_EVENTS.futureEvents.map(ev => `
+      <div class="future-event-item">
+        <span class="future-event-icon">${ev.icon}</span>
+        <div class="future-event-info">
+          <div class="future-event-name">${ev.name}</div>
+          <div class="future-event-date">📅 ${ev.date}</div>
+          ${ev.desc ? `<div class="future-event-desc">${ev.desc}</div>` : ''}
+        </div>
+      </div>`).join('');
+  }
+}
 
 // ── DUAL TYPE MATCHER ───────────────────────────────────────────────────────
 function renderDualType() {
