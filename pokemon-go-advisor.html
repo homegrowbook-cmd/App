@@ -1604,9 +1604,12 @@
   .sd-sprite { width: 36px; height: 36px; image-rendering: pixelated; }
   .sd-name { font-weight: 600; }
   .sd-sort-label { font-size: .85rem; opacity: .7; white-space: nowrap; }
-  .sd-val-1500 { color: #f5c842; }
+  .sd-val-2100 { color: #f5c842; }
+  .sd-val-1200 { color: #ff8c42; }
   .sd-val-1000 { color: #e07b40; }
+  .sd-val-950  { color: #e05858; }
   .sd-val-750  { color: #9cb8ff; }
+  .sd-val-700  { color: #7ba5d0; }
   .sd-val-500  { color: #7ec880; }
   .sd-val-100  { color: var(--text2); }
   /* inline stardust badge (shown only on mobile) */
@@ -2345,15 +2348,18 @@
   <section id="stardust-tab" class="tab">
     <div class="page-header">
       <h1>⭐ Stardust Rewards</h1>
-      <p>Base catch reward per Pokémon – before Star Piece, weather boost, or event multipliers</p>
+      <p>Special catch bonus Pokémon – before Star Piece (+50%), weather boost (+25%), or event multipliers. Standard Pokémon give 100/300/500 ⭐ by evolution stage. Source: <a href="https://pokemongohub.net/post/guide/pokemon-that-give-extra-stardust-on-catch/" target="_blank" rel="noopener" style="color:inherit;opacity:.8">Pokémon GO Hub</a></p>
     </div>
 
     <div class="controls-row">
       <div class="pills" id="sd-tier-pills">
         <button class="pill active" onclick="setSdTier('all')">All</button>
-        <button class="pill" onclick="setSdTier(1500)">⭐⭐⭐ 1500</button>
+        <button class="pill" onclick="setSdTier(2100)">🥇 2100</button>
+        <button class="pill" onclick="setSdTier(1200)">⭐⭐⭐ 1200</button>
         <button class="pill" onclick="setSdTier(1000)">⭐⭐ 1000</button>
+        <button class="pill" onclick="setSdTier(950)">⭐⭐ 950</button>
         <button class="pill" onclick="setSdTier(750)">⭐ 750</button>
+        <button class="pill" onclick="setSdTier(700)">⭐ 700</button>
         <button class="pill" onclick="setSdTier(500)">500</button>
         <button class="pill" onclick="setSdTier(100)">100</button>
       </div>
@@ -5589,39 +5595,46 @@ renderMoves();
 renderPokemon();
 
 // ── STARDUST DATA ─────────────────────────────────────────────────────────────
-// Base stardust per catch (without event bonuses).
-// All Pokémon not listed here give 100 stardust.
+// Species-specific catch stardust (without Star Piece, weather boost, or event bonuses).
+// Standard Pokémon give 100 (unevolved), 300 (1st evo), or 500 (2nd evo) by stage.
+// Sources: Pokémon GO Hub (pokemongohub.net), Sportskeeda, Bulbapedia (Stardust (GO))
+// All Pokémon not listed here give 100 stardust (default).
 const STARDUST_BONUS = {
-  // ── 1500 ── Chansey family (classic high-stardust Pokémon)
-  113:1500, 242:1500, 440:1500,
-  // ── 1000 ── Pseudo-legendary lines (dragon-type and rare lines)
-  147:1000, 148:1000, 149:1000,   // Dratini / Dragonair / Dragonite
-  246:1000, 247:1000, 248:1000,   // Larvitar / Pupitar / Tyranitar
-  371:1000, 372:1000, 373:1000,   // Bagon / Shelgon / Salamence
-  374:1000, 375:1000, 376:1000,   // Beldum / Metang / Metagross
-  443:1000, 444:1000, 445:1000,   // Gible / Gabite / Garchomp
-  633:1000, 634:1000, 635:1000,   // Deino / Zweilous / Hydreigon
-  704:1000, 705:1000, 706:1000,   // Goomy / Sliggoo / Goodra
-  782:1000, 783:1000, 784:1000,   // Jangmo-o / Hakamo-o / Kommo-o
-  885:1000, 886:1000, 887:1000,   // Dreepy / Drakloak / Dragapult
-  // ── 750 ── Riolu line
-  447:750, 448:750,               // Riolu / Lucario
-  // ── 500 ── Notable rare/baby Pokémon
-  116:500, 117:500, 230:500,      // Horsea / Seadra / Kingdra
-  131:500,                        // Lapras
-  143:500, 446:500,               // Snorlax / Munchlax
-  175:500, 176:500, 468:500,      // Togepi / Togetic / Togekiss
-  280:500, 281:500, 282:500, 475:500, // Ralts / Kirlia / Gardevoir / Gallade
-  333:500, 334:500,               // Swablu / Altaria
-  349:500, 350:500,               // Feebas / Milotic
-  359:500, 452:500,               // Absol / Drapion
-  403:500, 404:500, 405:500,      // Shinx / Luxio / Luxray
-  431:500, 432:500,               // Glameow / Purugly
-  531:500,                        // Audino
-  610:500, 611:500, 612:500,      // Axew / Fraxure / Haxorus
-  688:500, 689:500, 690:500, 691:500, // Clauncher / Clawitzer / Skrelp / Dragalge
-  742:500, 743:500,               // Cutiefly / Ribombee
-  780:500,                        // Drampa
+  // ── 2100 ── Audino (highest stardust in the game)
+  531:2100,                       // Audino
+
+  // ── 1200 ── Cloyster
+  91:1200,                        // Cloyster
+
+  // ── 1000 ── Shellder / Chimecho
+  90:1000,                        // Shellder
+  358:1000,                       // Chimecho
+
+  // ── 950 ── Starmie / Vespiquen / Garbodor
+  121:950,                        // Starmie
+  416:950,                        // Vespiquen
+  569:950,                        // Garbodor
+
+  // ── 750 ── Staryu / Sableye / Combee / Trubbish
+  120:750,                        // Staryu
+  302:750,                        // Sableye
+  415:750,                        // Combee
+  568:750,                        // Trubbish
+
+  // ── 700 ── Persian / Parasect / Breloom / Amoonguss / Shiinotic
+  53:700,                         // Persian
+  47:700,                         // Parasect
+  286:700,                        // Breloom
+  591:700,                        // Amoonguss
+  756:700,                        // Shiinotic
+
+  // ── 500 ── Meowth / Paras / Delibird / Shroomish / Foongus / Morelull
+  52:500,                         // Meowth
+  46:500,                         // Paras
+  225:500,                        // Delibird
+  285:500,                        // Shroomish
+  590:500,                        // Foongus
+  755:500,                        // Morelull
 };
 
 function getStardust(num) {
@@ -5636,7 +5649,7 @@ function setSdTier(tier) {
   sdTierFilter = tier;
   document.querySelectorAll('#sd-tier-pills .pill').forEach(p => p.classList.remove('active'));
   const allPills = document.querySelectorAll('#sd-tier-pills .pill');
-  const labels   = ['all', 1500, 1000, 750, 500, 100];
+  const labels   = ['all', 2100, 1200, 1000, 950, 750, 700, 500, 100];
   const idx      = labels.indexOf(tier);
   if (allPills[idx]) allPills[idx].classList.add('active');
   renderStardust();
@@ -5664,9 +5677,12 @@ function renderStardust() {
   else data.sort((a, b) => a.num - b.num);
 
   const sdClass = v => {
-    if (v >= 1500) return 'sd-val-1500';
+    if (v >= 2100) return 'sd-val-2100';
+    if (v >= 1200) return 'sd-val-1200';
     if (v >= 1000) return 'sd-val-1000';
+    if (v >= 950)  return 'sd-val-950';
     if (v >= 750)  return 'sd-val-750';
+    if (v >= 700)  return 'sd-val-700';
     if (v >= 500)  return 'sd-val-500';
     return 'sd-val-100';
   };
