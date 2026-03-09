@@ -6675,7 +6675,7 @@ function renderBracketResult() {
     }));
   }
 
-  let html = '<div class="calc-card"><div class="calc-card-title">🏆 ' + bracketState.name + ' – ' + (isRR ? 'Round Robin' : 'Single Elimination') + '</div>';
+  let html = '<div class="calc-card"><div class="calc-card-title">🏆 ' + escHtml(bracketState.name) + ' – ' + (isRR ? 'Round Robin' : 'Single Elimination') + '</div>';
 
   rounds.forEach((round, ri) => {
     html += '<div style="margin-bottom:16px"><div style="font-weight:700;color:var(--accent);margin-bottom:8px">Round ' + (ri + 1) + '</div>';
@@ -6690,9 +6690,9 @@ function renderBracketResult() {
       const p1Style = w === m.p1 ? 'color:var(--green);font-weight:700' : (w && w !== m.p1 ? 'color:var(--text3);text-decoration:line-through' : '');
       const p2Style = w === m.p2 ? 'color:var(--green);font-weight:700' : (w && w !== m.p2 ? 'color:var(--text3);text-decoration:line-through' : '');
       html += '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
-        + '<button onclick="setBracketWinner(' + ri + ',' + mi + ',\'' + escHtml(m.p1).replace(/'/g,"&#39;") + '\')" style="background:' + (w === m.p1 ? 'var(--green)' : 'var(--bg4)') + ';border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;' + p1Style + '">' + escHtml(m.p1) + '</button>'
+        + '<button class="bracket-pick-btn" data-round="' + ri + '" data-match="' + mi + '" data-player="p1" style="background:' + (w === m.p1 ? 'var(--green)' : 'var(--bg4)') + ';border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;' + p1Style + '">' + escHtml(m.p1) + '</button>'
         + '<span style="color:var(--text3)">vs</span>'
-        + '<button onclick="setBracketWinner(' + ri + ',' + mi + ',\'' + escHtml(m.p2).replace(/'/g,"&#39;") + '\')" style="background:' + (w === m.p2 ? 'var(--green)' : 'var(--bg4)') + ';border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;' + p2Style + '">' + escHtml(m.p2) + '</button>'
+        + '<button class="bracket-pick-btn" data-round="' + ri + '" data-match="' + mi + '" data-player="p2" style="background:' + (w === m.p2 ? 'var(--green)' : 'var(--bg4)') + ';border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;' + p2Style + '">' + escHtml(m.p2) + '</button>'
         + (w ? '<span style="margin-left:auto;font-size:11px;color:var(--text2)">✅ ' + escHtml(w) + ' wins</span>' : '<span style="margin-left:auto;font-size:11px;color:var(--text3)">Click to set winner</span>')
       + '</div>';
     });
@@ -6720,6 +6720,18 @@ function renderBracketResult() {
 
   html += '</div>';
   el.innerHTML = html;
+  // Attach delegated click handler for bracket pick buttons (avoids inline onclick XSS)
+  el.querySelectorAll('.bracket-pick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ri   = parseInt(btn.dataset.round);
+      const mi   = parseInt(btn.dataset.match);
+      const slot = btn.dataset.player; // 'p1' or 'p2'
+      const rounds = bracketState.rounds || bracketState.schedule;
+      if (!rounds || !rounds[ri] || !rounds[ri][mi]) return;
+      const match = rounds[ri][mi];
+      setBracketWinner(ri, mi, match[slot]);
+    });
+  });
 }
 
 function resetBracket() {
