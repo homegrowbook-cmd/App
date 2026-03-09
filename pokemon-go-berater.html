@@ -1711,6 +1711,54 @@
   .future-event-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
   .future-event-date { font-size: 11px; color: var(--accent); margin-top: 2px; font-weight: 600; }
   .future-event-desc { font-size: 12px; color: var(--text3); margin-top: 3px; line-height: 1.4; }
+  .future-event-source { font-size: 11px; margin-top: 4px; }
+
+  /* Shared link style for all source annotations */
+  .future-event-source a,
+  .events-source-bar a,
+  .event-panel-source a { color: var(--accent); text-decoration: none; }
+  .future-event-source a:hover,
+  .events-source-bar a:hover,
+  .event-panel-source a:hover { text-decoration: underline; }
+  .future-event-source a { opacity: 0.8; }
+  .future-event-source a:hover { opacity: 1; }
+  .source-link { font-size: 10px; opacity: 0.7; vertical-align: middle; }
+  .source-link:hover { opacity: 1; text-decoration: underline; }
+
+  /* Events source bar & stale warning */
+  .events-source-bar {
+    font-size: 11px;
+    color: var(--text3);
+    text-align: right;
+    margin-bottom: 10px;
+  }
+
+  .events-stale-banner {
+    background: rgba(255,180,0,0.12);
+    border: 1px solid rgba(255,180,0,0.4);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .events-stale-banner.hidden { display: none; }
+  .events-stale-banner a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .events-stale-banner a:hover { text-decoration: underline; }
+  .events-stale-dismiss { margin-left: auto; background: none; border: none; color: var(--text3); cursor: pointer; font-size: 15px; padding: 0; line-height: 1; }
+
+  /* Per-panel source footer */
+  .event-panel-source {
+    font-size: 10px;
+    color: var(--text3);
+    text-align: right;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
 
   @media (max-width: 640px) {
     .events-grid { grid-template-columns: 1fr; }
@@ -1767,6 +1815,23 @@
     </div>
 
     <div class="home-section-title">🌍 Currently in Pokémon GO</div>
+
+    <!-- Stale data warning (shown automatically when data is > 7 days old) -->
+    <div id="events-stale-banner" class="events-stale-banner hidden">
+      ⚠️ Event data may be outdated (last verified: <span id="events-last-updated-banner"></span>).
+      Check official sources:
+      <a href="https://pokemongolive.com" target="_blank" rel="noopener">Pokémon GO Live</a> ·
+      <a href="https://leekduck.com/events/" target="_blank" rel="noopener">Leek Duck</a>
+      <button class="events-stale-dismiss" onclick="dismissStaleBanner()" aria-label="Dismiss warning">✕</button>
+    </div>
+
+    <!-- Source attribution bar -->
+    <div class="events-source-bar">
+      Sources: <a href="https://pokemongolive.com" target="_blank" rel="noopener">Pokémon GO Live</a> ·
+      <a href="https://leekduck.com/events/" target="_blank" rel="noopener">Leek Duck Events</a> ·
+      <a href="https://pokemongohub.net/category/event/" target="_blank" rel="noopener">GO Hub</a>
+      · Last verified: <span id="events-last-updated"></span>
+    </div>
 
     <div class="events-grid">
       <!-- Wild Spawns -->
@@ -4448,44 +4513,53 @@ const RANKING_DATA = {
 
 // ── CURRENT EVENTS DATA ─────────────────────────────────────────────────────
 const CURRENT_EVENTS = {
+  // ISO date when this data was last verified against official sources
+  lastUpdated: '2026-03-09',
+  // Authoritative source URLs for each section
+  sources: {
+    wildnis:      'https://leekduck.com/events/',
+    raids:        'https://leekduck.com/boss/',
+    bonuses:      'https://pokemongolive.com',
+    futureEvents: 'https://leekduck.com/events/',
+  },
   // Wild Pokémon spawns: num = Pokédex number, name, types, from/to dates
   wildnis: [
-    { num: 1,   name: 'Bulbasaur',  types: ['grass','poison'], from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
-    { num: 152,  name: 'Chikorita', types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
-    { num: 252,  name: 'Treecko',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
-    { num: 387,  name: 'Turtwig',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
-    { num: 495,  name: 'Snivy',     types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
-    { num: 650,  name: 'Chespin',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season' },
-    { num: 810,  name: 'Grookey',   types: ['grass'],          from: '14.03.2026', to: '22.03.2026', note: 'Community Day Week' },
-    { num: 133,  name: 'Eevee',     types: ['normal'],         from: '14.03.2026', to: '17.03.2026', note: 'Spotlight Hour' },
+    { num: 1,   name: 'Bulbasaur',  types: ['grass','poison'], from: '01.03.2026', to: '31.03.2026', note: 'Spring Season',     source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
+    { num: 152,  name: 'Chikorita', types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season',     source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
+    { num: 252,  name: 'Treecko',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season',     source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
+    { num: 387,  name: 'Turtwig',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season',     source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
+    { num: 495,  name: 'Snivy',     types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season',     source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
+    { num: 650,  name: 'Chespin',   types: ['grass'],          from: '01.03.2026', to: '31.03.2026', note: 'Spring Season',     source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
+    { num: 810,  name: 'Grookey',   types: ['grass'],          from: '14.03.2026', to: '22.03.2026', note: 'Community Day Week',source: 'https://pokemongolive.com/post/community-day-march-2026/' },
+    { num: 133,  name: 'Eevee',     types: ['normal'],         from: '14.03.2026', to: '17.03.2026', note: 'Spotlight Hour',    source: 'https://pokemongolive.com/post/spotlight-hour-march-2026/' },
   ],
   // Raid bosses per tier (1-star to Mega)
   raids: {
     '1★': [
-      { num: 396, name: 'Starly',    types: ['normal','flying'] },
-      { num: 293, name: 'Whismur',   types: ['normal'] },
-      { num: 410, name: 'Shieldon',  types: ['rock','steel'] },
+      { num: 396, name: 'Starly',    types: ['normal','flying'], source: 'https://leekduck.com/boss/' },
+      { num: 293, name: 'Whismur',   types: ['normal'],          source: 'https://leekduck.com/boss/' },
+      { num: 410, name: 'Shieldon',  types: ['rock','steel'],    source: 'https://leekduck.com/boss/' },
     ],
     '3★': [
-      { num: 143, name: 'Snorlax',   types: ['normal'] },
-      { num: 131, name: 'Lapras',    types: ['water','ice'] },
-      { num: 373, name: 'Salamence', types: ['dragon','flying'] },
+      { num: 143, name: 'Snorlax',   types: ['normal'],          source: 'https://leekduck.com/boss/' },
+      { num: 131, name: 'Lapras',    types: ['water','ice'],     source: 'https://leekduck.com/boss/' },
+      { num: 373, name: 'Salamence', types: ['dragon','flying'], source: 'https://leekduck.com/boss/' },
     ],
     '5★': [
-      { num: 644, name: 'Thundurus', types: ['electric','flying'] },
-      { num: 641, name: 'Tornadus',  types: ['flying'] },
+      { num: 644, name: 'Thundurus', types: ['electric','flying'], source: 'https://pokemongolive.com/post/thundurus-therian-raids-2026/' },
+      { num: 641, name: 'Tornadus',  types: ['flying'],            source: 'https://pokemongolive.com/post/tornadus-therian-raids-2026/' },
     ],
     'Mega': [
-      { num: 6,   name: 'Mega Charizard Y', types: ['fire','flying'] },
+      { num: 6,   name: 'Mega Charizard Y', types: ['fire','flying'], source: 'https://leekduck.com/boss/' },
     ]
   },
   // Current event bonuses
   bonuses: [
-    { icon: '⭐', text: '2× Stardust for catching Pokémon',      from: '01.03.2026', to: '31.03.2026' },
-    { icon: '🥚', text: 'Half egg hatch distance',                from: '01.03.2026', to: '14.03.2026' },
-    { icon: '🍬', text: '3× XP for evolutions',                  from: '14.03.2026', to: '17.03.2026' },
-    { icon: '🎁', text: '3× Candy for catching Pokémon (Community Day)', from: '16.03.2026', to: '16.03.2026' },
-    { icon: '🔋', text: 'Charge move costume bonus active',       from: '07.03.2026', to: '21.03.2026' },
+    { icon: '⭐', text: '2× Stardust for catching Pokémon',                  from: '01.03.2026', to: '31.03.2026', source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
+    { icon: '🥚', text: 'Half egg hatch distance',                            from: '01.03.2026', to: '14.03.2026', source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
+    { icon: '🍬', text: '3× XP for evolutions',                              from: '14.03.2026', to: '17.03.2026', source: 'https://pokemongolive.com/post/community-day-march-2026/' },
+    { icon: '🎁', text: '3× Candy for catching Pokémon (Community Day)',     from: '16.03.2026', to: '16.03.2026', source: 'https://pokemongolive.com/post/community-day-march-2026/' },
+    { icon: '🔋', text: 'Charge move costume bonus active',                   from: '07.03.2026', to: '21.03.2026', source: 'https://pokemongolive.com/post/season-of-spring-2026/' },
   ],
   // Upcoming events
   futureEvents: [
@@ -4493,25 +4567,29 @@ const CURRENT_EVENTS = {
       icon: '🌸',
       name: 'Spring Community Day – Grookey',
       date: '16 Mar 2026, 14:00–17:00',
-      desc: 'Grookey with exclusive move Razor Leaf in the wild & raids.'
+      desc: 'Grookey with exclusive move Razor Leaf in the wild & raids.',
+      source: 'https://pokemongolive.com/post/community-day-march-2026/'
     },
     {
       icon: '⚡',
       name: 'GO Battle League – Season 17 Start',
       date: '22 Mar 2026',
-      desc: 'New league season with Premiere Cup and Pokémon GO Cup.'
+      desc: 'New league season with Premiere Cup and Pokémon GO Cup.',
+      source: 'https://pokemongolive.com/post/go-battle-league-season-17/'
     },
     {
       icon: '🌍',
       name: 'GO Fest 2026 – Global',
       date: '19–21 Jul 2026',
-      desc: 'Worldwide simultaneous event – special spawns, raids & field research.'
+      desc: 'Worldwide simultaneous event – special spawns, raids & field research.',
+      source: 'https://pokemongolive.com/post/go-fest-2026-global/'
     },
     {
       icon: '🏟️',
       name: 'GO Fest 2026 – Live Madrid',
       date: '30 May–01 Jun 2026',
-      desc: 'In-person event in Madrid with exclusive spawns and raids.'
+      desc: 'In-person event in Madrid with exclusive spawns and raids.',
+      source: 'https://pokemongolive.com/post/go-fest-2026-madrid/'
     },
   ]
 };
@@ -5471,10 +5549,25 @@ function updateHomeStats() {
 }
 updateHomeStats();
 renderRanking();
+checkEventDataFreshness();
 
 // ── CURRENT EVENTS RENDERER ──────────────────────────────────────────────────
+
+/** Returns a small inline source-link anchor, or '' if no URL provided. */
+function srcLink(url) {
+  if (!url) return '';
+  return ` <a class="source-link" href="${url}" target="_blank" rel="noopener" title="Source">[src]</a>`;
+}
+
 function renderCurrentEvents() {
   const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+
+  // Populate "last verified" labels
+  const lastUpdatedText = CURRENT_EVENTS.lastUpdated || '';
+  ['events-last-updated', 'events-last-updated-banner'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = lastUpdatedText;
+  });
 
   // Wildnis
   const wildnisEl = document.getElementById('wildnis-list');
@@ -5485,9 +5578,10 @@ function renderCurrentEvents() {
         <div class="wildnis-info">
           <div class="wildnis-name">${p.name}</div>
           <div class="wildnis-types">${p.types.map(t => typeBadge(t)).join('')}</div>
-          <div class="wildnis-date">${p.from} – ${p.to}${p.note ? ' · ' + p.note : ''}</div>
+          <div class="wildnis-date">${p.from} – ${p.to}${p.note ? ' · ' + p.note : ''}${srcLink(p.source)}</div>
         </div>
-      </div>`).join('');
+      </div>`).join('') +
+      `<div class="event-panel-source">Source: <a href="${CURRENT_EVENTS.sources.wildnis}" target="_blank" rel="noopener">Leek Duck Events</a></div>`;
   }
 
   // Raids
@@ -5512,7 +5606,8 @@ function renderCurrentEvents() {
               </div>
             </div>`;
           }).join('')}
-        </div>`).join('');
+        </div>`).join('') +
+      `<div class="event-panel-source">Source: <a href="${CURRENT_EVENTS.sources.raids}" target="_blank" rel="noopener">Leek Duck Raid Bosses</a></div>`;
   }
 
   // Bonuses
@@ -5522,10 +5617,11 @@ function renderCurrentEvents() {
       <div class="bonus-item">
         <span class="bonus-icon">${b.icon}</span>
         <div>
-          <div>${b.text}</div>
+          <div>${b.text}${srcLink(b.source)}</div>
           ${b.from ? `<div class="bonus-dates">${b.from}${b.to && b.to !== b.from ? ' – ' + b.to : ''}</div>` : ''}
         </div>
-      </div>`).join('');
+      </div>`).join('') +
+      `<div class="event-panel-source">Source: <a href="${CURRENT_EVENTS.sources.bonuses}" target="_blank" rel="noopener">Pokémon GO Live</a></div>`;
   }
 
   // Future Events
@@ -5538,8 +5634,38 @@ function renderCurrentEvents() {
           <div class="future-event-name">${ev.name}</div>
           <div class="future-event-date">📅 ${ev.date}</div>
           ${ev.desc ? `<div class="future-event-desc">${ev.desc}</div>` : ''}
+          ${ev.source ? `<div class="future-event-source"><a href="${ev.source}" target="_blank" rel="noopener">🔗 Official announcement</a></div>` : ''}
         </div>
       </div>`).join('');
+  }
+}
+
+// ── EVENT DATA FRESHNESS CHECK ───────────────────────────────────────────────
+// Shows a warning banner if CURRENT_EVENTS.lastUpdated is more than 7 days ago.
+// Users can dismiss the banner; the dismissal is stored in localStorage.
+function checkEventDataFreshness() {
+  const STALE_DAYS = 7;
+  const banner = document.getElementById('events-stale-banner');
+  if (!banner || !CURRENT_EVENTS.lastUpdated) return;
+
+  const dismissed = localStorage.getItem('events-stale-dismissed');
+  if (dismissed === CURRENT_EVENTS.lastUpdated) {
+    banner.classList.add('hidden');
+    return;
+  }
+
+  const lastUpdated = new Date(CURRENT_EVENTS.lastUpdated);
+  const diffDays = (Date.now() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24);
+  if (diffDays > STALE_DAYS) {
+    banner.classList.remove('hidden');
+  }
+}
+
+function dismissStaleBanner() {
+  const banner = document.getElementById('events-stale-banner');
+  if (banner) banner.classList.add('hidden');
+  if (CURRENT_EVENTS.lastUpdated) {
+    localStorage.setItem('events-stale-dismissed', CURRENT_EVENTS.lastUpdated);
   }
 }
 
