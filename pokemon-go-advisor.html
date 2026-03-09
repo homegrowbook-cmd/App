@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pokémon GO PvP Advisor</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1803,14 +1804,15 @@
 
 <nav>
   <div class="nav-inner">
-    <span class="nav-logo">⚔️ PvP Advisor</span>
-    <button class="nav-btn active" data-tab="ranking-tab" onclick="show('ranking-tab')">
+    <span class="nav-logo" onclick="show('home-tab')" style="cursor:pointer" title="Home">
+      <img src="logo.svg" alt="PvP Advisor Logo" style="height:34px;width:34px;vertical-align:middle;margin-right:4px;border-radius:50%">⚔️ PvP Advisor</span>
+    <button class="nav-btn" data-tab="ranking-tab" onclick="show('ranking-tab')">
       <span class="icon">📊</span> Pokémon
     </button>
     <button class="nav-btn" data-tab="moves-tab" onclick="show('moves-tab')">
       <span class="icon">⚡</span> Moves
     </button>
-    <button class="nav-btn" data-tab="home-tab" onclick="show('home-tab')">
+    <button class="nav-btn active" data-tab="home-tab" onclick="show('home-tab')">
       <span class="icon">🏠</span> Home
     </button>
     <button class="nav-btn" data-tab="pokemon-tab" onclick="show('pokemon-tab')">
@@ -1836,8 +1838,8 @@
 </nav>
 
 <main>
-  <!-- ── STARTSEITE ────────────────────────────────────────── -->
-  <section id="home-tab" class="tab">
+  <!-- ── HOME ─────────────────────────────────────────────── -->
+  <section id="home-tab" class="tab active">
     <div class="home-hero">
       <span class="home-hero-icon">⚔️</span>
       <h1>Pokémon GO PvP Advisor</h1>
@@ -2142,8 +2144,8 @@
     <div id="team-detail"></div>
   </section>
 
-  <!-- ── TAB 5: LIGA-RANGLISTE ─────────────────────────────── -->
-  <section id="ranking-tab" class="tab active">
+  <!-- ── TAB 5: LEAGUE RANKINGS ───────────────────────────── -->
+  <section id="ranking-tab" class="tab">
     <div class="page-header">
       <h1>📊 League Rankings</h1>
       <p>Top Pokémon for Great League, Ultra League and Master League – based on PVPoke &amp; GamePress</p>

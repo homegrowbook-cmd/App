@@ -1,68 +1,74 @@
-# Pokémon GO PvP Berater
+# Pokémon GO PvP Advisor
 
-Ein browserbasierter Pokémon GO PvP-Berater mit Attacken-Datenbank, Pokémon-Datenbank, Typ-Übersicht, auswählbaren Meta-Teams, Liga-Ranglisten, Battle Simulator und Rechnern.
+A browser-based Pokémon GO PvP advisor with a move database, Pokémon database, type overview, selectable meta teams, league rankings, battle simulator and calculators.
 
 ## Features
 
-- **⚡ Attacken-Datenbank** – Alle Schnell- und Ladeattacken mit PvE- und PvP-Werten, durchsuch- und sortierbar
-- **🎯 Pokémon-Datenbank** – Pokédex-Einträge mit Typen, besten PvP-Movesets und Generationsfilter (Gen I–IX)
-- **🔮 Typ-Übersicht** – Vollständige Typ-Stärken- und Schwächentabelle für alle 18 Typen mit Pokémon GO Multiplikatoren; Dual-Typ-Matcher
-- **🏆 Meta-Teams** – Auswählbare Top-Teams für Superliga, Hyperliga und Meisterliga mit Synergie-Analyse und Strategie-Tipps
-- **📊 Liga-Rangliste** – S/A/B-Tier-Liste der besten Pokémon für alle drei Ligen mit Typ-Infos und Counter-Empfehlungen
-- **⚔️ Battle Simulator** *(NEU)* – Wähle zwei Pokémon aus, analysiere Typ-Vorteile, Angriffs-Effektivität und Basiswert-Vergleich
-- **🧮 Rechner** – CP-Rechner und IV-Rang-Rechner für alle Ligen; inkl. **Shadow/Purified-Vergleich** *(NEU)*
+- **⚡ Move Database** – All fast and charge moves with PvE and PvP power values, searchable and sortable
+- **🎯 Pokémon Database** – Pokédex entries with types, best PvP movesets and generation filter (Gen I–IX)
+- **🔮 Type Overview** – Full type strength and weakness table for all 18 types with Pokémon GO multipliers; dual-type matcher
+- **🏆 Meta Teams** – Selectable top teams for Great League, Ultra League and Master League with synergy analysis and strategy tips
+- **📊 League Rankings** – S/A/B-Tier list of the best Pokémon for all three leagues with type info and counter recommendations
+- **⚔️ Battle Simulator** – Choose two Pokémon, analyze type advantages, move effectiveness and base stat comparison
+- **🧮 Calculator** – CP calculator and IV rank calculator for all leagues; incl. **Shadow/Purified comparison**
+- **🌍 Current Events** – Live overview of wild spawns, active raids and bonuses from Pokémon GO
+- **⭐ Stardust Rewards** – Overview of Stardust income from all in-game activities
 
-## Verwendung
+## Usage
 
-Die App besteht aus einer einzigen HTML-Datei und benötigt keine Installation.
+The app consists of a single HTML file and requires no installation.
 
-1. [`pokemon-go-berater.html`](pokemon-go-berater.html) herunterladen
-2. Datei im Browser öffnen (z. B. per Doppelklick)
-3. Fertig – keine Serverinstallation nötig
+1. Download [`pokemon-go-advisor.html`](pokemon-go-advisor.html)
+2. Open the file in a browser (e.g. by double-clicking)
+3. Done – no server installation required
 
-## Technologie
+## Logo
 
-- Reines HTML, CSS und JavaScript (keine externen Frameworks)
-- Sprites werden live von der [PokéAPI](https://pokeapi.co/) geladen
-- Schriften: [Bangers](https://fonts.google.com/specimen/Bangers) & [DM Sans](https://fonts.google.com/specimen/DM+Sans) via Google Fonts
+The app logo is available as [`logo.svg`](logo.svg) and is embedded as the browser favicon.
+
+## Technology
+
+- Pure HTML, CSS and JavaScript (no external frameworks)
+- Sprites loaded live from [PokéAPI](https://pokeapi.co/)
+- Fonts: [Bangers](https://fonts.google.com/specimen/Bangers) & [DM Sans](https://fonts.google.com/specimen/DM+Sans) via Google Fonts
 
 ---
 
-## 💡 Mögliche Verbesserungen (basierend auf führenden Pokémon GO Seiten)
+## 💡 Possible Improvements (based on leading Pokémon GO sites)
 
-Die folgenden Funktionen wären wertvolle Ergänzungen, inspiriert von [PVPoke](https://pvpoke.com), [GamePress](https://gamepress.gg/pokemongo), [GO Hub](https://pokemongohub.net), [Silph Road](https://thesilpharena.com) und [PokeGenie](https://pokegenie.net):
+The following features would be valuable additions, inspired by [PVPoke](https://pvpoke.com), [GamePress](https://gamepress.gg/pokemongo), [GO Hub](https://pokemongohub.net), [Silph Road](https://thesilpharena.com) and [PokeGenie](https://pokegenie.net):
 
-### Hohe Priorität
+### High Priority
 
-| Feature | Beschreibung | Vorbild |
+| Feature | Description | Reference |
 |---|---|---|
-| **IV-Rechner** | Optimale IVs für jede CP-Grenze berechnen (z. B. 0/15/15 für GL) – inkl. Rang-Anzeige | PVPoke, PokeGenie |
-| **Battle Simulator** | 1v1 Matchup-Simulation zwischen zwei Pokémon mit Shield-Szenarien (0/0, 1/1, 2/2) | PVPoke |
-| **CP-Rechner** | CP-Berechnung bei beliebigem Level und beliebigen IVs | PokeGenie, Calcy IV |
-| **Shadow Pokémon Guide** | Vergleich Shadow vs. normal vs. Purified – wann lohnt sich Shadow? | GamePress, GO Hub |
-| **Automatische Meta-Updates** | Liga-Ranglisten via PVPoke-API automatisch aktualisieren statt manuell pflegen | PVPoke |
+| **IV Calculator** | Calculate optimal IVs for each CP cap (e.g. 0/15/15 for GL) – incl. rank display | PVPoke, PokeGenie |
+| **Battle Simulator** | 1v1 matchup simulation between two Pokémon with shield scenarios (0/0, 1/1, 2/2) | PVPoke |
+| **CP Calculator** | CP calculation at any level and IVs | PokeGenie, Calcy IV |
+| **Shadow Pokémon Guide** | Comparison: Shadow vs. normal vs. Purified – when is Shadow worth it? | GamePress, GO Hub |
+| **Automatic Meta Updates** | League rankings automatically updated via PVPoke API instead of manual maintenance | PVPoke |
 
-### Mittlere Priorität
+### Medium Priority
 
-| Feature | Beschreibung | Vorbild |
+| Feature | Description | Reference |
 |---|---|---|
-| **Raid Counter** | Beste Konter für aktuelle Raid-Bosse mit DPS/TDO-Werten | GamePress, Pokebattler |
-| **Mega Evolution Guide** | Welche Mega-Entwicklung lohnt sich für Raids und PvP? | GamePress |
-| **Team-Builder** | Eigenes Team aus der Pokémon-Datenbank zusammenstellen und Synergie prüfen | PVPoke |
-| **Buddy-Optimierung** | Welche Pokémon als Buddy am meisten Candy bringen (CP-Kosten vs. Nutzen) | GO Hub |
-| **Seasons-Tracker** | Tracking von GBL-Saisonänderungen und Meta-Verschiebungen | Silph Road |
+| **Raid Counter** | Best counters for current raid bosses with DPS/TDO values | GamePress, Pokebattler |
+| **Mega Evolution Guide** | Which Mega Evolution is worth it for raids and PvP? | GamePress |
+| **Team Builder** | Build your own team from the Pokémon database and check synergy | PVPoke |
+| **Buddy Optimization** | Which Pokémon bring the most Candy as Buddy (CP cost vs. benefit) | GO Hub |
+| **Seasons Tracker** | Tracking GBL season changes and meta shifts | Silph Road |
 
-### Weitere Ideen
+### Further Ideas
 
-| Feature | Beschreibung |
+| Feature | Description |
 |---|---|
-| **Fangwahrscheinlichkeits-Rechner** | Beste Bälle, Beeren und Medallien für schwierige Fänge |
-| **Turnier-Bracket-Generator** | Eigene Turniere erstellen und Ergebnisse verfolgen |
-| **Buddy-Herzchen-Tracker** | Tages- und Wochenziele für Buddy-Herzen verfolgen |
-| **Move-Vergleich (Elite TM)** | Lohnt sich ein Elite TM für ein bestimmtes Pokémon? |
-| **Offline-Modus / PWA** | App als Progressive Web App installierbar machen (kein Browser nötig) |
-| **Mehrsprachigkeit** | Englische Übersetzung für internationale Nutzer |
-| **Pokémon-Kosten-Rechner** | Wie viel Sternenstaub und Bonbons kostet eine vollständige Entwicklung? |
-| **XL-Candy Guide** | Welche Pokémon brauchen XL-Candy und wie viele? Priorisierungsliste |
-| **Dunkle/Helle Theme** | Light Mode Option für Nutzer die kein dunkles Theme bevorzugen |
-| **Filter nach Liga-Viabilität** | Pokémon-Datenbank nach GL/UL/ML-Tauglichkeit filtern |
+| **Catch Probability Calculator** | Best balls, berries and medals for difficult catches |
+| **Tournament Bracket Generator** | Create your own tournaments and track results |
+| **Buddy Heart Tracker** | Daily and weekly goals for Buddy hearts |
+| **Move Comparison (Elite TM)** | Is an Elite TM worth it for a specific Pokémon? |
+| **Offline Mode / PWA** | App installable as Progressive Web App (no browser required) |
+| **Multilingual Support** | Translations for international users |
+| **Pokémon Cost Calculator** | How much Stardust and Candy does a full evolution cost? |
+| **XL Candy Guide** | Which Pokémon need XL Candy and how many? Priority list |
+| **Dark/Light Theme** | Light mode option for users who prefer it |
+| **League Viability Filter** | Filter Pokémon database by GL/UL/ML suitability |
