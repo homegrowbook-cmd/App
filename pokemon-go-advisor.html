@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pokémon GO PvP Advisor</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c83f5">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1836,6 +1838,21 @@
     <button class="nav-btn" data-tab="stardust-tab" onclick="show('stardust-tab')">
       <span class="icon">⭐</span> Stardust
     </button>
+    <button class="nav-btn" data-tab="raid-tab" onclick="show('raid-tab')">
+      <span class="icon">🔥</span> Raids
+    </button>
+    <button class="nav-btn" data-tab="builder-tab" onclick="show('builder-tab')">
+      <span class="icon">🏗️</span> Builder
+    </button>
+    <button class="nav-btn" data-tab="mega-tab" onclick="show('mega-tab')">
+      <span class="icon">🌀</span> Mega
+    </button>
+    <button class="nav-btn" data-tab="buddy-tab" onclick="show('buddy-tab')">
+      <span class="icon">🐾</span> Buddy
+    </button>
+    <button class="nav-btn" data-tab="bracket-tab" onclick="show('bracket-tab')">
+      <span class="icon">🏆</span> Bracket
+    </button>
     <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">☀️</button>
   </div>
 </nav>
@@ -2162,6 +2179,9 @@
       </div>
     </div>
     <div class="controls-row" style="margin-top:8px">
+      <button class="calc-btn" id="refresh-meta-btn" onclick="refreshMetaFromAPI()" style="max-width:220px">🔄 Refresh from PVPoke</button>
+    </div>
+    <div class="controls-row" style="margin-top:8px">
       <div class="search-wrap">
         <span class="icon">🔍</span>
         <input class="search-input" id="rank-search" type="text" placeholder="Search Pokémon in rankings…" oninput="rankSearch=this.value; renderRanking()">
@@ -2303,6 +2323,119 @@
         </div>
       </div>
     </div>
+
+    <!-- Cost Calculator -->
+    <div style="margin-top:16px">
+      <div class="calc-card">
+        <div class="calc-card-title">💰 Pokémon Cost Calculator</div>
+        <div class="calc-card-desc">Evolution chain costs and power-up stardust for key breakpoints.</div>
+        <div class="calc-form">
+          <div class="calc-form-row">
+            <span class="calc-label">Pokémon</span>
+            <select class="calc-select" id="cost-pokemon" onchange="calcCost()">
+              <option value="">– Select Pokémon –</option>
+            </select>
+          </div>
+        </div>
+        <div class="calc-result" id="cost-result" style="margin-top:12px">
+          <p style="color:var(--text3);font-size:13px">Select a Pokémon to see evolution and power-up costs.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catch Probability Calculator -->
+    <div style="margin-top:16px">
+      <div class="calc-card">
+        <div class="calc-card-title">🎯 Catch Probability Calculator</div>
+        <div class="calc-card-desc">Estimate the catch probability based on ball, berry, throw type and more.</div>
+        <div class="calc-form">
+          <div class="calc-form-row">
+            <span class="calc-label">Base Catch Rate (%)</span>
+            <input class="calc-input" id="catch-bcr" type="number" min="1" max="100" value="20" oninput="calcCatchProb()">
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Ball Type</span>
+            <select class="calc-select" id="catch-ball" onchange="calcCatchProb()">
+              <option value="1.0">Poké Ball ×1.0</option>
+              <option value="1.5" selected>Great Ball ×1.5</option>
+              <option value="2.0">Ultra Ball ×2.0</option>
+              <option value="1.0">Premier Ball ×1.0</option>
+            </select>
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Berry</span>
+            <select class="calc-select" id="catch-berry" onchange="calcCatchProb()">
+              <option value="1.0">None ×1.0</option>
+              <option value="1.5" selected>Razz Berry ×1.5</option>
+              <option value="2.5">Golden Razz ×2.5</option>
+              <option value="1.8">Silver Pinap ×1.8</option>
+              <option value="1.0">Nanab Berry ×1.0</option>
+            </select>
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Throw Type</span>
+            <select class="calc-select" id="catch-throw" onchange="calcCatchProb()">
+              <option value="1.0">Normal ×1.0</option>
+              <option value="1.15">Nice ×1.15</option>
+              <option value="1.5" selected>Great ×1.5</option>
+              <option value="1.85">Excellent ×1.85</option>
+            </select>
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Curved Throw</span>
+            <select class="calc-select" id="catch-curve" onchange="calcCatchProb()">
+              <option value="1.7" selected>Yes ×1.7</option>
+              <option value="1.0">No ×1.0</option>
+            </select>
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Medal Bonus</span>
+            <select class="calc-select" id="catch-medal" onchange="calcCatchProb()">
+              <option value="1.0">None ×1.0</option>
+              <option value="1.1">Bronze ×1.1</option>
+              <option value="1.2" selected>Silver ×1.2</option>
+              <option value="1.3">Gold ×1.3</option>
+            </select>
+          </div>
+          <div class="calc-form-row">
+            <span class="calc-label">Number of Balls</span>
+            <input class="calc-input" id="catch-balls" type="number" min="1" max="30" value="10" oninput="calcCatchProb()">
+          </div>
+        </div>
+        <div class="calc-result" id="catch-result" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <!-- XL Candy Guide -->
+    <div style="margin-top:16px">
+      <div class="calc-card">
+        <div class="calc-card-title">🍬 XL Candy Guide</div>
+        <div class="calc-card-desc">XL candy requirements for top PvP Pokémon. All require 296 XL candy to power from Level 40 to Level 50.</div>
+        <div class="controls-row" style="margin-bottom:12px">
+          <div class="pills" id="xl-league-pills">
+            <button class="pill active" onclick="setXLLeague('all')">All</button>
+            <button class="pill" onclick="setXLLeague('ml')">👑 Master League</button>
+            <button class="pill" onclick="setXLLeague('ul')">💎 Ultra League</button>
+          </div>
+        </div>
+        <div id="xl-table-wrap" style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:13px" id="xl-table">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border)">
+                <th style="text-align:left;padding:6px 8px;color:var(--text2)">Pokémon</th>
+                <th style="text-align:center;padding:6px 8px;color:var(--text2)">XL Needed</th>
+                <th style="text-align:center;padding:6px 8px;color:var(--text2)">League</th>
+                <th style="text-align:left;padding:6px 8px;color:var(--text2)">Notes</th>
+              </tr>
+            </thead>
+            <tbody id="xl-tbody"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text3)">
+          💡 XL candy sources: Catch (1–3 per catch), Trade, Transfer (rare), GO Fest events. Walk with buddy for bonus XL candy.
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ── TAB 7: BATTLE SIMULATOR ──────────────────────────────── -->
@@ -2342,6 +2475,7 @@
     </div>
 
     <div id="battle-result" class="battle-result-card hidden"></div>
+    <div id="shield-result" style="margin-top:16px;display:none"></div>
   </section>
 
   <!-- ── TAB 9: STARDUST ─────────────────────────────────────────────────── -->
@@ -2391,6 +2525,179 @@
         </thead>
         <tbody id="stardust-tbody"></tbody>
       </table>
+    </div>
+  </section>
+
+  <!-- ── TAB 10: RAID COUNTERS ──────────────────────────────────────────── -->
+  <section id="raid-tab" class="tab">
+    <div class="page-header">
+      <h1>🔥 Raid Counters</h1>
+      <p>Find the best counters for current raid bosses based on type effectiveness and move power.</p>
+    </div>
+    <div class="calc-card">
+      <div class="calc-card-title">Select Raid Boss</div>
+      <div class="calc-form">
+        <div class="calc-form-row">
+          <span class="calc-label">Current Boss</span>
+          <select class="calc-select" id="raid-boss-select" onchange="renderRaidCounters()">
+            <option value="">– Select a Raid Boss –</option>
+          </select>
+        </div>
+        <div class="calc-form-row">
+          <span class="calc-label">Or any Pokémon</span>
+          <select class="calc-select" id="raid-boss-any" onchange="onRaidBossAny()">
+            <option value="">– Select from Pokédex –</option>
+          </select>
+        </div>
+        <div id="raid-boss-types-display" style="margin-top:8px"></div>
+      </div>
+    </div>
+    <div id="raid-counters-result" style="margin-top:16px"></div>
+  </section>
+
+  <!-- ── TAB 11: TEAM BUILDER ──────────────────────────────────────────── -->
+  <section id="builder-tab" class="tab">
+    <div class="page-header">
+      <h1>🏗️ Team Builder</h1>
+      <p>Build a 3-Pokémon team and analyze type coverage, shared weaknesses and team synergy.</p>
+    </div>
+    <div class="battle-grid" style="grid-template-columns:repeat(3,1fr);gap:12px">
+      <div class="battle-pokemon-panel">
+        <div class="battle-panel-header">🔵 Slot 1</div>
+        <select class="calc-select" id="builder-slot-0" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
+          <option value="">– Select –</option>
+        </select>
+        <div id="builder-preview-0"></div>
+      </div>
+      <div class="battle-pokemon-panel">
+        <div class="battle-panel-header">🟡 Slot 2</div>
+        <select class="calc-select" id="builder-slot-1" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
+          <option value="">– Select –</option>
+        </select>
+        <div id="builder-preview-1"></div>
+      </div>
+      <div class="battle-pokemon-panel">
+        <div class="battle-panel-header">🔴 Slot 3</div>
+        <select class="calc-select" id="builder-slot-2" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
+          <option value="">– Select –</option>
+        </select>
+        <div id="builder-preview-2"></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin:16px 0">
+      <button class="calc-btn" onclick="resetTeamBuilder()" style="max-width:200px;display:inline-block;background:var(--bg3)">🔄 Reset Team</button>
+    </div>
+    <div id="builder-result" style="margin-top:8px"></div>
+  </section>
+
+  <!-- ── TAB 12: MEGA GUIDE ──────────────────────────────────────────────── -->
+  <section id="mega-tab" class="tab">
+    <div class="page-header">
+      <h1>🌀 Mega Evolution Guide</h1>
+      <p>Which Mega Evolutions are worth investing in? Sorted by raid and PvP viability.</p>
+    </div>
+    <div class="calc-card" style="margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">
+        <strong>💡 Mega Energy Cost:</strong> Typically 200 energy for the first Mega Evolution, then 40 energy per subsequent use within the cooldown window (typically 7 days). Some Pokémon cost more (e.g. Rayquaza needs 400). After first mega, costs may be reduced or eliminated based on how many times you've mega evolved that specific Pokémon.
+      </div>
+    </div>
+    <div class="controls-row" style="margin-bottom:12px">
+      <div class="pills" id="mega-filter-pills">
+        <button class="pill active" onclick="setMegaFilter('all')">All</button>
+        <button class="pill" onclick="setMegaFilter('raid5')">⭐⭐⭐⭐⭐ Raid</button>
+        <button class="pill" onclick="setMegaFilter('pvp')">PvP Viable</button>
+        <button class="pill" onclick="setMegaFilter('candy')">🍬 Candy Value</button>
+      </div>
+      <div class="search-wrap">
+        <span class="icon">🔍</span>
+        <input class="search-input" id="mega-search" type="text" placeholder="Search…" oninput="renderMegaGuide()">
+      </div>
+    </div>
+    <div id="mega-table-wrap" style="overflow-x:auto;border-radius:14px;border:1px solid var(--border)">
+      <table style="width:100%;border-collapse:collapse;font-size:13px" id="mega-table">
+        <thead>
+          <tr style="background:var(--bg3)">
+            <th style="text-align:left;padding:10px 12px;color:var(--text2)">Pokémon → Mega</th>
+            <th style="text-align:left;padding:10px 12px;color:var(--text2)">Types</th>
+            <th style="text-align:center;padding:10px 12px;color:var(--text2)">Raid</th>
+            <th style="text-align:center;padding:10px 12px;color:var(--text2)">PvP</th>
+            <th style="text-align:left;padding:10px 12px;color:var(--text2)">Notes</th>
+          </tr>
+        </thead>
+        <tbody id="mega-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── TAB 13: BUDDY & SEASONS ──────────────────────────────────────────── -->
+  <section id="buddy-tab" class="tab">
+    <div class="page-header">
+      <h1>🐾 Buddy &amp; Seasons</h1>
+      <p>Buddy candy optimization, daily heart tracker and GBL Season info.</p>
+    </div>
+    <div class="calc-card" style="margin-bottom:16px">
+      <div class="calc-card-title">🍬 Buddy Candy Optimization</div>
+      <div class="calc-card-desc">Top PvP Pokémon to prioritize as your buddy based on candy walk distance.</div>
+      <div id="buddy-distance-wrap" style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:13px" id="buddy-distance-table">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border)">
+              <th style="text-align:left;padding:8px;color:var(--text2)">Distance</th>
+              <th style="text-align:left;padding:8px;color:var(--text2)">Buddy Pokémon</th>
+              <th style="text-align:left;padding:8px;color:var(--text2)">Evolves To</th>
+              <th style="text-align:left;padding:8px;color:var(--text2)">Best League</th>
+            </tr>
+          </thead>
+          <tbody id="buddy-distance-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="calc-card" style="margin-bottom:16px">
+      <div class="calc-card-title">❤️ Daily Buddy Heart Tracker</div>
+      <div class="calc-card-desc">Track your daily buddy activities. Progress resets at midnight.</div>
+      <div id="buddy-hearts-progress" style="font-size:20px;font-weight:700;margin-bottom:12px;color:var(--accent)">0/7 activities done</div>
+      <div id="buddy-checklist" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div style="margin-top:16px">
+        <button class="calc-btn" onclick="resetBuddyHearts()" style="max-width:200px;background:var(--bg3)">🔄 Reset All</button>
+      </div>
+    </div>
+    <div class="calc-card">
+      <div class="calc-card-title">🏆 GBL Season 20 Tracker</div>
+      <div class="calc-card-desc">Current GO Battle League season overview.</div>
+      <div id="gbl-season-info"></div>
+    </div>
+  </section>
+
+  <!-- ── TAB 14: TOURNAMENT BRACKET ──────────────────────────────────────── -->
+  <section id="bracket-tab" class="tab">
+    <div class="page-header">
+      <h1>🏆 Tournament Bracket</h1>
+      <p>Generate single-elimination or round-robin tournament brackets for your local PvP events.</p>
+    </div>
+    <div class="calc-card" style="margin-bottom:16px">
+      <div class="calc-card-title">⚙️ Setup Tournament</div>
+      <div class="calc-form">
+        <div class="calc-form-row">
+          <span class="calc-label">Tournament Name</span>
+          <input class="calc-input" id="bracket-name" type="text" placeholder="e.g. Local PvP Cup" value="My Tournament">
+        </div>
+        <div class="calc-form-row">
+          <span class="calc-label">Format</span>
+          <select class="calc-select" id="bracket-format">
+            <option value="single">Single Elimination</option>
+            <option value="roundrobin">Round Robin</option>
+          </select>
+        </div>
+        <div class="calc-form-row" style="align-items:flex-start">
+          <span class="calc-label" style="padding-top:8px">Players (one per line)</span>
+          <textarea class="calc-input" id="bracket-players" rows="6" style="resize:vertical" placeholder="Alice&#10;Bob&#10;Charlie&#10;Dave"></textarea>
+        </div>
+        <button class="calc-btn" onclick="generateBracket()">🏆 Generate Bracket</button>
+      </div>
+    </div>
+    <div id="bracket-result" style="margin-top:8px"></div>
+    <div style="margin-top:12px;text-align:right">
+      <button class="calc-btn" onclick="resetBracket()" style="max-width:200px;background:var(--bg3);display:none" id="bracket-reset-btn">🔄 Reset Tournament</button>
     </div>
   </section>
 </main>
@@ -4113,6 +4420,11 @@ function show(tabId) {
   if (tabId === 'home-tab')     updateHomeStats();
   if (tabId === 'battle-tab')   initBattleSelects();
   if (tabId === 'stardust-tab') renderStardust();
+  if (tabId === 'raid-tab')    initRaidTab();
+  if (tabId === 'builder-tab') initBuilderTab();
+  if (tabId === 'mega-tab')    renderMegaGuide();
+  if (tabId === 'buddy-tab')   initBuddyTab();
+  if (tabId === 'bracket-tab') initBracketTab();
 }
 
 function toggleCard(num) {
@@ -5096,6 +5408,9 @@ function clampIV(value) {
 }
 
 function renderCalc() {
+  initCostCalc();
+  renderXLTable();
+  calcCatchProb();
   const sel = document.getElementById('cp-level');
   if (sel && sel.options.length === 0) {
     for (const [level] of CPM_LEVELS) {
@@ -5478,6 +5793,949 @@ function simulateBattle() {
 
   result.classList.remove('hidden');
   result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Shield scenarios
+  runShieldBattleDisplay(numA, numB, fastNameA, chargeNameA, fastNameB, chargeNameB);
+}
+
+// ── MOVE ENERGY DATA ──────────────────────────────────────────────────────
+const MOVE_ENERGY_DATA = {
+  fast: {
+    'Mud Shot':9,'Counter':7,'Shadow Claw':9,'Bubble':11,'Thunder Shock':9,
+    'Charm':6,'Fire Spin':10,'Vine Whip':10,'Dragon Breath':9,'Lick':6,
+    'Ice Shard':10,'Powder Snow':8,'Lock-On':6,'Wing Attack':6,'Steel Wing':6.5,
+    'Bite':4,'Snarl':4,'Quick Attack':7.5,'Razor Leaf':3.5,'Water Gun':5,
+    'Ember':10,'Spark':7,'Rock Throw':7,'Confusion':10,'Psycho Cut':9,
+    'Hex':12,'Fury Cutter':6,'Metal Claw':7,'Bullet Punch':7.5,
+    'Dragon Tail':9,'Extrasensory':10,'Astonish':14,'Low Kick':5,
+    'Smack Down':8,'Waterfall':8,'Air Slash':9,'Mud Slap':8,'Peck':7.5,
+    'Poison Jab':9,'Feint Attack':9,'Ice Fang':10,'Zen Headbutt':8,
+    'Acid':8,'Tackle':4,'Scratch':5,'Sucker Punch':7,'Karate Chop':5,
+    'Thunder Fang':10,'Incinerate':12,'Volt Switch':16,'Frost Breath':8,
+    'Rock Smash':7,'Hidden Power':15,'Cut':5,'Bullet Seed':11,'Fire Fang':10,
+    'Poison Sting':5,'Bug Bite':6,'Volt Switch':16
+  },
+  charge: {
+    'Play Rough':60,'Ice Beam':55,'Wild Charge':45,'Fell Stinger':45,
+    'Sludge Bomb':55,'Earthquake':65,'Hydro Pump':75,'Surf':45,'Aqua Tail':45,
+    'Thunderbolt':55,'Thunder':80,'Fire Blast':80,'Flamethrower':55,'Overheat':60,
+    'Solar Beam':80,'Leaf Blade':35,'Power Whip':60,'Frenzy Plant':45,
+    'Psychic':55,'Psyshock':45,'Shadow Ball':55,'Outrage':60,'Dragon Claw':35,
+    'Draco Meteor':65,'Close Combat':55,'Dynamic Punch':60,'Superpower':55,
+    'Cross Chop':45,'Brick Break':45,'Crunch':45,'Foul Play':45,'Dark Pulse':50,
+    'Rock Slide':45,'Stone Edge':55,'Rock Blast':45,'Dig':65,'Mud Bomb':40,
+    'Bulldoze':60,'Poison Fang':40,'Gunk Shot':65,'Sludge Wave':65,
+    'Iron Head':50,'Flash Cannon':70,'Blizzard':75,'Avalanche':45,
+    'Weather Ball Ice':35,'Weather Ball Fire':35,'Weather Ball Water':35,
+    'Moonblast':70,'Dazzling Gleam':70,'Draining Kiss':55,'Aerial Ace':45,
+    'Hurricane':65,'Brave Bird':55,'Bug Buzz':60,'X-Scissor':35,
+    'Shadow Punch':35,'Energy Ball':55,'Seed Bomb':40,'Ice Punch':40,
+    'Hyper Beam':80,'Body Slam':35,'Return':70,'Swift':55,'Frustration':70,
+    'Bubble Beam':45,'Scald':55,'Liquidation':45,'Flame Charge':55,
+    'Blast Burn':50,'Thunder Punch':40,'Discharge':45,'Zap Cannon':80,
+    'Power-Up Punch':35,'Focus Blast':75,'Sacred Sword':35,'Grass Knot':60,
+    'Petal Blizzard':65,'Razor Shell':50,'Muddy Water':35,'Water Pulse':60,
+    'Night Slash':50,'Payback':55,'Lunge':45,'Night Shade':55,'Shadow Sneak':45,
+    'Triple Axel':45,'Icicle Spear':40,'Skull Bash':75,'Gyro Ball':60,
+    'Hydro Cannon':40,'Sky Attack':55,'Dragon Pulse':60,'Ominous Wind':45,
+    'Ancient Power':45,'Aura Sphere':55,'Brutal Swing':40,'Earth Power':55,
+    'Night Daze':50,'Hyper Voice':70,'Trailblaze':65,'Shadow Force':55,
+    'Rock Wrecker':45,'Breaking Swipe':35,'Low Sweep':40,'Jet Punch':35,
+    'Aqua Step':55,'Mystical Fire':50,'Wicked Blow':40,'Surging Strikes':50,
+    'Leaf Storm':55,'Psyblade':35,'Chloroblast':65,'Poltergeist':75,
+    'Ice Spinner':45,'Shadow Bone':55,'Spirit Shackle':55,'Smart Strike':50,
+    'Headbutt':55,'Cross Poison':40,'Aqua Jet':45,'Pin Missile':45,
+    'Venoshock':45,'Future Sight':65,'Flare Blitz':55,'Doom Desire':60,
+    'Sunsteel Strike':65,'Moongeist Beam':65,'Photon Geyser':55,
+    'Fiery Dance':55,'Heavy Slam':60,'Frenzy Plant*':45,'Blast Burn*':50,
+    'Hydro Cannon*':40,'X-Scissor*':35
+  }
+};
+
+function getEPT(moveName) {
+  const clean = moveName.replace(/\*/g,'').trim();
+  return MOVE_ENERGY_DATA.fast[clean] || 8;
+}
+function getEC(moveName) {
+  const clean = moveName.replace(/\*/g,'').trim();
+  return MOVE_ENERGY_DATA.charge[clean] || 55;
+}
+
+function runShieldBattle(baseA, baseB, fastNameA, chargeNameA, fastNameB, chargeNameB, shieldsA, shieldsB) {
+  const CPM = 0.7903;
+  const IV_DEF = 15, IV_STA = 15;
+  const maxHpA = Math.floor((baseA.sta + IV_STA) * CPM);
+  const maxHpB = Math.floor((baseB.sta + IV_STA) * CPM);
+  let hpA = maxHpA, hpB = maxHpB;
+  let enA = 0, enB = 0;
+  let shA = shieldsA, shB = shieldsB;
+
+  const fastAData   = getMoveData(fastNameA);
+  const chargeAData = getMoveData(chargeNameA);
+  const fastBData   = getMoveData(fastNameB);
+  const chargeBData = getMoveData(chargeNameB);
+
+  const STAB = 1.2;
+  function hasStabLocal(move, types) { return move && types.some(t => t.toLowerCase() === move.type.toLowerCase()); }
+
+  function calcDmg(attacker, move, defenderBase, defenderTypes) {
+    if (!move) return 1;
+    const eff = getBattleTypeEff(move.type, defenderTypes);
+    const stab = hasStabLocal(move, attacker.types || []) ? STAB : 1;
+    const power = move.pvp || move.power || 1;
+    const def = defenderBase.def + IV_DEF;
+    return Math.max(1, Math.floor(0.5 * power * (attacker.atk / def) * eff * stab) + 1);
+  }
+
+  const pokeA_full = POKEMON.find(p => p.num === baseA.num) || {};
+  const pokeB_full = POKEMON.find(p => p.num === baseB.num) || {};
+  const typesA = pokeA_full.types || [];
+  const typesB = pokeB_full.types || [];
+  const attA = { atk: baseA.atk, types: typesA };
+  const attB = { atk: baseB.atk, types: typesB };
+
+  const dmgFast_A_on_B   = calcDmg(attA, fastAData,   baseB, typesB);
+  const dmgCharge_A_on_B = calcDmg(attA, chargeAData, baseB, typesB);
+  const dmgFast_B_on_A   = calcDmg(attB, fastBData,   baseA, typesA);
+  const dmgCharge_B_on_A = calcDmg(attB, chargeBData, baseA, typesA);
+
+  const eptA = getEPT(fastNameA);
+  const eptB = getEPT(fastNameB);
+  const ecA  = getEC(chargeNameA);
+  const ecB  = getEC(chargeNameB);
+
+  let turns = 0;
+  const MAX_TURNS = 500;
+
+  while (hpA > 0 && hpB > 0 && turns < MAX_TURNS) {
+    turns++;
+    enA += eptA;
+    hpB -= dmgFast_A_on_B;
+
+    enB += eptB;
+    hpA -= dmgFast_B_on_A;
+
+    if (enA >= ecA && hpB > 0) {
+      enA -= ecA;
+      if (shB > 0) { shB--; hpB -= 1; }
+      else { hpB -= dmgCharge_A_on_B; }
+    }
+
+    if (enB >= ecB && hpA > 0) {
+      enB -= ecB;
+      if (shA > 0) { shA--; hpA -= 1; }
+      else { hpA -= dmgCharge_B_on_A; }
+    }
+  }
+
+  const winner = hpA <= 0 && hpB <= 0 ? 'tie'
+               : hpA <= 0 ? 'B'
+               : hpB <= 0 ? 'A'
+               : hpA > hpB ? 'A' : 'B';
+
+  return { hpA: Math.max(0, hpA), hpB: Math.max(0, hpB), maxHpA, maxHpB, winner, turns };
+}
+
+function runShieldBattleDisplay(numA, numB, fastNameA, chargeNameA, fastNameB, chargeNameB) {
+  const shieldEl = document.getElementById('shield-result');
+  if (!shieldEl) return;
+
+  const baseA = POKE_BASE_STATS.find(p => p.num === numA);
+  const baseB = POKE_BASE_STATS.find(p => p.num === numB);
+  if (!baseA || !baseB) { shieldEl.style.display = 'none'; return; }
+
+  const pokeA = POKEMON.find(p => p.num === numA);
+  const pokeB = POKEMON.find(p => p.num === numB);
+  if (!pokeA || !pokeB) return;
+
+  const scenarios = [
+    { label: '0 vs 0', shA: 0, shB: 0 },
+    { label: '1 vs 1', shA: 1, shB: 1 },
+    { label: '2 vs 2', shA: 2, shB: 2 },
+  ];
+
+  function hpBar(hp, maxHp, side) {
+    const pct = Math.max(0, Math.min(100, (hp / maxHp) * 100)).toFixed(0);
+    const color = side === 'A' ? '#5a9af5' : '#f55a5a';
+    return '<div style="background:var(--bg3);border-radius:4px;height:10px;overflow:hidden;flex:1">'
+         + '<div style="height:100%;width:' + pct + '%;background:' + color + ';border-radius:4px;transition:width 0.3s"></div>'
+         + '</div>';
+  }
+
+  const rows = scenarios.map(sc => {
+    const r = runShieldBattle(baseA, baseB, fastNameA, chargeNameA, fastNameB, chargeNameB, sc.shA, sc.shB);
+    const pctA = Math.round((r.hpA / r.maxHpA) * 100);
+    const pctB = Math.round((r.hpB / r.maxHpB) * 100);
+    const winLabel = r.winner === 'tie'
+      ? '<span style="color:var(--gold)">⚖️ Tie</span>'
+      : r.winner === 'A'
+        ? '<span style="color:#5a9af5">🏆 ' + pokeA.name + '</span>'
+        : '<span style="color:#f55a5a">🏆 ' + pokeB.name + '</span>';
+    return '<tr style="border-bottom:1px solid var(--border)">'
+      + '<td style="padding:10px 12px;font-weight:700;color:var(--text2)">🛡️ ' + sc.label + '</td>'
+      + '<td style="padding:10px 12px">'
+        + '<div style="display:flex;align-items:center;gap:8px;font-size:12px">'
+          + '<span style="color:#5a9af5;white-space:nowrap;min-width:60px">' + pokeA.name + '</span>'
+          + hpBar(r.hpA, r.maxHpA, 'A')
+          + '<span style="min-width:40px;text-align:right">' + pctA + '%</span>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;gap:8px;font-size:12px;margin-top:4px">'
+          + '<span style="color:#f55a5a;white-space:nowrap;min-width:60px">' + pokeB.name + '</span>'
+          + hpBar(r.hpB, r.maxHpB, 'B')
+          + '<span style="min-width:40px;text-align:right">' + pctB + '%</span>'
+        + '</div>'
+      + '</td>'
+      + '<td style="padding:10px 12px;text-align:center">' + winLabel + '</td>'
+      + '<td style="padding:10px 12px;font-size:11px;color:var(--text3)">' + r.turns + ' turns</td>'
+      + '</tr>';
+  }).join('');
+
+  shieldEl.style.display = 'block';
+  shieldEl.innerHTML = '<div class="calc-card">'
+    + '<div class="calc-card-title">🛡️ Shield Scenarios</div>'
+    + '<div class="calc-card-desc" style="margin-bottom:12px">Simplified turn-based simulation at Level 40, IVs 0/15/15. Uses base damage formula.</div>'
+    + '<div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border)">'
+      + '<table style="width:100%;border-collapse:collapse;font-size:13px">'
+        + '<thead><tr style="background:var(--bg3)">'
+          + '<th style="text-align:left;padding:8px 12px;color:var(--text2)">Shields</th>'
+          + '<th style="text-align:left;padding:8px 12px;color:var(--text2)">HP Remaining</th>'
+          + '<th style="text-align:center;padding:8px 12px;color:var(--text2)">Winner</th>'
+          + '<th style="text-align:center;padding:8px 12px;color:var(--text2)">Turns</th>'
+        + '</tr></thead>'
+        + '<tbody>' + rows + '</tbody>'
+      + '</table>'
+    + '</div>'
+    + '<div style="margin-top:8px;font-size:11px;color:var(--text3)">'
+      + '💡 Uses simplified damage formula. Real battles depend on exact IVs, level caps, move timing and CMP ties.'
+    + '</div>'
+  + '</div>';
+}
+
+// ── REFRESH META (PVPoke API) ─────────────────────────────────────────────
+async function refreshMetaFromAPI() {
+  const btn = document.getElementById('refresh-meta-btn');
+  if (btn) { btn.textContent = '⏳ Fetching…'; btn.disabled = true; }
+  try {
+    const r = await fetch('https://pvpoke.com/data/rankings/all/overall/rankings-1500.json', { mode: 'cors' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    await r.json();
+    if (btn) { btn.textContent = '✅ Updated!'; }
+    setTimeout(() => { if (btn) { btn.textContent = '🔄 Refresh from PVPoke'; btn.disabled = false; } }, 3000);
+  } catch(e) {
+    if (btn) {
+      btn.textContent = '⚠️ Unavailable (CORS)';
+      setTimeout(() => { btn.textContent = '🔄 Refresh from PVPoke'; btn.disabled = false; }, 3000);
+    }
+  }
+}
+
+// ── RAID COUNTERS ─────────────────────────────────────────────────────────
+let raidInitialized = false;
+function initRaidTab() {
+  if (raidInitialized) return;
+  raidInitialized = true;
+  const bossSelect = document.getElementById('raid-boss-select');
+  const anySelect  = document.getElementById('raid-boss-any');
+
+  const tiers = Object.keys(CURRENT_EVENTS.raids || {});
+  tiers.forEach(tier => {
+    const optGroup = document.createElement('optgroup');
+    optGroup.label = tier + ' Raid';
+    (CURRENT_EVENTS.raids[tier] || []).forEach(boss => {
+      const opt = document.createElement('option');
+      opt.value = boss.num;
+      opt.textContent = boss.name + ' (' + boss.types.join('/') + ')';
+      opt.dataset.types = JSON.stringify(boss.types);
+      optGroup.appendChild(opt);
+    });
+    bossSelect.appendChild(optGroup);
+  });
+
+  POKEMON.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.num;
+    opt.textContent = '#' + String(p.num).padStart(3,'0') + ' ' + p.name;
+    anySelect.appendChild(opt);
+  });
+}
+
+function onRaidBossAny() {
+  const anySelect  = document.getElementById('raid-boss-any');
+  const bossSelect = document.getElementById('raid-boss-select');
+  bossSelect.value = '';
+  const num = parseInt(anySelect.value);
+  if (!num) return;
+  const poke = POKEMON.find(p => p.num === num);
+  if (!poke) return;
+  renderRaidCountersForTypes(poke.types, poke.name);
+}
+
+function renderRaidCounters() {
+  const sel = document.getElementById('raid-boss-select');
+  if (!sel.value) return;
+  const opt = sel.options[sel.selectedIndex];
+  const types = JSON.parse(opt.dataset.types || '[]');
+  const name = opt.textContent.split(' (')[0];
+  document.getElementById('raid-boss-any').value = '';
+  renderRaidCountersForTypes(types, name);
+}
+
+function renderRaidCountersForTypes(bossTypes, bossName) {
+  const typesEl = document.getElementById('raid-boss-types-display');
+  typesEl.innerHTML = '<strong>' + bossName + '</strong>: ' + bossTypes.map(t => typeBadge(t)).join('');
+
+  const scored = POKEMON.map(p => {
+    let fastScore = 0, chargeName = '', chargeScore = 0, fastName = '';
+    p.fast.forEach(fm => {
+      const clean = fm.replace(/\*/g,'').trim();
+      const md = getMoveData(clean);
+      if (!md) return;
+      const eff = getBattleTypeEff(md.type, bossTypes);
+      const s = md.pvp * eff;
+      if (s > fastScore) { fastScore = s; fastName = clean; }
+    });
+    p.charge.forEach(cm => {
+      const clean = cm.replace(/\*/g,'').trim();
+      const md = getMoveData(clean);
+      if (!md) return;
+      const eff = getBattleTypeEff(md.type, bossTypes);
+      const s = md.pvp * eff;
+      if (s > chargeScore) { chargeScore = s; chargeName = clean; }
+    });
+    return { p, fastScore, chargeScore, total: fastScore + chargeScore, fastName, chargeName };
+  }).sort((a,b) => b.total - a.total).slice(0,12);
+
+  const el = document.getElementById('raid-counters-result');
+  if (scored.length === 0) { el.innerHTML = '<p style="color:var(--text3)">No counters found.</p>'; return; }
+
+  el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">'
+    + scored.map((s, i) => {
+      const spr = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + s.p.num + '.png';
+      const fastMd   = getMoveData(s.fastName);
+      const chargeMd = getMoveData(s.chargeName);
+      return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px">'
+        + '<div style="font-size:11px;font-weight:700;color:var(--text3);min-width:20px">#' + (i+1) + '</div>'
+        + '<img src="' + spr + '" width="40" height="40" style="image-rendering:pixelated" onerror="this.style.opacity=0.3" alt="' + s.p.name + '">'
+        + '<div>'
+          + '<div style="font-weight:700;font-size:13px">' + s.p.name + '</div>'
+          + '<div style="display:flex;gap:3px;margin-top:2px">' + s.p.types.map(t => typeBadge(t)).join('') + '</div>'
+          + (s.fastName   ? '<div style="font-size:11px;margin-top:4px;color:var(--text2)">' + (fastMd   ? typeBadge(fastMd.type)   : '') + ' ' + s.fastName   + '</div>' : '')
+          + (s.chargeName ? '<div style="font-size:11px;color:var(--text2)">'                + (chargeMd ? typeBadge(chargeMd.type) : '') + ' ' + s.chargeName + '</div>' : '')
+        + '</div>'
+      + '</div>';
+    }).join('')
+    + '</div>';
+}
+
+// ── TEAM BUILDER ──────────────────────────────────────────────────────────
+let builderInitialized = false;
+function initBuilderTab() {
+  if (builderInitialized) return;
+  builderInitialized = true;
+  [0,1,2].forEach(i => {
+    const sel = document.getElementById('builder-slot-' + i);
+    if (!sel) return;
+    POKEMON.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.num;
+      opt.textContent = '#' + String(p.num).padStart(3,'0') + ' ' + p.name;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+function resetTeamBuilder() {
+  [0,1,2].forEach(i => {
+    const sel = document.getElementById('builder-slot-' + i);
+    if (sel) sel.value = '';
+    const prev = document.getElementById('builder-preview-' + i);
+    if (prev) prev.innerHTML = '';
+  });
+  document.getElementById('builder-result').innerHTML = '';
+}
+
+function renderTeamBuilder() {
+  const selected = [0,1,2].map(i => {
+    const sel  = document.getElementById('builder-slot-' + i);
+    const num  = parseInt(sel ? sel.value : '');
+    const poke = num ? POKEMON.find(p => p.num === num) : null;
+    const prev = document.getElementById('builder-preview-' + i);
+    if (prev) {
+      if (poke) {
+        const spr = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + poke.num + '.png';
+        prev.innerHTML = '<div style="text-align:center">'
+          + '<img src="' + spr + '" width="56" onerror="this.style.opacity=0.3" alt="' + poke.name + '">'
+          + '<div style="font-size:12px;margin-top:4px;font-weight:600">' + poke.name + '</div>'
+          + '<div style="display:flex;justify-content:center;gap:3px;margin-top:2px">' + poke.types.map(t => typeBadge(t)).join('') + '</div>'
+          + '<div style="font-size:11px;margin-top:6px;color:var(--text2)">'
+            + '⚡ ' + (poke.pvp.f || poke.fast[0]) + '<br>'
+            + '💥 ' + ((poke.pvp.c1 || '').replace(/\*/g,'')) + ' / ' + ((poke.pvp.c2 || '').replace(/\*/g,''))
+          + '</div>'
+        + '</div>';
+      } else {
+        prev.innerHTML = '';
+      }
+    }
+    return poke;
+  }).filter(Boolean);
+
+  const resultEl = document.getElementById('builder-result');
+  if (selected.length < 3) {
+    resultEl.innerHTML = '<p style="color:var(--text3);text-align:center;padding:20px">Select all 3 Pokémon to see team analysis.</p>';
+    return;
+  }
+
+  const coveredTypes = new Set();
+  selected.forEach(p => {
+    [...p.fast, ...p.charge].forEach(m => {
+      const clean = m.replace(/\*/g,'').trim();
+      const md = getMoveData(clean);
+      if (md) coveredTypes.add(md.type);
+    });
+  });
+
+  const allWeaknesses = selected.map(p => getRankingTypeInfo(p.types).weaknesses.map(t => t.toLowerCase()));
+  const sharedWeak = allWeaknesses[0].filter(t => allWeaknesses[1].includes(t) && allWeaknesses[2].includes(t));
+
+  const covScore  = Math.min(50, coveredTypes.size * 3);
+  const weakScore = Math.max(0, 50 - sharedWeak.length * 12);
+  const synergy   = Math.min(100, covScore + weakScore);
+
+  const synergyColor = synergy >= 70 ? 'var(--green)' : synergy >= 40 ? 'var(--gold)' : 'var(--red)';
+
+  resultEl.innerHTML = '<div class="calc-card">'
+    + '<div class="calc-card-title">📊 Team Analysis</div>'
+    + '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px">'
+      + '<div style="background:var(--bg3);border-radius:10px;padding:14px;text-align:center">'
+        + '<div style="font-size:28px;font-weight:700;color:' + synergyColor + '">' + synergy + '</div>'
+        + '<div style="font-size:12px;color:var(--text2)">Synergy Score</div>'
+        + '<div style="font-size:11px;color:var(--text3);margin-top:4px">' + (synergy >= 70 ? '✅ Great team!' : synergy >= 40 ? '⚠️ Average coverage' : '❌ Improve coverage') + '</div>'
+      + '</div>'
+      + '<div style="background:var(--bg3);border-radius:10px;padding:14px">'
+        + '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">⚡ Attack Coverage (' + coveredTypes.size + ' types)</div>'
+        + '<div style="display:flex;flex-wrap:wrap;gap:3px">' + [...coveredTypes].map(t => typeBadge(t)).join('') + '</div>'
+      + '</div>'
+      + '<div style="background:var(--bg3);border-radius:10px;padding:14px">'
+        + '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">⚠️ Shared Weaknesses</div>'
+        + (sharedWeak.length
+          ? '<div style="display:flex;flex-wrap:wrap;gap:3px">' + sharedWeak.map(t => typeBadge(t)).join('') + '</div>'
+          : '<div style="color:var(--green);font-size:12px">✅ No shared weaknesses!</div>')
+      + '</div>'
+    + '</div>'
+  + '</div>';
+}
+
+// ── MEGA GUIDE ─────────────────────────────────────────────────────────────
+const MEGA_DATA = [
+  {base:'Mewtwo',      mega:'Mega Mewtwo X',      types:['psychic','fighting'], raid:'★★★★★',   pvp:'Limited', notes:'Raid DPS king'},
+  {base:'Mewtwo',      mega:'Mega Mewtwo Y',      types:['psychic'],            raid:'★★★★★',   pvp:'Limited', notes:'Highest Psychic DPS'},
+  {base:'Charizard',   mega:'Mega Charizard X',   types:['fire','dragon'],      raid:'★★★★',    pvp:'Niche',   notes:'Dragon raid support'},
+  {base:'Charizard',   mega:'Mega Charizard Y',   types:['fire','flying'],      raid:'★★★★★',   pvp:'Limited', notes:'Top Fire DPS'},
+  {base:'Blastoise',   mega:'Mega Blastoise',      types:['water'],              raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Venusaur',    mega:'Mega Venusaur',       types:['grass','poison'],     raid:'★★★★',    pvp:'Niche',   notes:''},
+  {base:'Gengar',      mega:'Mega Gengar',         types:['ghost','poison'],     raid:'★★★★★',   pvp:'Limited', notes:'Top Ghost DPS'},
+  {base:'Alakazam',    mega:'Mega Alakazam',       types:['psychic'],            raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Slowbro',     mega:'Mega Slowbro',        types:['water','psychic'],    raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Pidgeot',     mega:'Mega Pidgeot',        types:['normal','flying'],    raid:'★★',      pvp:'Limited', notes:''},
+  {base:'Beedrill',    mega:'Mega Beedrill',       types:['bug','poison'],       raid:'★★',      pvp:'Niche',   notes:'🍬 Candy ★★★★★'},
+  {base:'Kangaskhan',  mega:'Mega Kangaskhan',     types:['normal'],             raid:'★★',      pvp:'No',      notes:''},
+  {base:'Pinsir',      mega:'Mega Pinsir',         types:['bug','flying'],       raid:'★★★',     pvp:'Limited', notes:''},
+  {base:'Gyarados',    mega:'Mega Gyarados',       types:['water','dark'],       raid:'★★★★',    pvp:'Niche',   notes:''},
+  {base:'Aerodactyl',  mega:'Mega Aerodactyl',     types:['rock','flying'],      raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Ampharos',    mega:'Mega Ampharos',       types:['electric','dragon'],  raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Scizor',      mega:'Mega Scizor',         types:['bug','steel'],        raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Houndoom',    mega:'Mega Houndoom',       types:['dark','fire'],        raid:'★★★★',    pvp:'Niche',   notes:''},
+  {base:'Heracross',   mega:'Mega Heracross',      types:['bug','fighting'],     raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Tyranitar',   mega:'Mega Tyranitar',      types:['rock','dark'],        raid:'★★★★★',   pvp:'Limited', notes:'Top Rock DPS'},
+  {base:'Latias',      mega:'Mega Latias',         types:['dragon','psychic'],   raid:'★★★',     pvp:'Limited', notes:'Dragon ★★★★'},
+  {base:'Latios',      mega:'Mega Latios',         types:['dragon','psychic'],   raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Gardevoir',   mega:'Mega Gardevoir',      types:['psychic','fairy'],    raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Absol',       mega:'Mega Absol',          types:['dark'],               raid:'★★★',     pvp:'No',      notes:'🍬 Candy ★★★★★'},
+  {base:'Manectric',   mega:'Mega Manectric',      types:['electric'],           raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Aggron',      mega:'Mega Aggron',         types:['steel'],              raid:'★★★',     pvp:'No',      notes:''},
+  {base:'Blaziken',    mega:'Mega Blaziken',       types:['fire','fighting'],    raid:'★★★★★',   pvp:'Limited', notes:''},
+  {base:'Swampert',    mega:'Mega Swampert',       types:['water','ground'],     raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Sceptile',    mega:'Mega Sceptile',       types:['grass','dragon'],     raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Banette',     mega:'Mega Banette',        types:['ghost'],              raid:'★★★',     pvp:'No',      notes:'🍬 Candy ★★★★★'},
+  {base:'Altaria',     mega:'Mega Altaria',        types:['dragon','fairy'],     raid:'★★★',     pvp:'★★★★',   notes:'Top GL/UL fairy'},
+  {base:'Lopunny',     mega:'Mega Lopunny',        types:['normal','fighting'],  raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Salamence',   mega:'Mega Salamence',      types:['dragon','flying'],    raid:'★★★★★',   pvp:'Limited', notes:''},
+  {base:'Medicham',    mega:'Mega Medicham',       types:['fighting','psychic'], raid:'★★★',     pvp:'★★★★',   notes:'GL powerhouse'},
+  {base:'Steelix',     mega:'Mega Steelix',        types:['steel','ground'],     raid:'★★',      pvp:'No',      notes:''},
+  {base:'Glalie',      mega:'Mega Glalie',         types:['ice'],                raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Abomasnow',   mega:'Mega Abomasnow',      types:['grass','ice'],        raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Gallade',     mega:'Mega Gallade',        types:['psychic','fighting'], raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Diancie',     mega:'Mega Diancie',        types:['rock','fairy'],       raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Audino',      mega:'Mega Audino',         types:['normal','fairy'],     raid:'★',       pvp:'No',      notes:''},
+  {base:'Rayquaza',    mega:'Mega Rayquaza',       types:['dragon','flying'],    raid:'★★★★★',   pvp:'Limited', notes:'🏆 BEST Raid DPS overall'},
+];
+
+let megaFilter = 'all';
+function setMegaFilter(f) {
+  megaFilter = f;
+  document.querySelectorAll('#mega-filter-pills .pill').forEach((p, i) => {
+    p.classList.toggle('active', ['all','raid5','pvp','candy'][i] === f);
+  });
+  renderMegaGuide();
+}
+
+function renderMegaGuide() {
+  const search = (document.getElementById('mega-search') ? document.getElementById('mega-search').value : '').toLowerCase();
+  const tbody = document.getElementById('mega-tbody');
+  if (!tbody) return;
+
+  let data = MEGA_DATA;
+  if (megaFilter === 'raid5')  data = data.filter(m => m.raid.length >= 5);
+  else if (megaFilter === 'pvp')   data = data.filter(m => m.pvp !== 'No' && m.pvp !== 'Niche');
+  else if (megaFilter === 'candy') data = data.filter(m => m.notes.includes('Candy'));
+  if (search) data = data.filter(m => m.mega.toLowerCase().includes(search) || m.base.toLowerCase().includes(search));
+
+  tbody.innerHTML = data.map(m => {
+    const raidColor = m.raid.length >= 6 ? 'var(--gold)' : m.raid.length >= 5 ? 'var(--green)' : m.raid.length >= 4 ? 'var(--accent)' : 'var(--text2)';
+    const pvpColor  = m.pvp === '★★★★' ? 'var(--green)' : m.pvp === 'Limited' ? 'var(--accent)' : m.pvp === 'No' ? 'var(--red)' : 'var(--text2)';
+    return '<tr style="border-bottom:1px solid var(--border)">'
+      + '<td style="padding:10px 12px"><div style="font-weight:700">' + m.mega + '</div><div style="font-size:11px;color:var(--text3)">' + m.base + '</div></td>'
+      + '<td style="padding:10px 12px">' + m.types.map(t => typeBadge(t)).join('') + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;font-weight:700;color:' + raidColor + '">' + m.raid + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;font-weight:700;color:' + pvpColor  + '">' + m.pvp  + '</td>'
+      + '<td style="padding:10px 12px;font-size:12px;color:var(--text2)">' + m.notes + '</td>'
+    + '</tr>';
+  }).join('') || '<tr><td colspan="5" style="padding:20px;text-align:center;color:var(--text3)">No results found.</td></tr>';
+}
+
+// ── BUDDY & SEASONS ──────────────────────────────────────────────────────────
+const BUDDY_DATA = [
+  {dist:'1 km',  buddy:'Magikarp',  evolves:'Gyarados',              league:'ML'},
+  {dist:'1 km',  buddy:'Meowth',    evolves:'Persian',               league:'GL'},
+  {dist:'1 km',  buddy:'Pikachu',   evolves:'Raichu',                league:'GL'},
+  {dist:'1 km',  buddy:'Igglybuff', evolves:'Wigglytuff',            league:'GL'},
+  {dist:'3 km',  buddy:'Abra',      evolves:'Alakazam',              league:'UL'},
+  {dist:'3 km',  buddy:'Machop',    evolves:'Machamp',               league:'UL'},
+  {dist:'3 km',  buddy:'Gastly',    evolves:'Gengar',                league:'UL/ML'},
+  {dist:'3 km',  buddy:'Ralts',     evolves:'Gardevoir/Gallade',     league:'UL/ML'},
+  {dist:'3 km',  buddy:'Swinub',    evolves:'Mamoswine',             league:'ML'},
+  {dist:'3 km',  buddy:'Deino',     evolves:'Hydreigon',             league:'UL/ML'},
+  {dist:'3 km',  buddy:'Gible',     evolves:'Garchomp',              league:'ML'},
+  {dist:'3 km',  buddy:'Beldum',    evolves:'Metagross',             league:'ML'},
+  {dist:'3 km',  buddy:'Bagon',     evolves:'Salamence',             league:'ML'},
+  {dist:'3 km',  buddy:'Dratini',   evolves:'Dragonite',             league:'ML'},
+  {dist:'3 km',  buddy:'Larvitar',  evolves:'Tyranitar',             league:'ML'},
+  {dist:'5 km',  buddy:'Bulbasaur', evolves:'Venusaur',              league:'GL/UL'},
+  {dist:'5 km',  buddy:'Charmander',evolves:'Charizard',             league:'ML'},
+  {dist:'5 km',  buddy:'Squirtle',  evolves:'Blastoise',             league:'GL/UL'},
+  {dist:'5 km',  buddy:'Eevee',     evolves:'All Eeveelutions',      league:'GL/UL/ML'},
+  {dist:'5 km',  buddy:'Feebas',    evolves:'Milotic (20km walk)',   league:'GL/UL'},
+  {dist:'20 km', buddy:'Absol',     evolves:'Mega Absol',            league:'UL'},
+  {dist:'20 km', buddy:'Shinx',     evolves:'Luxray',                league:'GL'},
+  {dist:'20 km', buddy:'Riolu',     evolves:'Lucario',               league:'UL/ML'},
+];
+
+const BUDDY_ACTIVITIES = [
+  {id:'walk',      label:'Walk together 2 km',               hearts:1},
+  {id:'treat',     label:'Give a treat (3 hearts max/day)',   hearts:3},
+  {id:'play',      label:'Play together',                     hearts:1},
+  {id:'battle',    label:'Battle together',                   hearts:1},
+  {id:'snapshot',  label:'Take a snapshot',                   hearts:1},
+  {id:'explore',   label:'Explore new places',                hearts:1},
+  {id:'pokestop',  label:'Visit a Pokéstop',                  hearts:1},
+];
+
+let buddyInitialized = false;
+function initBuddyTab() {
+  if (buddyInitialized) return;
+  buddyInitialized = true;
+
+  const tbody = document.getElementById('buddy-distance-tbody');
+  if (tbody) {
+    tbody.innerHTML = BUDDY_DATA.map(b =>
+      '<tr style="border-bottom:1px solid var(--border)">'
+      + '<td style="padding:8px;font-weight:700;color:var(--accent)">' + b.dist + '</td>'
+      + '<td style="padding:8px">' + b.buddy + '</td>'
+      + '<td style="padding:8px;color:var(--text2)">' + b.evolves + '</td>'
+      + '<td style="padding:8px"><span style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:11px">' + b.league + '</span></td>'
+      + '</tr>'
+    ).join('');
+  }
+
+  const checklistEl = document.getElementById('buddy-checklist');
+  if (checklistEl) {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('buddyHearts') || '{}'); } catch(e) {}
+    checklistEl.innerHTML = BUDDY_ACTIVITIES.map(a =>
+      '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 12px;border-radius:8px;background:var(--bg3);border:1px solid var(--border)">'
+      + '<input type="checkbox" id="buddy-' + a.id + '" ' + (saved[a.id] ? 'checked' : '') + ' onchange="saveBuddyHearts()" style="width:18px;height:18px;cursor:pointer">'
+      + '<span style="flex:1">' + a.label + '</span>'
+      + '<span style="color:var(--gold);font-weight:700">+' + a.hearts + ' ❤️</span>'
+      + '</label>'
+    ).join('');
+    updateBuddyHeartCount();
+  }
+
+  const gblEl = document.getElementById('gbl-season-info');
+  if (gblEl) {
+    gblEl.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">'
+      + '<div style="background:var(--bg3);border-radius:10px;padding:14px">'
+        + '<div style="font-weight:700;color:var(--accent);margin-bottom:6px">📅 Season 20</div>'
+        + '<div style="font-size:13px;color:var(--text2)">March – June 2025</div>'
+        + '<div style="font-size:12px;color:var(--text3);margin-top:4px">Spring Season</div>'
+      + '</div>'
+      + '<div style="background:var(--bg3);border-radius:10px;padding:14px">'
+        + '<div style="font-weight:700;color:var(--accent);margin-bottom:6px">⚔️ Leagues Active</div>'
+        + '<div style="font-size:13px;color:var(--text2)">Great League (≤1500 CP)<br>Ultra League (≤2500 CP)<br>Master League (no cap)</div>'
+      + '</div>'
+      + '<div style="background:var(--bg3);border-radius:10px;padding:14px">'
+        + '<div style="font-weight:700;color:var(--accent);margin-bottom:6px">🏆 Special Cups</div>'
+        + '<div style="font-size:13px;color:var(--text2)">Premier Cup, Pokémon GO Cup,<br>Little Cup, Flying Cup</div>'
+      + '</div>'
+      + '<div style="background:var(--bg3);border-radius:10px;padding:14px">'
+        + '<div style="font-weight:700;color:var(--accent);margin-bottom:6px">🎁 Rank Rewards</div>'
+        + '<div style="font-size:13px;color:var(--text2)">Rank 1–20: Poké Balls<br>Rank 20+: Stardust<br>Ace+: Elite TM at Legend</div>'
+      + '</div>'
+    + '</div>';
+  }
+}
+
+function saveBuddyHearts() {
+  const state = {};
+  BUDDY_ACTIVITIES.forEach(a => {
+    const cb = document.getElementById('buddy-' + a.id);
+    if (cb) state[a.id] = cb.checked;
+  });
+  try { localStorage.setItem('buddyHearts', JSON.stringify(state)); } catch(e) {}
+  updateBuddyHeartCount();
+}
+
+function updateBuddyHeartCount() {
+  const done = BUDDY_ACTIVITIES.filter(a => {
+    const cb = document.getElementById('buddy-' + a.id);
+    return cb && cb.checked;
+  }).length;
+  const el = document.getElementById('buddy-hearts-progress');
+  if (el) el.textContent = done + '/7 activities done';
+}
+
+function resetBuddyHearts() {
+  BUDDY_ACTIVITIES.forEach(a => {
+    const cb = document.getElementById('buddy-' + a.id);
+    if (cb) cb.checked = false;
+  });
+  try { localStorage.removeItem('buddyHearts'); } catch(e) {}
+  updateBuddyHeartCount();
+}
+
+// ── CALCULATOR ADDITIONS ──────────────────────────────────────────────────
+const POWERUP_COSTS = [
+  {range:'15→20', dust:1000,  candy:1},
+  {range:'20→25', dust:2500,  candy:1},
+  {range:'25→30', dust:4000,  candy:2},
+  {range:'30→35', dust:6000,  candy:3},
+  {range:'35→40', dust:8000,  candy:4},
+  {range:'40→50', dust:10000, candy:6, note:'XL Candy required'},
+];
+
+let costCalcInit = false;
+function initCostCalc() {
+  if (costCalcInit) return;
+  costCalcInit = true;
+  const sel = document.getElementById('cost-pokemon');
+  if (!sel) return;
+  POKEMON.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.num;
+    opt.textContent = '#' + String(p.num).padStart(3,'0') + ' ' + p.name;
+    sel.appendChild(opt);
+  });
+}
+
+function calcCost() {
+  const num = parseInt(document.getElementById('cost-pokemon') ? document.getElementById('cost-pokemon').value : '');
+  const result = document.getElementById('cost-result');
+  if (!result) return;
+  if (!num) { result.innerHTML = '<p style="color:var(--text3);font-size:13px">Select a Pokémon to see costs.</p>'; return; }
+
+  const powerRows = POWERUP_COSTS.map(p =>
+    '<tr style="border-bottom:1px solid var(--border)">'
+    + '<td style="padding:7px 10px">Level ' + p.range + '</td>'
+    + '<td style="padding:7px 10px;text-align:center">⭐ ' + p.dust.toLocaleString() + '</td>'
+    + '<td style="padding:7px 10px;text-align:center">🍬 ' + p.candy + '</td>'
+    + '<td style="padding:7px 10px;text-align:center;font-size:11px;color:var(--text3)">' + (p.note || '') + '</td>'
+    + '</tr>'
+  ).join('');
+
+  result.innerHTML = '<div style="margin-bottom:12px">'
+    + '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">⬆️ Power-Up Costs (per 5 half-levels)</div>'
+    + '<table style="width:100%;border-collapse:collapse;font-size:13px">'
+      + '<thead><tr style="background:var(--bg3)">'
+        + '<th style="padding:7px 10px;text-align:left;color:var(--text2)">Range</th>'
+        + '<th style="padding:7px 10px;color:var(--text2)">Stardust</th>'
+        + '<th style="padding:7px 10px;color:var(--text2)">Candy</th>'
+        + '<th style="padding:7px 10px;color:var(--text2)">Note</th>'
+      + '</tr></thead>'
+      + '<tbody>' + powerRows + '</tbody>'
+    + '</table>'
+  + '</div>'
+  + '<div style="font-size:12px;color:var(--text3);padding:8px;background:var(--bg3);border-radius:6px">'
+    + '💡 Standard 1st evolution: 25 candy · Standard 2nd evolution: 100 candy · Some Pokémon cost more (e.g. Magikarp 400 candy, Swablu 400 candy).'
+  + '</div>';
+}
+
+function calcCatchProb() {
+  const bcr   = parseFloat((document.getElementById('catch-bcr')   || {}).value || 20)  / 100;
+  const ball  = parseFloat((document.getElementById('catch-ball')  || {}).value || 1.5);
+  const berry = parseFloat((document.getElementById('catch-berry') || {}).value || 1.5);
+  const thr   = parseFloat((document.getElementById('catch-throw') || {}).value || 1.5);
+  const curve = parseFloat((document.getElementById('catch-curve') || {}).value || 1.7);
+  const medal = parseFloat((document.getElementById('catch-medal') || {}).value || 1.2);
+  const balls = parseInt((document.getElementById('catch-balls')   || {}).value || 10);
+  const result = document.getElementById('catch-result');
+  if (!result) return;
+
+  const rate1 = Math.min(1, bcr * ball * berry * thr * curve * medal);
+  const prob1 = Math.round(rate1 * 100 * 10) / 10;
+  const probN = Math.round((1 - Math.pow(1 - rate1, balls)) * 100 * 10) / 10;
+
+  const barColor = probN >= 75 ? 'var(--green)' : probN >= 40 ? 'var(--gold)' : 'var(--red)';
+
+  result.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">'
+    + '<div style="background:var(--bg3);border-radius:8px;padding:12px;text-align:center">'
+      + '<div style="font-size:24px;font-weight:700;color:var(--accent)">' + prob1 + '%</div>'
+      + '<div style="font-size:11px;color:var(--text2)">Per ball</div>'
+    + '</div>'
+    + '<div style="background:var(--bg3);border-radius:8px;padding:12px;text-align:center">'
+      + '<div style="font-size:24px;font-weight:700;color:' + barColor + '">' + probN + '%</div>'
+      + '<div style="font-size:11px;color:var(--text2)">With ' + balls + ' balls</div>'
+    + '</div>'
+  + '</div>'
+  + '<div style="background:var(--bg3);border-radius:8px;height:12px;overflow:hidden">'
+    + '<div style="height:100%;width:' + Math.min(100, probN) + '%;background:' + barColor + ';border-radius:8px;transition:width 0.3s"></div>'
+  + '</div>'
+  + '<div style="font-size:11px;color:var(--text3);margin-top:6px">Combined rate modifier: ×' + rate1.toFixed(3) + ' → ' + prob1 + '% per throw</div>';
+}
+
+// XL Candy Table
+const XL_DATA = [
+  {name:'Zacian',          xl:296, league:'ML', notes:'Crown Form – top ML Steel'},
+  {name:'Garchomp',        xl:296, league:'ML', notes:'ML Dragon/Ground'},
+  {name:'Metagross',       xl:296, league:'ML', notes:'ML Psychic/Steel'},
+  {name:'Dragonite',       xl:296, league:'ML', notes:'ML Dragon'},
+  {name:'Dialga',          xl:296, league:'ML', notes:'Limited candy source'},
+  {name:'Palkia',          xl:296, league:'ML', notes:'ML Dragon/Water'},
+  {name:'Giratina-Origin', xl:296, league:'ML', notes:'Top ML Ghost'},
+  {name:'Kyogre',          xl:296, league:'ML', notes:'ML Water'},
+  {name:'Groudon',         xl:296, league:'ML', notes:'ML Ground'},
+  {name:'Rayquaza',        xl:296, league:'ML', notes:'Best overall raid + ML'},
+  {name:'Landorus-T',      xl:296, league:'ML', notes:'ML Ground/Flying'},
+  {name:'Lugia',           xl:296, league:'ML', notes:'ML defensive anchor'},
+  {name:'Ho-Oh',           xl:296, league:'ML', notes:'ML Fire'},
+  {name:'Togekiss',        xl:296, league:'UL', notes:'UL/ML Fairy powerhouse'},
+  {name:'Swampert',        xl:296, league:'UL', notes:'GL/UL Water/Ground'},
+  {name:'Talonflame',      xl:296, league:'UL', notes:'UL fast attacker'},
+  {name:'Obstagoon',       xl:296, league:'UL', notes:'UL Dark/Normal'},
+  {name:'Registeel',       xl:296, league:'UL', notes:'UL Steel tank'},
+  {name:'Jellicent',       xl:296, league:'UL', notes:'UL Water/Ghost'},
+  {name:'Cofagrigus',      xl:296, league:'UL', notes:'UL Ghost'},
+];
+
+let xlLeagueFilter = 'all';
+function setXLLeague(f) {
+  xlLeagueFilter = f;
+  document.querySelectorAll('#xl-league-pills .pill').forEach((p, i) => {
+    p.classList.toggle('active', ['all','ml','ul'][i] === f);
+  });
+  renderXLTable();
+}
+function renderXLTable() {
+  const tbody = document.getElementById('xl-tbody');
+  if (!tbody) return;
+  const data = xlLeagueFilter === 'all' ? XL_DATA : XL_DATA.filter(x => x.league === xlLeagueFilter.toUpperCase());
+  tbody.innerHTML = data.map(x =>
+    '<tr style="border-bottom:1px solid var(--border)">'
+    + '<td style="padding:7px 10px;font-weight:600">' + x.name + '</td>'
+    + '<td style="padding:7px 10px;text-align:center;color:var(--accent);font-weight:700">' + x.xl + '</td>'
+    + '<td style="padding:7px 10px;text-align:center"><span style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:11px">' + x.league + '</span></td>'
+    + '<td style="padding:7px 10px;color:var(--text2);font-size:12px">' + x.notes + '</td>'
+    + '</tr>'
+  ).join('') || '<tr><td colspan="4" style="padding:20px;text-align:center;color:var(--text3)">No results.</td></tr>';
+}
+
+// ── TOURNAMENT BRACKET ────────────────────────────────────────────────────
+let bracketState = null;
+let bracketInitialized = false;
+function initBracketTab() {
+  if (bracketInitialized) return;
+  bracketInitialized = true;
+  try {
+    const saved = localStorage.getItem('tournamentBracket');
+    if (saved) {
+      bracketState = JSON.parse(saved);
+      renderBracketResult();
+      const btn = document.getElementById('bracket-reset-btn');
+      if (btn) btn.style.display = '';
+    }
+  } catch(e) {}
+}
+
+function generateBracket() {
+  const name    = (document.getElementById('bracket-name')    || {}).value || 'Tournament';
+  const format  = (document.getElementById('bracket-format')  || {}).value || 'single';
+  const rawText = (document.getElementById('bracket-players') || {}).value || '';
+  const players = rawText.split('\n').map(s => s.trim()).filter(Boolean);
+
+  if (players.length < 2) {
+    document.getElementById('bracket-result').innerHTML = '<p style="color:var(--red);padding:12px">⚠️ Please enter at least 2 players.</p>';
+    return;
+  }
+
+  bracketState = { name, format, players, results: {} };
+  if (format === 'single') {
+    bracketState.rounds = buildSingleElimRounds(players);
+  } else {
+    bracketState.schedule = buildRoundRobin(players);
+  }
+
+  try { localStorage.setItem('tournamentBracket', JSON.stringify(bracketState)); } catch(e) {}
+  renderBracketResult();
+  const btn = document.getElementById('bracket-reset-btn');
+  if (btn) btn.style.display = '';
+}
+
+function buildSingleElimRounds(players) {
+  let p = [...players];
+  const n = Math.pow(2, Math.ceil(Math.log2(p.length)));
+  while (p.length < n) p.push('BYE');
+  const rounds = [];
+  let current = p;
+  while (current.length > 1) {
+    const matches = [];
+    for (let i = 0; i < current.length; i += 2) {
+      matches.push({ p1: current[i], p2: current[i+1], winner: null });
+    }
+    rounds.push(matches);
+    current = matches.map(() => '?');
+  }
+  return rounds;
+}
+
+function buildRoundRobin(players) {
+  const rounds = [];
+  const p = [...players];
+  if (p.length % 2 !== 0) p.push('BYE');
+  const n = p.length;
+  const fixed = p[0];
+  const rotating = p.slice(1);
+  for (let r = 0; r < n - 1; r++) {
+    const roundPlayers = [fixed, ...rotating];
+    const matches = [];
+    for (let i = 0; i < n / 2; i++) {
+      matches.push({ p1: roundPlayers[i], p2: roundPlayers[n - 1 - i], winner: null });
+    }
+    rounds.push(matches);
+    rotating.unshift(rotating.pop());
+  }
+  return rounds;
+}
+
+function setBracketWinner(roundIdx, matchIdx, winner) {
+  const rounds = bracketState.rounds || bracketState.schedule;
+  if (!rounds || !rounds[roundIdx] || !rounds[roundIdx][matchIdx]) return;
+  rounds[roundIdx][matchIdx].winner = winner;
+  if (bracketState.format === 'single' && bracketState.rounds) {
+    const nextRound = bracketState.rounds[roundIdx + 1];
+    if (nextRound) {
+      const nextMatchIdx = Math.floor(matchIdx / 2);
+      const slot = matchIdx % 2 === 0 ? 'p1' : 'p2';
+      if (nextRound[nextMatchIdx]) nextRound[nextMatchIdx][slot] = winner;
+    }
+  }
+  try { localStorage.setItem('tournamentBracket', JSON.stringify(bracketState)); } catch(e) {}
+  renderBracketResult();
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function renderBracketResult() {
+  const el = document.getElementById('bracket-result');
+  if (!el || !bracketState) return;
+
+  const rounds = bracketState.rounds || bracketState.schedule;
+  if (!rounds) return;
+
+  const isRR = bracketState.format === 'roundrobin';
+
+  let standings = {};
+  if (isRR) {
+    bracketState.players.forEach(p => { standings[p] = { w: 0, l: 0 }; });
+    rounds.forEach(round => round.forEach(m => {
+      if (m.winner && m.winner !== 'BYE') {
+        if (standings[m.winner]) standings[m.winner].w++;
+        const loser = m.p1 === m.winner ? m.p2 : m.p1;
+        if (standings[loser]) standings[loser].l++;
+      }
+    }));
+  }
+
+  let html = '<div class="calc-card"><div class="calc-card-title">🏆 ' + bracketState.name + ' – ' + (isRR ? 'Round Robin' : 'Single Elimination') + '</div>';
+
+  rounds.forEach((round, ri) => {
+    html += '<div style="margin-bottom:16px"><div style="font-weight:700;color:var(--accent);margin-bottom:8px">Round ' + (ri + 1) + '</div>';
+    html += '<div style="display:flex;flex-direction:column;gap:6px">';
+    round.forEach((m, mi) => {
+      if (m.p1 === 'BYE' || m.p2 === 'BYE') {
+        const realPlayer = m.p1 !== 'BYE' ? m.p1 : m.p2;
+        html += '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--text3)">' + escHtml(realPlayer) + ' — BYE</div>';
+        return;
+      }
+      const w = m.winner;
+      const p1Style = w === m.p1 ? 'color:var(--green);font-weight:700' : (w && w !== m.p1 ? 'color:var(--text3);text-decoration:line-through' : '');
+      const p2Style = w === m.p2 ? 'color:var(--green);font-weight:700' : (w && w !== m.p2 ? 'color:var(--text3);text-decoration:line-through' : '');
+      html += '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+        + '<button onclick="setBracketWinner(' + ri + ',' + mi + ',\'' + escHtml(m.p1).replace(/'/g,"&#39;") + '\')" style="background:' + (w === m.p1 ? 'var(--green)' : 'var(--bg4)') + ';border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;' + p1Style + '">' + escHtml(m.p1) + '</button>'
+        + '<span style="color:var(--text3)">vs</span>'
+        + '<button onclick="setBracketWinner(' + ri + ',' + mi + ',\'' + escHtml(m.p2).replace(/'/g,"&#39;") + '\')" style="background:' + (w === m.p2 ? 'var(--green)' : 'var(--bg4)') + ';border:1px solid var(--border);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:13px;' + p2Style + '">' + escHtml(m.p2) + '</button>'
+        + (w ? '<span style="margin-left:auto;font-size:11px;color:var(--text2)">✅ ' + escHtml(w) + ' wins</span>' : '<span style="margin-left:auto;font-size:11px;color:var(--text3)">Click to set winner</span>')
+      + '</div>';
+    });
+    html += '</div></div>';
+  });
+
+  if (isRR) {
+    const sorted = Object.entries(standings).sort((a,b) => b[1].w - a[1].w);
+    html += '<div style="margin-top:16px"><div style="font-weight:700;color:var(--accent);margin-bottom:8px">📊 Standings</div>'
+      + '<table style="width:100%;border-collapse:collapse;font-size:13px">'
+        + '<thead><tr style="background:var(--bg3)">'
+          + '<th style="padding:8px;text-align:left">Player</th>'
+          + '<th style="padding:8px;text-align:center">W</th>'
+          + '<th style="padding:8px;text-align:center">L</th>'
+        + '</tr></thead>'
+        + '<tbody>' + sorted.map(([p, s], i) =>
+          '<tr style="border-bottom:1px solid var(--border)">'
+          + '<td style="padding:8px">' + (i===0&&s.w>0?'🥇 ':i===1&&s.w>0?'🥈 ':i===2&&s.w>0?'🥉 ':'') + escHtml(p) + '</td>'
+          + '<td style="padding:8px;text-align:center;color:var(--green)">' + s.w + '</td>'
+          + '<td style="padding:8px;text-align:center;color:var(--red)">' + s.l + '</td>'
+          + '</tr>'
+        ).join('') + '</tbody>'
+      + '</table></div>';
+  }
+
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function resetBracket() {
+  bracketState = null;
+  try { localStorage.removeItem('tournamentBracket'); } catch(e) {}
+  document.getElementById('bracket-result').innerHTML = '';
+  const btn = document.getElementById('bracket-reset-btn');
+  if (btn) btn.style.display = 'none';
+}
+
+// ── SERVICE WORKER REGISTRATION ───────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(err => console.log('SW registration failed:', err));
+  });
 }
 
 // ── SHADOW BONUS CALCULATOR ───────────────────────────────────────────────
@@ -5575,7 +6833,7 @@ function calcShadow() {
 document.addEventListener('keydown', e => {
   const tag = e.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
-  const shortcuts = { '1': 'ranking-tab', '2': 'moves-tab', '3': 'home-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'calc-tab', '8': 'battle-tab', '9': 'stardust-tab' };
+  const shortcuts = { '1': 'ranking-tab', '2': 'moves-tab', '3': 'home-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'calc-tab', '8': 'battle-tab', '9': 'stardust-tab', 'q': 'raid-tab', 'w': 'builder-tab', 'e': 'mega-tab', 'r': 'buddy-tab', 't': 'bracket-tab' };
   if (shortcuts[e.key]) { e.preventDefault(); show(shortcuts[e.key]); }
 });
 
