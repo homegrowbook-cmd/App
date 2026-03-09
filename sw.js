@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pvp-advisor-v1';
+const CACHE_NAME = 'pvp-advisor-v2';
 const ASSETS = [
   './pokemon-go-advisor.html',
   './logo.svg',
