@@ -203,6 +203,7 @@
           "ice",
           "flying"
         ],
+        "note": "30th Anniversary – until 17 Mar",
         "source": "https://leekduck.com/raid-bosses/"
       },
       {
@@ -212,6 +213,7 @@
           "electric",
           "flying"
         ],
+        "note": "30th Anniversary – until 17 Mar",
         "source": "https://leekduck.com/raid-bosses/"
       },
       {
@@ -221,6 +223,63 @@
           "fire",
           "flying"
         ],
+        "note": "30th Anniversary – until 17 Mar",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 150,
+        "name": "Mewtwo",
+        "types": [
+          "psychic"
+        ],
+        "note": "30th Anniversary – from 17 Mar",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 243,
+        "name": "Raikou",
+        "types": [
+          "electric"
+        ],
+        "note": "30th Anniversary – from 17 Mar",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 244,
+        "name": "Entei",
+        "types": [
+          "fire"
+        ],
+        "note": "30th Anniversary – from 17 Mar",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 245,
+        "name": "Suicune",
+        "types": [
+          "water"
+        ],
+        "note": "30th Anniversary – from 17 Mar",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 249,
+        "name": "Lugia",
+        "types": [
+          "psychic",
+          "flying"
+        ],
+        "note": "30th Anniversary – from 22 Mar",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 250,
+        "name": "Ho-Oh",
+        "types": [
+          "fire",
+          "flying"
+        ],
+        "note": "30th Anniversary – from 22 Mar",
         "source": "https://leekduck.com/raid-bosses/"
       }
     ],
@@ -233,6 +292,16 @@
           "flying"
         ],
         "note": "until 10 Mar",
+        "source": "https://leekduck.com/raid-bosses/"
+      },
+      {
+        "num": 94,
+        "name": "Mega Gengar",
+        "types": [
+          "ghost",
+          "poison"
+        ],
+        "note": "from 10 Mar",
         "source": "https://leekduck.com/raid-bosses/"
       }
     ],
@@ -327,6 +396,13 @@
   ],
   "futureEvents": [
     {
+      "icon": "🎂",
+      "name": "30th Anniversary Celebration – Phase 2",
+      "date": "17–22 Mar 2026",
+      "desc": "Mewtwo, Raikou, Entei & Suicune appear in 5★ raids. Special 30th anniversary field research.",
+      "source": "https://pokemongolive.com/post/pokemon-go-30th-anniversary/"
+    },
+    {
       "icon": "🌸",
       "name": "Spring Community Day – Grookey",
       "date": "16 Mar 2026, 14:00–17:00",
@@ -334,10 +410,17 @@
       "source": "https://pokemongolive.com/post/community-day-march-2026/"
     },
     {
+      "icon": "🐣",
+      "name": "Spring into Spring Event",
+      "date": "22–27 Mar 2026",
+      "desc": "Springtime-themed wild spawns, 2km egg hatches & themed field research. Chansey, Exeggcute and Togetic in the spotlight.",
+      "source": "https://pokemongolive.com/post/spring-into-spring-2026/"
+    },
+    {
       "icon": "⚡",
       "name": "GO Battle League – Season 17 Start",
       "date": "22 Mar 2026",
-      "desc": "New league season with Premiere Cup and Pokémon GO Cup.",
+      "desc": "New league season with Premiere Cup and Pokémon GO Cup. Lugia & Ho-Oh in 5★ raids.",
       "source": "https://pokemongolive.com/post/go-battle-league-season-17/"
     },
     {
