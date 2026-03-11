@@ -50,42 +50,8 @@ The app logo is available as [`logo.svg`](logo.svg) and is embedded as the brows
 
 ---
 
-## ✅ Completed Roadmap
+## 🗒️ Open Suggestions
 
-All planned features have been implemented. Items below are crossed off as done.
-
-### High Priority
-
-| Feature | Status | Notes |
-|---|---|---|
-| ~~**IV Calculator**~~ | ✅ Done | IV rank calculator in Calculator tab |
-| ~~**Battle Simulator**~~ | ✅ Done | Tab 8 – full move + type analysis |
-| ~~**CP Calculator**~~ | ✅ Done | CP calculation in Calculator tab |
-| ~~**Shadow Pokémon Guide**~~ | ✅ Done | Shadow/Purified comparison in Calculator |
-| ~~**Automatic Meta Updates**~~ | ✅ Done | `events.json` auto-updated weekly via GitHub Actions |
-
-### Medium Priority
-
-| Feature | Status | Notes |
-|---|---|---|
-| ~~**Raid Counter**~~ | ✅ Done | Tab 10 – counters with type weaknesses |
-| ~~**Mega Evolution Guide**~~ | ✅ Done | Tab 12 – PvP and raid viability |
-| ~~**Team Builder**~~ | ✅ Done | Tab 11 – synergy and coverage analysis |
-| ~~**Buddy Optimization**~~ | ✅ Done | In Buddy & Seasons tab |
-| ~~**Seasons Tracker**~~ | ✅ Done | GBL season overview in Buddy tab |
-
-### Further Ideas
-
-| Feature | Status | Notes |
-|---|---|---|
-| ~~**Catch Probability Calculator**~~ | ✅ Done | In Calculator tab |
-| ~~**Tournament Bracket Generator**~~ | ✅ Done | Tab 14 – single elim + round robin |
-| ~~**Buddy Heart Tracker**~~ | ✅ Done | Daily/weekly tracker in Buddy tab |
-| ~~**Move Comparison (Elite TM)**~~ | ✅ Done | In Moves tab – verdict, PvP advantage vs. best standard |
-| ~~**Offline Mode / PWA**~~ | ✅ Done | `manifest.json` + `sw.js` service worker |
-| ~~**Pokémon Cost Calculator**~~ | ✅ Done | Evolution + power-up costs in Calculator tab |
-| ~~**XL Candy Guide**~~ | ✅ Done | Priority list by league in Calculator tab |
-| ~~**Dark/Light Theme**~~ | ✅ Done | Theme toggle in nav bar |
-| ~~**League Viability Filter**~~ | ✅ Done | GL/UL/ML filter in Pokédex tab |
-| **Multilingual Support** | 🔜 Planned | EN/DE language toggle – planned for next iteration |
+Planned and proposed features that are not yet implemented are tracked in **[SUGGESTIONS.md](SUGGESTIONS.md)**.
+The file includes a comparison with five leading Pokémon GO community sites and five new feature proposals.
 
