@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Pokémon GO PvP Advisor</title>
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PvP Advisor">
+<link rel="apple-touch-icon" href="logo.svg">
+<!-- Android / generic PWA -->
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#7c83f5">
@@ -1827,9 +1834,69 @@
     .events-grid { grid-template-columns: 1fr; }
     .raids-grid { grid-template-columns: 1fr; }
   }
+
+  /* ── UPDATE BANNER ───────────────────────────────────────── */
+  #update-banner {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: var(--accent2);
+    color: #fff;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  }
+  #update-banner.show { display: flex; }
+  #update-banner-btn {
+    background: #fff;
+    color: var(--accent2);
+    border: none;
+    border-radius: 20px;
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #update-banner-close {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+
+  /* ── SAFE AREA (iOS notch / home indicator) ─────────────── */
+  main {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+  nav {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
 </style>
 </head>
 <body>
+
+<div id="update-banner" role="alert" aria-live="polite">
+  <span>🆕 A new version is available!</span>
+  <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+    <button id="update-banner-btn" onclick="applyUpdate()">Refresh</button>
+    <button id="update-banner-close" onclick="dismissUpdate()" aria-label="Dismiss">✕</button>
+  </div>
+</div>
 
 <nav>
   <div class="nav-inner">
@@ -5519,10 +5586,49 @@ function escHtml(str) {
 }
 
 // ── SERVICE WORKER REGISTRATION ───────────────────────────────────────────
+let _waitingSW = null;
+
+function showUpdateBanner() {
+  document.getElementById('update-banner').classList.add('show');
+}
+function applyUpdate() {
+  if (!_waitingSW) {
+    console.warn('applyUpdate: no waiting service worker found.');
+    return;
+  }
+  document.getElementById('update-banner-btn').disabled = true;
+  _waitingSW.postMessage({ type: 'SKIP_WAITING' });
+}
+function dismissUpdate() {
+  document.getElementById('update-banner').classList.remove('show');
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        // A waiting SW means a new version has been downloaded.
+        if (reg.waiting) {
+          _waitingSW = reg.waiting;
+          showUpdateBanner();
+        }
+        reg.addEventListener('updatefound', () => {
+          const newSW = reg.installing;
+          if (!newSW) return;
+          newSW.addEventListener('statechange', () => {
+            if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+              _waitingSW = newSW;
+              showUpdateBanner();
+            }
+          });
+        });
+      })
       .catch(err => console.log('SW registration failed:', err));
+
+    // Reload the page when a new SW takes control (after SKIP_WAITING).
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
   });
 }
 
