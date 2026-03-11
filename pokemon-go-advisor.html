@@ -2765,6 +2765,26 @@
       <div id="spawn-map" style="height:400px;width:100%;border-radius:8px"></div>
     </div>
 
+    <!-- Route planner -->
+    <div class="calc-card" style="margin-bottom:16px">
+      <div class="calc-card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span>🛤️ Route Planner</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="calc-btn" id="route-mode-btn" onclick="toggleRouteMode()" aria-pressed="false" aria-label="Start drawing a route" style="font-size:12px;padding:6px 12px">🛤️ Start Route</button>
+          <button class="calc-btn" onclick="clearRoute()" aria-label="Clear route waypoints" style="font-size:12px;padding:6px 12px;background:var(--bg3)">🗑️ Clear Route</button>
+          <button class="calc-btn" onclick="exportGpx()" aria-label="Export route as GPX file" style="font-size:12px;padding:6px 12px">📥 Export GPX</button>
+        </div>
+      </div>
+      <div style="margin:10px 0 4px">
+        <div class="calc-form-row">
+          <span class="calc-label">Route Name</span>
+          <input class="calc-input" id="route-name" type="text" placeholder="My Pokémon GO Route" style="max-width:260px">
+        </div>
+      </div>
+      <div id="route-status" style="color:var(--text3);font-size:13px;margin-top:6px">Click "Start Route", then tap on the map to add waypoints. Export as GPX for iPoGo.</div>
+      <div id="route-waypoints-list" style="display:flex;flex-direction:column;gap:6px;margin-top:10px"></div>
+    </div>
+
     <!-- Filter + list -->
     <div class="calc-card">
       <div class="calc-card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
@@ -7443,6 +7463,12 @@ window.addEventListener('scroll', () => {
   let _layers = {};         // id → Leaflet marker on the confirmed map
   let _idCounter = 0;       // monotonic counter to avoid same-millisecond ID collisions
 
+  // Route drawing state
+  let _routeMode       = false;
+  let _routeWaypoints  = [];   // [{lat, lng}, …]
+  let _routePolyline   = null; // Leaflet polyline connecting waypoints
+  let _routeWptMarkers = [];   // Leaflet markers (numbered waypoint pins)
+
   const STORAGE_KEY = 'spawnPoints_v1';
   const SPAWN_TYPE_LABELS = {
     normal: '🌿 Normal',
@@ -7567,8 +7593,9 @@ window.addEventListener('scroll', () => {
     // Add all persisted points to the map
     loadPoints().forEach(pt => addConfirmedMarker(pt));
 
-    // Click → place pending marker and show form
+    // Click → route mode or spawn point
     _map.on('click', function (e) {
+      if (_routeMode) { addRouteWaypoint(e.latlng); return; }
       if (_pendingMarker) { _map.removeLayer(_pendingMarker); }
       _pendingLatLng = e.latlng;
       _pendingMarker = L.marker(e.latlng, { icon: makePendingIcon() }).addTo(_map);
@@ -7641,6 +7668,123 @@ window.addEventListener('scroll', () => {
     const hint = document.getElementById('spawn-click-hint');
     if (form) form.style.display = 'none';
     if (hint) hint.style.display = '';
+  }
+
+  // ── ROUTE DRAWING ──────────────────────────────────────────────────────────
+  function makeRouteWaypointIcon(index) {
+    const num = index + 1;
+    const fs  = num >= 100 ? 7 : num >= 10 ? 9 : 11;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" width="22" height="22">
+      <circle cx="11" cy="11" r="9" fill="#e05252" stroke="#fff" stroke-width="2"/>
+      <text x="11" y="15" text-anchor="middle" fill="#fff" font-size="${fs}" font-family="sans-serif" font-weight="bold">${num}</text>
+    </svg>`;
+    return L.divIcon({ className: '', html: svg, iconSize: [22, 22], iconAnchor: [11, 11] });
+  }
+
+  function updateRouteOnMap() {
+    if (!_map) return;
+    if (_routePolyline) { _map.removeLayer(_routePolyline); _routePolyline = null; }
+    _routeWptMarkers.forEach(m => _map.removeLayer(m));
+    _routeWptMarkers = [];
+    if (_routeWaypoints.length === 0) return;
+    const latlngs = _routeWaypoints.map(w => [w.lat, w.lng]);
+    _routePolyline = L.polyline(latlngs, { color: '#e05252', weight: 3, opacity: 0.85, dashArray: '8 4' }).addTo(_map);
+    _routeWaypoints.forEach((w, i) => {
+      const m = L.marker([w.lat, w.lng], { icon: makeRouteWaypointIcon(i) }).addTo(_map);
+      _routeWptMarkers.push(m);
+    });
+  }
+
+  function renderRouteWaypoints() {
+    const listEl = document.getElementById('route-waypoints-list');
+    if (!listEl) return;
+    if (_routeWaypoints.length === 0) { listEl.innerHTML = ''; return; }
+    listEl.innerHTML = _routeWaypoints.map((w, i) =>
+      `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg3);border-radius:6px;font-size:13px">
+        <span style="background:#e05252;color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">${i + 1}</span>
+        <span style="color:var(--text2);font-family:monospace">${w.lat.toFixed(6)}, ${w.lng.toFixed(6)}</span>
+        <button onclick="window._spawnMap.removeRouteWaypoint(${i})" title="Remove waypoint ${i + 1}" aria-label="Remove waypoint ${i + 1}" style="margin-left:auto;background:transparent;border:1px solid var(--red);cursor:pointer;padding:3px 7px;border-radius:4px;color:var(--red);font-size:11px">✕</button>
+      </div>`
+    ).join('');
+  }
+
+  function addRouteWaypoint(latlng) {
+    _routeWaypoints.push({ lat: latlng.lat, lng: latlng.lng });
+    updateRouteOnMap();
+    renderRouteWaypoints();
+    const statusEl = document.getElementById('route-status');
+    const n = _routeWaypoints.length;
+    if (statusEl) statusEl.textContent = `🛤️ Route mode active – ${n} waypoint${n !== 1 ? 's' : ''} added. Click to add more or press "Stop Route" when done.`;
+  }
+
+  function removeRouteWaypoint(index) {
+    _routeWaypoints.splice(index, 1);
+    updateRouteOnMap();
+    renderRouteWaypoints();
+    const statusEl = document.getElementById('route-status');
+    const n = _routeWaypoints.length;
+    if (statusEl) statusEl.textContent = _routeMode
+      ? `🛤️ Route mode active – ${n} waypoint${n !== 1 ? 's' : ''} added.`
+      : `Route: ${n} waypoint${n !== 1 ? 's' : ''}. Click "Export GPX" to download.`;
+  }
+
+  function toggleRouteMode() {
+    _routeMode = !_routeMode;
+    const btn      = document.getElementById('route-mode-btn');
+    const statusEl = document.getElementById('route-status');
+    const form     = document.getElementById('spawn-form');
+    const hint     = document.getElementById('spawn-click-hint');
+    if (_routeMode) {
+      if (btn) { btn.textContent = '⏹ Stop Route'; btn.style.background = 'var(--red)'; btn.setAttribute('aria-pressed', 'true'); btn.setAttribute('aria-label', 'Stop drawing route'); }
+      if (form) form.style.display = 'none';
+      if (hint) hint.style.display = 'none';
+      if (statusEl) { statusEl.style.color = 'var(--accent)'; statusEl.textContent = '🛤️ Route mode active – click on the map to add waypoints.'; }
+      if (_pendingMarker) { _map && _map.removeLayer(_pendingMarker); _pendingMarker = null; _pendingLatLng = null; }
+    } else {
+      if (btn) { btn.textContent = '🛤️ Start Route'; btn.style.background = ''; btn.setAttribute('aria-pressed', 'false'); btn.setAttribute('aria-label', 'Start drawing a route'); }
+      if (hint) hint.style.display = '';
+      const n = _routeWaypoints.length;
+      if (statusEl) {
+        statusEl.style.color = 'var(--text3)';
+        statusEl.textContent = n > 0
+          ? `Route paused. ${n} waypoint${n !== 1 ? 's' : ''} saved. Click "Export GPX" to download.`
+          : 'Click "Start Route", then tap on the map to add waypoints. Export as GPX for iPoGo.';
+      }
+    }
+  }
+
+  function clearRoute() {
+    if (_routeWaypoints.length > 0 && !confirm('Clear all route waypoints? This cannot be undone.')) return;
+    _routeWaypoints = [];
+    updateRouteOnMap();
+    renderRouteWaypoints();
+    if (_routeMode) toggleRouteMode();
+    const statusEl = document.getElementById('route-status');
+    if (statusEl) { statusEl.style.color = 'var(--text3)'; statusEl.textContent = 'Click "Start Route", then tap on the map to add waypoints. Export as GPX for iPoGo.'; }
+  }
+
+  function exportGpx() {
+    if (_routeWaypoints.length === 0) { alert('No route waypoints yet. Use "Start Route" to draw a route on the map first.'); return; }
+    const rawName = document.getElementById('route-name')?.value.trim() || 'Pokémon GO Route';
+    const escXml  = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const name    = escXml(rawName);
+    const rtepts  = _routeWaypoints.map((w, i) =>
+      `    <rtept lat="${w.lat.toFixed(6)}" lon="${w.lng.toFixed(6)}">\n      <name>WP${i + 1}</name>\n      <ele>0</ele>\n    </rtept>`
+    ).join('\n');
+    const gpx = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Pokémon GO Advisor" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata><name>${name}</name></metadata>
+  <rte>
+    <name>${name}</name>
+${rtepts}
+  </rte>
+</gpx>`;
+    const blob     = new Blob([gpx], { type: 'application/gpx+xml' });
+    const url      = URL.createObjectURL(blob);
+    const a        = document.createElement('a');
+    const safeName = rawName.replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_').toLowerCase() || 'route';
+    a.href = url; a.download = `${safeName}.gpx`; a.click();
+    URL.revokeObjectURL(url);
   }
 
   function deletePoint(id) {
@@ -7721,7 +7865,7 @@ window.addEventListener('scroll', () => {
   }
 
   // Expose public API on window so inline onclick handlers can call these
-  window._spawnMap = { deletePoint, flyTo };
+  window._spawnMap = { deletePoint, flyTo, removeRouteWaypoint };
   // Also expose top-level for onclick attributes in the tab HTML
   window.confirmSpawnPoint  = confirmSpawnPoint;
   window.cancelSpawnPoint   = cancelSpawnPoint;
@@ -7729,6 +7873,9 @@ window.addEventListener('scroll', () => {
   window.importSpawnPoints  = importSpawnPoints;
   window.clearAllSpawnPoints = clearAllSpawnPoints;
   window.renderSpawnList    = renderSpawnList;
+  window.toggleRouteMode    = toggleRouteMode;
+  window.clearRoute         = clearRoute;
+  window.exportGpx          = exportGpx;
   // initSpawnMap is called by show() – expose it too
   window.initSpawnMap = initSpawnMap;
 }());
