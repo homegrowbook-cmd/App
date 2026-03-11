@@ -2757,7 +2757,7 @@
           <button class="calc-btn" onclick="cancelSpawnPoint()" style="background:var(--bg3)">✖ Cancel</button>
         </div>
       </div>
-      <div id="spawn-click-hint" style="color:var(--text2);font-size:13px;margin-top:8px">👆 Click on the map below to place a marker.</div>
+      <div id="spawn-click-hint" style="color:var(--text2);font-size:13px;margin-top:8px">👆 Click on the map below to place a marker. <span style="color:var(--text3)">(The map centers on your location if you allow it – otherwise defaults to Berlin.)</span></div>
     </div>
 
     <!-- Map container -->
@@ -7441,6 +7441,7 @@ window.addEventListener('scroll', () => {
   let _pendingMarker = null; // temporary marker placed on click, awaiting confirmation
   let _pendingLatLng = null; // LatLng of pending marker
   let _layers = {};         // id → Leaflet marker on the confirmed map
+  let _idCounter = 0;       // monotonic counter to avoid same-millisecond ID collisions
 
   const STORAGE_KEY = 'spawnPoints_v1';
   const SPAWN_TYPE_LABELS = {
@@ -7555,7 +7556,7 @@ window.addEventListener('scroll', () => {
       return;
     }
 
-    // Default centre: Berlin (a central European city, easily changed)
+    // Default center: Berlin (a central European city, easily changed)
     _map = L.map('spawn-map').setView([52.52, 13.405], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -7584,7 +7585,7 @@ window.addEventListener('scroll', () => {
       if (pokemonInput) { pokemonInput.value = ''; pokemonInput.focus(); }
     });
 
-    // Try to centre on user's location if available
+    // Try to center on user's location if available
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         pos => { _map.setView([pos.coords.latitude, pos.coords.longitude], 14); },
@@ -7604,7 +7605,7 @@ window.addEventListener('scroll', () => {
     const note = document.getElementById('spawn-note')?.value.trim() || '';
 
     const pt = {
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      id: Date.now().toString(36) + (++_idCounter).toString(36) + Math.random().toString(36).slice(2, 5),
       lat: _pendingLatLng.lat,
       lng: _pendingLatLng.lng,
       pokemon,
