@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <style>
   :root {
     --bg: #0e0f1a;
@@ -1854,6 +1856,9 @@
     <button class="nav-btn" data-tab="bracket-tab" onclick="show('bracket-tab')">
       <span class="icon">🏆</span> Bracket
     </button>
+    <button class="nav-btn" data-tab="map-tab" onclick="show('map-tab')">
+      <span class="icon">🗺️</span> Map
+    </button>
     <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">☀️</button>
   </div>
 </nav>
@@ -2710,6 +2715,71 @@
     <div id="bracket-result" style="margin-top:8px"></div>
     <div style="margin-top:12px;text-align:right">
       <button class="calc-btn" onclick="resetBracket()" style="max-width:200px;background:var(--bg3);display:none" id="bracket-reset-btn">🔄 Reset Tournament</button>
+    </div>
+  </section>
+
+  <!-- ── SPAWN MAP ──────────────────────────────────────────────── -->
+  <section id="map-tab" class="tab">
+    <div class="page-header">
+      <h1>🗺️ Spawn Map</h1>
+      <p>Mark Pokémon spawn points you've personally observed. All data is stored locally in your browser. No game API is accessed – fully ToS-compliant.</p>
+    </div>
+
+    <!-- Add spawn point form -->
+    <div class="calc-card" style="margin-bottom:16px">
+      <div class="calc-card-title">📍 Add Spawn Point</div>
+      <div class="calc-card-desc">Click anywhere on the map to place a marker, then fill in the details below.</div>
+      <div class="calc-form" id="spawn-form" style="display:none">
+        <div class="calc-form-row">
+          <span class="calc-label">Pokémon</span>
+          <input class="calc-input" id="spawn-pokemon" type="text" placeholder="e.g. Magikarp" list="spawn-pokemon-list">
+          <datalist id="spawn-pokemon-list"></datalist>
+        </div>
+        <div class="calc-form-row">
+          <span class="calc-label">Spawn Type</span>
+          <select class="calc-select" id="spawn-type">
+            <option value="normal">🌿 Normal Spawn</option>
+            <option value="nest">🐣 Nest</option>
+            <option value="biome">🏔️ Biome / Habitat</option>
+            <option value="event">🎉 Event Spawn</option>
+          </select>
+        </div>
+        <div class="calc-form-row">
+          <span class="calc-label">Note (optional)</span>
+          <input class="calc-input" id="spawn-note" type="text" placeholder="e.g. near fountain, every afternoon">
+        </div>
+        <div class="calc-form-row">
+          <span class="calc-label">Coordinates</span>
+          <span id="spawn-coords" style="color:var(--text2);font-size:13px">—</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <button class="calc-btn" onclick="confirmSpawnPoint()">✅ Save Point</button>
+          <button class="calc-btn" onclick="cancelSpawnPoint()" style="background:var(--bg3)">✖ Cancel</button>
+        </div>
+      </div>
+      <div id="spawn-click-hint" style="color:var(--text2);font-size:13px;margin-top:8px">👆 Click on the map below to place a marker.</div>
+    </div>
+
+    <!-- Map container -->
+    <div class="calc-card" style="margin-bottom:16px;padding:0;overflow:hidden">
+      <div id="spawn-map" style="height:400px;width:100%;border-radius:8px"></div>
+    </div>
+
+    <!-- Filter + list -->
+    <div class="calc-card">
+      <div class="calc-card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span>📋 Saved Spawn Points</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="calc-btn" onclick="exportSpawnPoints()" style="font-size:12px;padding:6px 12px;background:var(--bg3)">📥 Export JSON</button>
+          <button class="calc-btn" onclick="importSpawnPoints()" style="font-size:12px;padding:6px 12px;background:var(--bg3)">📤 Import JSON</button>
+          <button class="calc-btn" onclick="clearAllSpawnPoints()" style="font-size:12px;padding:6px 12px;background:var(--red);opacity:0.85" title="Delete all saved points">🗑️ Clear All</button>
+        </div>
+      </div>
+      <div style="margin:12px 0 8px">
+        <input class="calc-input" id="spawn-search" type="text" placeholder="🔍 Filter by Pokémon name…" oninput="renderSpawnList()" style="max-width:300px">
+      </div>
+      <div id="spawn-list" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div id="spawn-empty" style="color:var(--text3);font-size:13px;text-align:center;padding:24px 0">No spawn points saved yet. Click on the map to add your first one!</div>
     </div>
   </section>
 </main>
@@ -4437,6 +4507,7 @@ function show(tabId) {
   if (tabId === 'mega-tab')    renderMegaGuide();
   if (tabId === 'buddy-tab')   initBuddyTab();
   if (tabId === 'bracket-tab') initBracketTab();
+  if (tabId === 'map-tab')     initSpawnMap();
 }
 
 function toggleCard(num) {
@@ -6993,7 +7064,7 @@ function calcShadow() {
 document.addEventListener('keydown', e => {
   const tag = e.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
-  const shortcuts = { '1': 'ranking-tab', '2': 'moves-tab', '3': 'home-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'calc-tab', '8': 'battle-tab', '9': 'stardust-tab', 'q': 'raid-tab', 'w': 'builder-tab', 'e': 'mega-tab', 'r': 'buddy-tab', 't': 'bracket-tab' };
+  const shortcuts = { '1': 'ranking-tab', '2': 'moves-tab', '3': 'home-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'calc-tab', '8': 'battle-tab', '9': 'stardust-tab', 'q': 'raid-tab', 'w': 'builder-tab', 'e': 'mega-tab', 'r': 'buddy-tab', 't': 'bracket-tab', 'y': 'map-tab' };
   if (shortcuts[e.key]) { e.preventDefault(); show(shortcuts[e.key]); }
 });
 
@@ -7360,6 +7431,306 @@ window.addEventListener('scroll', () => {
     // Network unavailable or CORS – silently fall back to hardcoded data
   }
 })();
+
+// ── SPAWN MAP ──────────────────────────────────────────────────────────────
+(function () {
+  'use strict';
+
+  // ── State ──────────────────────────────────────────────────────────────
+  let _map = null;          // Leaflet map instance
+  let _pendingMarker = null; // temporary marker placed on click, awaiting confirmation
+  let _pendingLatLng = null; // LatLng of pending marker
+  let _layers = {};         // id → Leaflet marker on the confirmed map
+
+  const STORAGE_KEY = 'spawnPoints_v1';
+  const SPAWN_TYPE_LABELS = {
+    normal: '🌿 Normal',
+    nest:   '🐣 Nest',
+    biome:  '🏔️ Biome',
+    event:  '🎉 Event',
+  };
+  const SPAWN_TYPE_COLORS = {
+    normal: '#4caf7a',
+    nest:   '#f5c842',
+    biome:  '#7c83f5',
+    event:  '#e05252',
+  };
+
+  function loadPoints() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch (_) { return []; }
+  }
+
+  function savePoints(pts) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pts)); } catch (_) {}
+  }
+
+  function makeIcon(type) {
+    const color = SPAWN_TYPE_COLORS[type] || '#7c83f5';
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 24 12 24S24 21 24 12C24 5.37 18.63 0 12 0z" fill="${color}" stroke="#fff" stroke-width="1.5"/>
+      <circle cx="12" cy="12" r="5" fill="#fff" opacity="0.9"/>
+    </svg>`;
+    return L.divIcon({
+      className: '',
+      html: svg,
+      iconSize: [24, 36],
+      iconAnchor: [12, 36],
+      popupAnchor: [0, -36],
+    });
+  }
+
+  function makePendingIcon() {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 36" width="24" height="36">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 24 12 24S24 21 24 12C24 5.37 18.63 0 12 0z" fill="#aaa" stroke="#fff" stroke-width="1.5" stroke-dasharray="4 2"/>
+      <circle cx="12" cy="12" r="5" fill="#fff" opacity="0.6"/>
+    </svg>`;
+    return L.divIcon({ className: '', html: svg, iconSize: [24, 36], iconAnchor: [12, 36] });
+  }
+
+  function addConfirmedMarker(pt) {
+    if (!_map) return;
+    const m = L.marker([pt.lat, pt.lng], { icon: makeIcon(pt.type) })
+      .addTo(_map)
+      .bindPopup(buildPopupHtml(pt));
+    _layers[pt.id] = m;
+  }
+
+  function buildPopupHtml(pt) {
+    const label = SPAWN_TYPE_LABELS[pt.type] || pt.type;
+    const note  = pt.note ? `<br><em style="color:#aaa">${escHtml(pt.note)}</em>` : '';
+    return `<strong>${escHtml(pt.pokemon)}</strong> – ${label}${note}
+      <br><small style="color:#aaa">${pt.lat.toFixed(6)}, ${pt.lng.toFixed(6)}</small>
+      <br><button onclick="window._spawnMap.deletePoint('${escHtml(pt.id)}')" style="margin-top:6px;padding:3px 10px;font-size:12px;cursor:pointer;border:1px solid #e05252;background:transparent;color:#e05252;border-radius:4px">🗑 Delete</button>`;
+  }
+
+  function renderSpawnList() {
+    const pts     = loadPoints();
+    const query   = (document.getElementById('spawn-search')?.value || '').toLowerCase();
+    const listEl  = document.getElementById('spawn-list');
+    const emptyEl = document.getElementById('spawn-empty');
+    if (!listEl) return;
+
+    const filtered = query ? pts.filter(p => p.pokemon.toLowerCase().includes(query)) : pts;
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '';
+      if (emptyEl) emptyEl.style.display = '';
+      return;
+    }
+    if (emptyEl) emptyEl.style.display = 'none';
+
+    listEl.innerHTML = filtered.map(pt => {
+      const color = SPAWN_TYPE_COLORS[pt.type] || '#7c83f5';
+      const label = SPAWN_TYPE_LABELS[pt.type] || pt.type;
+      const note  = pt.note ? `<span style="color:var(--text3);font-size:12px"> – ${escHtml(pt.note)}</span>` : '';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg3);border-radius:8px;flex-wrap:wrap">
+        <span style="width:12px;height:12px;border-radius:50%;background:${color};flex-shrink:0"></span>
+        <span style="font-weight:600;min-width:100px">${escHtml(pt.pokemon)}</span>
+        <span style="color:var(--text2);font-size:13px">${label}</span>
+        <span style="color:var(--text3);font-size:12px">${pt.lat.toFixed(5)}, ${pt.lng.toFixed(5)}</span>
+        ${note}
+        <button onclick="window._spawnMap.flyTo('${escHtml(pt.id)}')" title="Show on map" style="margin-left:auto;background:var(--bg4);border:none;cursor:pointer;padding:4px 8px;border-radius:4px;color:var(--text)">🗺</button>
+        <button onclick="window._spawnMap.deletePoint('${escHtml(pt.id)}')" title="Delete" style="background:transparent;border:1px solid var(--red);cursor:pointer;padding:4px 8px;border-radius:4px;color:var(--red)">🗑</button>
+      </div>`;
+    }).join('');
+  }
+
+  function initSpawnMap() {
+    // Populate Pokémon datalist from static POKEMON array
+    const dl = document.getElementById('spawn-pokemon-list');
+    if (dl && dl.childElementCount === 0 && typeof POKEMON !== 'undefined') {
+      POKEMON.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        dl.appendChild(opt);
+      });
+    }
+
+    renderSpawnList();
+
+    if (_map) {
+      _map.invalidateSize();
+      return;
+    }
+
+    // Default centre: Berlin (a central European city, easily changed)
+    _map = L.map('spawn-map').setView([52.52, 13.405], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(_map);
+
+    // Add all persisted points to the map
+    loadPoints().forEach(pt => addConfirmedMarker(pt));
+
+    // Click → place pending marker and show form
+    _map.on('click', function (e) {
+      if (_pendingMarker) { _map.removeLayer(_pendingMarker); }
+      _pendingLatLng = e.latlng;
+      _pendingMarker = L.marker(e.latlng, { icon: makePendingIcon() }).addTo(_map);
+
+      const coordEl = document.getElementById('spawn-coords');
+      if (coordEl) coordEl.textContent = `${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+
+      const form = document.getElementById('spawn-form');
+      const hint = document.getElementById('spawn-click-hint');
+      if (form) form.style.display = '';
+      if (hint) hint.style.display = 'none';
+
+      const pokemonInput = document.getElementById('spawn-pokemon');
+      if (pokemonInput) { pokemonInput.value = ''; pokemonInput.focus(); }
+    });
+
+    // Try to centre on user's location if available
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => { _map.setView([pos.coords.latitude, pos.coords.longitude], 14); },
+        () => {} // silently ignore – Berlin fallback stays
+      );
+    }
+  }
+
+  function confirmSpawnPoint() {
+    if (!_pendingLatLng) return;
+
+    const pokemonInput = document.getElementById('spawn-pokemon');
+    const pokemon = pokemonInput ? pokemonInput.value.trim() : '';
+    if (!pokemon) { pokemonInput && pokemonInput.focus(); return; }
+
+    const type = document.getElementById('spawn-type')?.value || 'normal';
+    const note = document.getElementById('spawn-note')?.value.trim() || '';
+
+    const pt = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      lat: _pendingLatLng.lat,
+      lng: _pendingLatLng.lng,
+      pokemon,
+      type,
+      note,
+    };
+
+    const pts = loadPoints();
+    pts.push(pt);
+    savePoints(pts);
+
+    // Replace pending marker with confirmed one
+    if (_pendingMarker) { _map.removeLayer(_pendingMarker); _pendingMarker = null; }
+    _pendingLatLng = null;
+    addConfirmedMarker(pt);
+
+    // Reset form
+    const form = document.getElementById('spawn-form');
+    const hint = document.getElementById('spawn-click-hint');
+    if (form) form.style.display = 'none';
+    if (hint) hint.style.display = '';
+    if (pokemonInput) pokemonInput.value = '';
+    const noteEl = document.getElementById('spawn-note');
+    if (noteEl) noteEl.value = '';
+
+    renderSpawnList();
+  }
+
+  function cancelSpawnPoint() {
+    if (_pendingMarker) { _map.removeLayer(_pendingMarker); _pendingMarker = null; }
+    _pendingLatLng = null;
+    const form = document.getElementById('spawn-form');
+    const hint = document.getElementById('spawn-click-hint');
+    if (form) form.style.display = 'none';
+    if (hint) hint.style.display = '';
+  }
+
+  function deletePoint(id) {
+    const pts = loadPoints().filter(p => p.id !== id);
+    savePoints(pts);
+    if (_layers[id]) { _map.removeLayer(_layers[id]); delete _layers[id]; }
+    if (_map) _map.closePopup();
+    renderSpawnList();
+  }
+
+  function flyTo(id) {
+    if (!_map) return;
+    const pt = loadPoints().find(p => p.id === id);
+    if (!pt) return;
+    _map.flyTo([pt.lat, pt.lng], 16);
+    if (_layers[id]) _layers[id].openPopup();
+  }
+
+  function exportSpawnPoints() {
+    const pts = loadPoints();
+    if (pts.length === 0) { alert('No spawn points saved yet.'); return; }
+    const blob = new Blob([JSON.stringify(pts, null, 2)], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'spawn-points.json'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function importSpawnPoints() {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = '.json,application/json';
+    input.onchange = function () {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        try {
+          const imported = JSON.parse(ev.target.result);
+          if (!Array.isArray(imported)) { alert('Invalid file – expected a JSON array.'); return; }
+          const existing = loadPoints();
+          const existingIds = new Set(existing.map(p => p.id));
+          let added = 0;
+          imported.forEach(pt => {
+            if (pt && pt.id && !existingIds.has(pt.id) &&
+                typeof pt.lat === 'number' && typeof pt.lng === 'number' && pt.pokemon) {
+              existing.push(pt);
+              added++;
+            }
+          });
+          savePoints(existing);
+          // Redraw map markers
+          if (_map) {
+            // Remove old layers and re-add all
+            Object.values(_layers).forEach(m => _map.removeLayer(m));
+            _layers = {};
+            existing.forEach(p => addConfirmedMarker(p));
+          }
+          renderSpawnList();
+          alert(`✅ Imported ${added} new spawn point${added !== 1 ? 's' : ''}.`);
+        } catch (_) {
+          alert('Failed to parse JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
+
+  function clearAllSpawnPoints() {
+    if (!loadPoints().length) return;
+    if (!confirm('Delete all saved spawn points? This cannot be undone.')) return;
+    savePoints([]);
+    if (_map) {
+      Object.values(_layers).forEach(m => _map.removeLayer(m));
+      _layers = {};
+    }
+    renderSpawnList();
+  }
+
+  // Expose public API on window so inline onclick handlers can call these
+  window._spawnMap = { deletePoint, flyTo };
+  // Also expose top-level for onclick attributes in the tab HTML
+  window.confirmSpawnPoint  = confirmSpawnPoint;
+  window.cancelSpawnPoint   = cancelSpawnPoint;
+  window.exportSpawnPoints  = exportSpawnPoints;
+  window.importSpawnPoints  = importSpawnPoints;
+  window.clearAllSpawnPoints = clearAllSpawnPoints;
+  window.renderSpawnList    = renderSpawnList;
+  // initSpawnMap is called by show() – expose it too
+  window.initSpawnMap = initSpawnMap;
+}());
 </script>
 </body>
 </html>

@@ -38,6 +38,33 @@ The following five Pokémon GO community sites were reviewed and compared agains
 | 3 | **CMP (Charge Move Priority) Table** | 🟡 Medium | PvPoke – CMP Chart | Add a reference table in the Battle tab showing which Pokémon win CMP ties at common breakpoints. Critical for competitive play where simultaneous charge moves decide the outcome. |
 | 4 | **PvP IV Rank Checker** | 🟡 Medium | BattleFlow / pvpivs.com | Extend the Calculator tab with a stat-product rank lookup: given a Pokémon's IV and level, display its rank (#1 = best) and stat product for GL (1500 CP), UL (2500 CP) and ML. Highlight whether the spread is top-100. |
 | 5 | **Role-Based Team Analyzer** | 🟢 Low | GamePress / BattleFlow | In the Team Builder tab, automatically classify each Pokémon as *Lead*, *Safe Switch*, or *Closer* based on bulk, fast charge energy, and type coverage. Flag if the team has two leads or no safe switch. |
+| 6 | **Community Spawn Map** ✅ *Implemented* | 🔥 High | Silph Road Atlas / community reports | A Leaflet.js map where players manually mark Pokémon spawn points they've personally observed. Points are stored in `localStorage`. Each marker holds Pokémon name, spawn category (Normal / Nest / Biome / Event), optional note, and GPS coordinates. Users can export/import their data as JSON to share with others. No game API access required – fully community-driven and ToS-compliant. |
+
+---
+
+## What Data Can Be Read From Pokémon GO Legitimately?
+
+Niantic's Terms of Service forbid automated reading of the game client or its API. The table below summarises **what is and is not permitted**:
+
+| Data Type | Legitimate? | Method |
+|-----------|-------------|--------|
+| Pokémon species stats (base ATK/DEF/HP) | ✅ Yes | Published in official Game Master files leaked/datamined and re-published by the community; also on fan wikis |
+| Move data (power, energy, duration) | ✅ Yes | Same as above – static data freely available from GAME_MASTER |
+| Type effectiveness chart | ✅ Yes | Fixed chart from Niantic's help pages and fan wikis |
+| CP formula, IV mechanics | ✅ Yes | Reverse-engineered and officially acknowledged in Niantic blog posts |
+| Current wild spawns (your local area) | ✅ Yes | **Self-observed** and manually entered; crowd-sourced community reports |
+| PokéStop / Gym locations | ✅ Yes | OpenStreetMap / Wayfarer contributions made public by the community |
+| Event schedules & bonuses | ✅ Yes | Officially announced on pokemongolive.com and Niantic Newsroom |
+| Raid boss rotations | ✅ Yes | Officially announced + community confirmed (no scraping needed) |
+| Weather boost types | ✅ Yes | Static type→weather map, published by Niantic |
+| GBL season schedule & rewards | ✅ Yes | Officially published on pokemongolive.com |
+| Buddy candy distances | ✅ Yes | Published by Niantic and well-known fan wikis |
+| Real-time Pokémon positions via game API | ❌ No | Violates ToS – requires reverse-engineering the live API |
+| Automated location spoofing / bot scanning | ❌ No | Explicitly banned; risks permanent account ban |
+| Injecting / modifying the game client | ❌ No | Violates ToS and potentially local laws |
+
+### Summary for This App
+All data currently used in this app (Pokémon stats, move data, type chart, event information) comes from **static, publicly-available community sources** and is **not** obtained by querying the live Niantic API. The new Spawn Map feature uses **only user-entered coordinates** – no automated game scanning of any kind.
 
 ---
 
