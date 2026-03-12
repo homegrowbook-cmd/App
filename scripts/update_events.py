@@ -14,7 +14,6 @@ and writes the result back. Falls back gracefully if fetching fails.
 Source priority for future events:
   1. pokemongo.com/news/  – official Niantic news feed (most authoritative)
   2. pokemongohub.net     – community-verified, updated with every rotation
-  3. leekduck.com         – last-resort fallback
 
 Usage:
     python scripts/update_events.py
@@ -45,10 +44,6 @@ POKEMONGO_NEWS_URL = "https://pokemongo.com/news/"
 # Primary community source: Pokémon GO Hub – community-verified tracker, updated with every rotation
 POGOHUB_RAIDS_URL  = "https://pokemongohub.net/post/guide/current-go-raids/"
 POGOHUB_EVENTS_URL = "https://pokemongohub.net/post/event/"
-
-# Fallback source: Leek Duck – used only when the primary sources are unavailable
-LEEKDUCK_BOSS_URL   = "https://leekduck.com/raid-bosses/"
-LEEKDUCK_EVENTS_URL = "https://leekduck.com/events/"
 
 
 def fetch(url: str, timeout: int = 15) -> str | None:
@@ -251,132 +246,6 @@ class PoGoHubRaidParser(HTMLParser):
             self._boss_buf += data
 
 
-# ── Leek Duck raid-boss parser (fallback) ────────────────────────────────────
-
-class RaidBossParser(HTMLParser):
-    """Minimal HTML parser to extract raid boss names and tiers from leekduck.com/raid-bosses/."""
-
-    # Maps Leek Duck CSS class → normalised tier label
-    TIER_MAP = {
-        "raid-boss-tier-1":  "1★",
-        "raid-boss-tier-3":  "3★",
-        "raid-boss-tier-5":  "5★",
-        "raid-boss-mega":    "Mega",
-        "raid-boss-tier-ex": "EX",
-    }
-
-    def __init__(self):
-        super().__init__()
-        self.bosses: dict[str, list[dict]] = {}
-        self._current_tier: str | None = None
-        self._in_boss_name = False
-        self._boss_name_buf = ""
-        self._boss_queue: list[dict] = []   # bosses found before their tier header
-
-    def handle_starttag(self, tag: str, attrs_list):
-        attrs = dict(attrs_list)
-        classes = attrs.get("class", "")
-
-        # Tier header
-        for css, label in self.TIER_MAP.items():
-            if css in classes:
-                self._current_tier = label
-                if label not in self.bosses:
-                    self.bosses[label] = []
-                return
-
-        # Boss name span
-        if tag == "span" and "boss-name" in classes:
-            self._in_boss_name = True
-            self._boss_name_buf = ""
-
-    def handle_endtag(self, tag: str):
-        if tag == "span" and self._in_boss_name:
-            self._in_boss_name = False
-            name = self._boss_name_buf.strip()
-            if name and self._current_tier:
-                self.bosses[self._current_tier].append({
-                    "name": name,
-                    "types": [],          # types not reliably available in HTML
-                    "num": 0,             # Pokédex number added in post-processing
-                    "source": LEEKDUCK_BOSS_URL,
-                })
-
-    def handle_data(self, data: str):
-        if self._in_boss_name:
-            self._boss_name_buf += data
-
-
-def parse_raid_bosses(html: str) -> dict[str, list[dict]]:
-    """Parse Leek Duck raid boss HTML and return a tier→boss dict."""
-    parser = RaidBossParser()
-    parser.feed(html)
-    # Remove empty tiers and tiers we don't recognise
-    known = {"1★", "3★", "5★", "Mega"}
-    return {t: v for t, v in parser.bosses.items() if t in known and v}
-
-
-# ── Leek Duck events parser ───────────────────────────────────────────────────
-
-class EventsPageParser(HTMLParser):
-    """Extract upcoming events from leekduck.com/events/."""
-
-    def __init__(self):
-        super().__init__()
-        self.events: list[dict] = []
-        self._in_event = False
-        self._in_title = False
-        self._in_date  = False
-        self._title_buf = ""
-        self._date_buf  = ""
-        self._depth = 0
-        self._event_depth = 0
-
-    def handle_starttag(self, tag, attrs_list):
-        attrs = dict(attrs_list)
-        classes = attrs.get("class", "")
-        self._depth += 1
-
-        if "event-item" in classes or "upcoming-event" in classes:
-            self._in_event = True
-            self._event_depth = self._depth
-            self._title_buf = ""
-            self._date_buf = ""
-
-        if self._in_event:
-            if "event-name" in classes or "event-title" in classes:
-                self._in_title = True
-            if "event-date" in classes or "event-time" in classes:
-                self._in_date = True
-
-    def handle_endtag(self, tag):
-        if self._in_event and self._depth == self._event_depth:
-            title = self._title_buf.strip()
-            ev_date = self._date_buf.strip()
-            if title:
-                self.events.append({
-                    "icon": "📅",
-                    "name": title,
-                    "date": ev_date or "TBA",
-                    "desc": "",
-                    "source": LEEKDUCK_EVENTS_URL,
-                })
-            self._in_event = False
-            self._in_title = False
-            self._in_date  = False
-        if self._in_title and tag in ("span", "h3", "h4", "div"):
-            self._in_title = False
-        if self._in_date and tag in ("span", "div", "time"):
-            self._in_date = False
-        self._depth -= 1
-
-    def handle_data(self, data):
-        if self._in_title:
-            self._title_buf += data
-        elif self._in_date:
-            self._date_buf += data
-
-
 # ── Pokémon GO Hub events parser ──────────────────────────────────────────────
 
 class PoGoHubEventsParser(HTMLParser):
@@ -449,36 +318,10 @@ def parse_raid_bosses_pogohub(html: str) -> dict[str, list[dict]]:
     return {t: v for t, v in parser.bosses.items() if t in known and v}
 
 
-def parse_raid_bosses_leekduck(html: str) -> dict[str, list[dict]]:
-    """Parse Leek Duck raid boss HTML and return a tier→boss dict (fallback)."""
-    parser = RaidBossParser()
-    parser.feed(html)
-    # Remove empty tiers and tiers we don't recognise
-    known = {"1★", "3★", "5★", "Mega"}
-    return {t: v for t, v in parser.bosses.items() if t in known and v}
-
-
 def parse_upcoming_events_pogohub(html: str) -> list[dict]:
     """Parse Pokémon GO Hub events page and return a list of future events."""
     parser = PoGoHubEventsParser()
     parser.feed(html)
-    seen: set[str] = set()
-    result: list[dict] = []
-    for ev in parser.events:
-        key = ev["name"].lower()
-        if key not in seen and len(key) > 3:
-            seen.add(key)
-            result.append(ev)
-        if len(result) >= 8:
-            break
-    return result
-
-
-def parse_upcoming_events_leekduck(html: str) -> list[dict]:
-    """Parse Leek Duck events page and return a list of future events (fallback)."""
-    parser = EventsPageParser()
-    parser.feed(html)
-    # Keep at most 8 entries and deduplicate
     seen: set[str] = set()
     result: list[dict] = []
     for ev in parser.events:
@@ -621,7 +464,7 @@ def save_events(data: dict) -> None:
 
 
 def update_raids(events: dict) -> bool:
-    """Fetch current raid bosses from Pokémon GO Hub (primary) or Leek Duck (fallback)."""
+    """Fetch current raid bosses from Pokémon GO Hub (official community source)."""
     # Try primary source: Pokémon GO Hub
     html = fetch(POGOHUB_RAIDS_URL)
     if html:
@@ -634,31 +477,16 @@ def update_raids(events: dict) -> bool:
             events["sources"]["raids"] = POGOHUB_RAIDS_URL
             print(f"[ok] Raids updated from GO Hub: {sum(len(v) for v in bosses.values())} bosses across {len(bosses)} tiers.")
             return True
-        print("[warn] No raid bosses parsed from GO Hub – trying Leek Duck fallback.", file=sys.stderr)
+        print("[warn] No raid bosses parsed from GO Hub – skipping raid update.", file=sys.stderr)
 
-    # Fallback: Leek Duck
-    html = fetch(LEEKDUCK_BOSS_URL)
-    if not html:
-        return False
-    bosses = parse_raid_bosses_leekduck(html)
-    if not bosses:
-        print("[warn] No raid bosses parsed from Leek Duck fallback – skipping raid update.", file=sys.stderr)
-        return False
-    for tier_bosses in bosses.values():
-        for boss in tier_bosses:
-            boss["num"] = dex_num(boss["name"])
-    events["raids"] = bosses
-    events["sources"]["raids"] = LEEKDUCK_BOSS_URL
-    print(f"[ok] Raids updated from Leek Duck (fallback): {sum(len(v) for v in bosses.values())} bosses across {len(bosses)} tiers.")
-    return True
+    return False
 
 
 def update_future_events(events: dict) -> bool:
     """
-    Fetch upcoming events using a three-tier source chain:
+    Fetch upcoming events using a two-tier source chain:
       1. pokemongo.com/news/  – official Niantic feed (most authoritative)
       2. pokemongohub.net     – community-verified, updated with every rotation
-      3. leekduck.com         – last-resort fallback
     """
     # 1 ── Official Niantic news (pokemongo.com)
     html = fetch(POKEMONGO_NEWS_URL)
@@ -680,20 +508,9 @@ def update_future_events(events: dict) -> bool:
             events["sources"]["futureEvents"] = POGOHUB_EVENTS_URL
             print(f"[ok] Future events updated from GO Hub: {len(upcoming)} events found.")
             return True
-        print("[warn] No upcoming events parsed from GO Hub – trying Leek Duck fallback.", file=sys.stderr)
+        print("[warn] No upcoming events parsed from GO Hub – skipping future-events update.", file=sys.stderr)
 
-    # 3 ── Last-resort fallback: Leek Duck
-    html = fetch(LEEKDUCK_EVENTS_URL)
-    if not html:
-        return False
-    upcoming = parse_upcoming_events_leekduck(html)
-    if not upcoming:
-        print("[warn] No upcoming events parsed from Leek Duck fallback – skipping future-events update.", file=sys.stderr)
-        return False
-    events["futureEvents"] = upcoming
-    events["sources"]["futureEvents"] = LEEKDUCK_EVENTS_URL
-    print(f"[ok] Future events updated from Leek Duck (fallback): {len(upcoming)} events found.")
-    return True
+    return False
 
 
 def main() -> int:
