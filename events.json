@@ -2,10 +2,11 @@
   "lastUpdated": "2026-03-12",
   "autoUpdated": false,
   "sources": {
-    "wildnis": "https://pokemongolive.com/en/post/memories-in-motion-season/",
+    "official": "https://pokemongo.com/news/",
+    "wildnis": "https://pokemongo.com/news/memories-in-motion-season/",
     "raids": "https://pokemongohub.net/post/guide/current-go-raids/",
-    "bonuses": "https://pokemongolive.com/en/post/memories-in-motion-season/",
-    "futureEvents": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
+    "bonuses": "https://pokemongo.com/news/memories-in-motion-season/",
+    "futureEvents": "https://pokemongo.com/news/"
   },
   "wildnis": [
     {
@@ -64,7 +65,7 @@
       "from": "03.03.2026",
       "to": "02.06.2026",
       "note": "Memories in Motion season",
-      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
     },
     {
       "num": 25,
@@ -291,32 +292,32 @@
   },
   "bonuses": [
     {
-      "icon": "��",
+      "icon": "🍬",
       "text": "Guaranteed Candy XL for Trainers level 31+ when trading",
       "from": "03.03.2026",
       "to": "02.06.2026",
-      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
     },
     {
       "icon": "🍬",
       "text": "+1 Candy when trading",
       "from": "03.03.2026",
       "to": "02.06.2026",
-      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
     },
     {
       "icon": "⭐",
       "text": "Increased XP for 7-day PokéStop spin streaks",
       "from": "03.03.2026",
       "to": "02.06.2026",
-      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
     },
     {
       "icon": "⭐",
       "text": "Increased XP & Stardust for 7-day catch streaks",
       "from": "03.03.2026",
       "to": "02.06.2026",
-      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
     },
     {
       "icon": "🐣",

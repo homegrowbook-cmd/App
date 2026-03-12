@@ -4,15 +4,17 @@ update_events.py – Auto-updates events.json from Pokémon GO Hub and Pokémon 
 
 Fetches:
   - Current raid bosses from https://pokemongohub.net/post/guide/current-go-raids/
-  - Upcoming events from https://pokemongohub.net/post/event/
+  - Upcoming events from https://pokemongo.com/news/ (official), then
+    https://pokemongohub.net/post/event/ (community-verified)
 
 Run this script in CI (GitHub Actions) on a weekly schedule.
 It reads events.json, updates what it can from live sources,
 and writes the result back. Falls back gracefully if fetching fails.
 
-Primary source: Pokémon GO Hub (pokemongohub.net) – community-verified, updated with
-every event rotation and widely regarded as the most reliable third-party tracker.
-Fallback source: Leek Duck (leekduck.com) – used only if the primary source fails.
+Source priority for future events:
+  1. pokemongo.com/news/  – official Niantic news feed (most authoritative)
+  2. pokemongohub.net     – community-verified, updated with every rotation
+  3. leekduck.com         – last-resort fallback
 
 Usage:
     python scripts/update_events.py
@@ -37,11 +39,14 @@ HEADERS = {
     )
 }
 
-# Primary source: Pokémon GO Hub – community-verified tracker, updated with every rotation
+# Official Niantic news feed – most authoritative source for events and announcements
+POKEMONGO_NEWS_URL = "https://pokemongo.com/news/"
+
+# Primary community source: Pokémon GO Hub – community-verified tracker, updated with every rotation
 POGOHUB_RAIDS_URL  = "https://pokemongohub.net/post/guide/current-go-raids/"
 POGOHUB_EVENTS_URL = "https://pokemongohub.net/post/event/"
 
-# Fallback source: Leek Duck – used only when the primary source is unavailable
+# Fallback source: Leek Duck – used only when the primary sources are unavailable
 LEEKDUCK_BOSS_URL   = "https://leekduck.com/raid-bosses/"
 LEEKDUCK_EVENTS_URL = "https://leekduck.com/events/"
 
@@ -57,7 +62,113 @@ def fetch(url: str, timeout: int = 15) -> str | None:
         return None
 
 
-# ── Pokémon GO Hub raid-boss parser ──────────────────────────────────────────
+# ── pokemongo.com official news parser ───────────────────────────────────────
+
+class PoGoOfficialNewsParser(HTMLParser):
+    """
+    Extract upcoming event articles from pokemongo.com/news/.
+
+    pokemongo.com is the official Niantic-operated Pokémon GO website and the
+    most authoritative source for event announcements.  The news listing page
+    renders article cards that contain a headline link and an optional date/time
+    element, which this parser captures.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.events: list[dict] = []
+        self._in_card = False
+        self._in_title = False
+        self._in_date = False
+        self._title_buf = ""
+        self._date_buf = ""
+        self._href = ""
+        self._depth = 0
+        self._card_depth = 0
+
+    def handle_starttag(self, tag, attrs_list):
+        attrs = dict(attrs_list)
+        classes = attrs.get("class", "")
+        self._depth += 1
+
+        # Article cards use a variety of class names across site versions
+        if tag == "article" or any(
+            kw in classes for kw in ("news-card", "post-card", "article-card", "card")
+        ):
+            self._in_card = True
+            self._card_depth = self._depth
+            self._title_buf = ""
+            self._date_buf = ""
+            self._href = ""
+
+        if self._in_card:
+            if tag in ("h1", "h2", "h3", "h4") or any(
+                kw in classes for kw in ("title", "headline", "card-title", "post-title")
+            ):
+                self._in_title = True
+            if tag == "a" and attrs.get("href", ""):
+                if not self._href:
+                    href = attrs["href"]
+                    if href.startswith("/"):
+                        href = "https://pokemongo.com" + href
+                    self._href = href
+            if tag == "time" or any(
+                kw in classes for kw in ("date", "post-date", "card-date", "published")
+            ):
+                self._in_date = True
+                # Prefer machine-readable datetime attribute when present
+                dt = attrs.get("datetime", "")
+                if dt:
+                    self._date_buf = dt[:10]
+
+    def handle_endtag(self, tag):
+        if self._in_card and self._depth == self._card_depth:
+            title = self._title_buf.strip()
+            if title and len(title) > 5:
+                self.events.append({
+                    "icon": "📰",
+                    "name": title,
+                    "date": self._date_buf.strip() or "TBA",
+                    "desc": "",
+                    "source": self._href or POKEMONGO_NEWS_URL,
+                })
+            self._in_card = False
+            self._in_title = False
+            self._in_date = False
+        if self._in_title and tag in ("h1", "h2", "h3", "h4", "a", "span"):
+            self._in_title = False
+        if self._in_date and tag in ("time", "span"):
+            self._in_date = False
+        self._depth -= 1
+
+    def handle_data(self, data):
+        if self._in_title:
+            self._title_buf += data
+        elif self._in_date and not self._date_buf:
+            self._date_buf += data
+
+
+def parse_upcoming_events_pokemongo(html: str) -> list[dict]:
+    """
+    Parse pokemongo.com/news/ and return a deduplicated list of upcoming events
+    (up to 8 entries).  pokemongo.com is the official Niantic news feed and is
+    treated as the most authoritative source.
+    """
+    parser = PoGoOfficialNewsParser()
+    parser.feed(html)
+    seen: set[str] = set()
+    result: list[dict] = []
+    for ev in parser.events:
+        key = ev["name"].lower()
+        if key not in seen and len(key) > 3:
+            seen.add(key)
+            result.append(ev)
+        if len(result) >= 8:
+            break
+    return result
+
+
+
 
 class PoGoHubRaidParser(HTMLParser):
     """Minimal HTML parser to extract raid boss names and tiers from pokemongohub.net."""
@@ -543,8 +654,24 @@ def update_raids(events: dict) -> bool:
 
 
 def update_future_events(events: dict) -> bool:
-    """Fetch upcoming events from Pokémon GO Hub (primary) or Leek Duck (fallback)."""
-    # Try primary source: Pokémon GO Hub
+    """
+    Fetch upcoming events using a three-tier source chain:
+      1. pokemongo.com/news/  – official Niantic feed (most authoritative)
+      2. pokemongohub.net     – community-verified, updated with every rotation
+      3. leekduck.com         – last-resort fallback
+    """
+    # 1 ── Official Niantic news (pokemongo.com)
+    html = fetch(POKEMONGO_NEWS_URL)
+    if html:
+        upcoming = parse_upcoming_events_pokemongo(html)
+        if upcoming:
+            events["futureEvents"] = upcoming
+            events["sources"]["futureEvents"] = POKEMONGO_NEWS_URL
+            print(f"[ok] Future events updated from pokemongo.com: {len(upcoming)} events found.")
+            return True
+        print("[warn] No upcoming events parsed from pokemongo.com – trying GO Hub.", file=sys.stderr)
+
+    # 2 ── Community-verified: Pokémon GO Hub
     html = fetch(POGOHUB_EVENTS_URL)
     if html:
         upcoming = parse_upcoming_events_pogohub(html)
@@ -555,7 +682,7 @@ def update_future_events(events: dict) -> bool:
             return True
         print("[warn] No upcoming events parsed from GO Hub – trying Leek Duck fallback.", file=sys.stderr)
 
-    # Fallback: Leek Duck
+    # 3 ── Last-resort fallback: Leek Duck
     html = fetch(LEEKDUCK_EVENTS_URL)
     if not html:
         return False
