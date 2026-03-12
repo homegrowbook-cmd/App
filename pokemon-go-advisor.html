@@ -1701,13 +1701,14 @@
     color: var(--gold);
   }
   .event-panel-5star .raid-tier-block { display: block; }
-  .event-panel-5star .raid-item {
+  .event-panel-5star .raid-item--active {
     background: rgba(245,200,66,0.10);
     border: 1px solid rgba(245,200,66,0.25);
     margin-bottom: 4px;
     transition: background 0.2s;
   }
-  .event-panel-5star .raid-item:hover { background: rgba(245,200,66,0.20); }
+  .event-panel-5star .raid-item--active:hover { background: rgba(245,200,66,0.20); }
+  .event-panel-5star .raid-item--upcoming { opacity: 0.55; margin-bottom: 4px; }
   .event-panel-5star .raid-sprite { width: 52px; height: 52px; }
   .event-panel-5star .raid-name { font-size: 14px; font-weight: 700; }
   .event-panel-title {
@@ -1788,6 +1789,8 @@
   .wildnis-item--upcoming { opacity: 0.55; }
   .bonus-item--active  { border-left: 3px solid var(--accent); padding-left: 7px; }
   .bonus-item--upcoming { opacity: 0.55; }
+  .raid-item--active   { border: 1px solid var(--accent); }
+  .raid-item--upcoming { opacity: 0.55; }
 
   /* "LIVE" and "Soon" inline badges */
   .event-live-badge {
@@ -5946,6 +5949,43 @@ function parseFutureEventDate(dateStr) {
   return null;
 }
 
+/** Parse a raid note's leading date range, e.g. "11–17 Mar" or "30 Mar–5 Apr".
+ *  Year is inferred as the current year; if the end month is more than 3 months in the
+ *  past it wraps to next year (handles Dec→Jan cross-year cases). */
+function parseRaidNoteDate(note) {
+  if (!note) return null;
+  const now = new Date();
+  const yr  = now.getFullYear();
+  const curMon = now.getMonth();
+  /** Choose a year so that the resulting date is as close to today as possible. */
+  function inferYear(mon) {
+    // If the month is more than 3 months behind the current month it is likely
+    // a wrap-around (e.g. Dec raid listed while current month is Jan).
+    const diff = curMon - mon;
+    return (diff > 3) ? yr + 1 : yr;
+  }
+  let m;
+  // "DD–DD Mon" or "D–DD Mon"  (same-month range, e.g. "11–17 Mar")
+  m = note.match(/^(\d{1,2})[–\-](\d{1,2})\s+([A-Za-z]{3})/);
+  if (m) {
+    const mon = _MON[m[3].toLowerCase()];
+    if (mon !== undefined) {
+      const y = inferYear(mon);
+      return { start: new Date(y, mon, +m[1]), end: new Date(y, mon, +m[2], 23, 59, 59) };
+    }
+  }
+  // "DD Mon–DD Mon"  (cross-month range, e.g. "30 Mar–5 Apr")
+  m = note.match(/^(\d{1,2})\s+([A-Za-z]{3})[–\-](\d{1,2})\s+([A-Za-z]{3})/);
+  if (m) {
+    const mon1 = _MON[m[2].toLowerCase()], mon2 = _MON[m[4].toLowerCase()];
+    if (mon1 !== undefined && mon2 !== undefined) {
+      const y = inferYear(mon1);
+      return { start: new Date(y, mon1, +m[1]), end: new Date(y, mon2, +m[3], 23, 59, 59) };
+    }
+  }
+  return null;
+}
+
 /** Returns true if today falls inside the [from, to] window (inclusive, day-level). */
 function isEventActiveToday(from, to) {
   const now = new Date();
@@ -6007,11 +6047,18 @@ function renderCurrentEvents() {
           ${CURRENT_EVENTS.raids[tier].map(p => {
             const info = getRankingTypeInfo(p.types);
             const weakHtml = info.weaknesses.slice(0,4).map(t => typeBadge(t)).join('');
+            const parsed   = parseRaidNoteDate(p.note);
+            const active   = parsed ? isEventActiveToday(parsed.start, parsed.end) : true;
+            const upcoming = parsed ? isEventUpcoming(parsed.start) : false;
+            const cls      = upcoming ? ' raid-item--upcoming' : (active ? ' raid-item--active' : '');
+            const badge    = upcoming
+              ? '<span class="event-soon-badge">Soon</span>'
+              : (active && parsed ? '<span class="event-live-badge">Live</span>' : '');
             return `
-            <div class="raid-item">
+            <div class="raid-item${cls}">
               <img class="raid-sprite" src="${SPRITE_BASE}${p.num}.png" alt="${p.name}" onerror="this.style.opacity=0.3">
               <div class="raid-info">
-                <div class="raid-name">${p.name}${p.note ? `<span class="raid-note">(${p.note})</span>` : ''}</div>
+                <div class="raid-name">${p.name}${badge}${p.note ? `<span class="raid-note">(${p.note})</span>` : ''}</div>
                 <div class="raid-types">${p.types.map(t => typeBadge(t)).join('')}</div>
                 ${weakHtml ? `<div class="raid-weak-row"><span class="raid-weak-label">Weak:</span>${weakHtml}</div>` : ''}
               </div>
