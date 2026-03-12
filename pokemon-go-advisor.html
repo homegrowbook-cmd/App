@@ -1703,7 +1703,6 @@
   .event-panel-5star .raid-tier-block { display: block; }
   .event-panel-5star .raid-item {
     background: rgba(245,200,66,0.10);
-    border: 1px solid rgba(245,200,66,0.25);
     margin-bottom: 4px;
     transition: background 0.2s;
   }
@@ -1788,6 +1787,8 @@
   .wildnis-item--upcoming { opacity: 0.55; }
   .bonus-item--active  { border-left: 3px solid var(--accent); padding-left: 7px; }
   .bonus-item--upcoming { opacity: 0.55; }
+  .raid-item--active   { border: 1px solid var(--accent); }
+  .raid-item--upcoming { opacity: 0.55; }
 
   /* "LIVE" and "Soon" inline badges */
   .event-live-badge {
@@ -5946,6 +5947,43 @@ function parseFutureEventDate(dateStr) {
   return null;
 }
 
+/** Parse a date range from a raid note string (e.g. "11–17 Mar · Shiny available").
+ *  Returns {start, end} or null (null = no date → treat as currently active).
+ *  Assumes current year; advances to next year if the range has already passed. */
+function parseRaidDateFromNote(note) {
+  if (!note) return null;
+  const MON = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  const datePart = note.split('·')[0].trim();
+  const now = new Date();
+  let m;
+  // "DD–DD Mon"  same-month range without year, e.g. "11–17 Mar"
+  m = datePart.match(/^(\d{1,2})[–\-](\d{1,2})\s+([A-Za-z]{3})$/);
+  if (m) {
+    const mon = MON[m[3].toLowerCase()];
+    if (mon !== undefined) {
+      let year = now.getFullYear();
+      if (new Date(year, mon, +m[2], 23, 59, 59) < now) year++;
+      return { start: new Date(year, mon, +m[1]), end: new Date(year, mon, +m[2], 23, 59, 59) };
+    }
+  }
+  // "DD Mon–DD Mon"  cross-month range without year, e.g. "30 Mar–1 Apr" or "25 Dec–5 Jan"
+  m = datePart.match(/^(\d{1,2})\s+([A-Za-z]{3})[–\-](\d{1,2})\s+([A-Za-z]{3})$/);
+  if (m) {
+    const mon1 = MON[m[2].toLowerCase()], mon2 = MON[m[4].toLowerCase()];
+    if (mon1 !== undefined && mon2 !== undefined) {
+      let year = now.getFullYear();
+      // If end month < start month the range wraps a year boundary (e.g. Dec–Jan)
+      const endYearOffset = mon2 < mon1 ? 1 : 0;
+      if (new Date(year + endYearOffset, mon2, +m[3], 23, 59, 59) < now) year++;
+      return {
+        start: new Date(year, mon1, +m[1]),
+        end: new Date(year + endYearOffset, mon2, +m[3], 23, 59, 59)
+      };
+    }
+  }
+  return null;
+}
+
 /** Returns true if today falls inside the [from, to] window (inclusive, day-level). */
 function isEventActiveToday(from, to) {
   const now = new Date();
@@ -6007,11 +6045,23 @@ function renderCurrentEvents() {
           ${CURRENT_EVENTS.raids[tier].map(p => {
             const info = getRankingTypeInfo(p.types);
             const weakHtml = info.weaknesses.slice(0,4).map(t => typeBadge(t)).join('');
+            const dr = parseRaidDateFromNote(p.note);
+            let itemClass, badge;
+            if (!dr || isEventActiveToday(dr.start, dr.end)) {
+              itemClass = 'raid-item raid-item--active';
+              badge = '<span class="event-live-badge">LIVE</span>';
+            } else if (isEventUpcoming(dr.start)) {
+              itemClass = 'raid-item raid-item--upcoming';
+              badge = '<span class="event-soon-badge">SOON</span>';
+            } else {
+              itemClass = 'raid-item';
+              badge = '';
+            }
             return `
-            <div class="raid-item">
+            <div class="${itemClass}">
               <img class="raid-sprite" src="${SPRITE_BASE}${p.num}.png" alt="${p.name}" onerror="this.style.opacity=0.3">
               <div class="raid-info">
-                <div class="raid-name">${p.name}${p.note ? `<span class="raid-note">(${p.note})</span>` : ''}</div>
+                <div class="raid-name">${p.name}${badge}${p.note ? `<span class="raid-note">(${p.note})</span>` : ''}</div>
                 <div class="raid-types">${p.types.map(t => typeBadge(t)).join('')}</div>
                 ${weakHtml ? `<div class="raid-weak-row"><span class="raid-weak-label">Weak:</span>${weakHtml}</div>` : ''}
               </div>
