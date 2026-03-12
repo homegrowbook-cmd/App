@@ -1948,6 +1948,79 @@
     padding-right: max(16px, env(safe-area-inset-right));
   }
 
+  /* ── GBL BATTLE LOG ─────────────────────────────────────── */
+  .gbl-battle-entry {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .gbl-battle-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+  }
+  .gbl-btn-group {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border2);
+  }
+  .gbl-outcome-btn {
+    padding: 6px 10px;
+    border: none;
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+  }
+  .gbl-outcome-btn:not(:last-child) { border-right: 1px solid var(--border2); }
+  .gbl-outcome-btn.active[data-outcome="W"] { background: #27ae60; color: #fff; }
+  .gbl-outcome-btn.active[data-outcome="L"] { background: var(--red); color: #fff; }
+  .gbl-outcome-btn.active[data-outcome="D"] { background: #e67e22; color: #fff; }
+  .gbl-set-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    background: var(--bg3);
+    border-radius: 10px;
+    font-size: 13px;
+  }
+  .gbl-set-outcomes { display: flex; gap: 3px; }
+  .gbl-pip {
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+  .gbl-pip-W { background: #27ae60; color: #fff; }
+  .gbl-pip-L { background: var(--red); color: #fff; }
+  .gbl-pip-D { background: #e67e22; color: #fff; }
+  .gbl-stat-box {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+  .gbl-stat-value { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .gbl-stat-label { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  /* ── IV RANK CHECKER ─────────────────────────────────────── */
+  .iv-rank-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .iv-rank-s { background: #f1c40f; color: #222; }
+  .iv-rank-a { background: #27ae60; color: #fff; }
+  .iv-rank-b { background: #2980b9; color: #fff; }
+  .iv-rank-c { background: var(--text3); color: #fff; }
+
   /* ── PAGE FOOTER ─────────────────────────────────────────── */
   .page-footer {
     background: var(--bg2);
@@ -2023,6 +2096,12 @@
     </button>
     <button class="nav-btn" data-tab="map-tab" onclick="show('map-tab')">
       <span class="icon">🗺️</span> Map
+    </button>
+    <button class="nav-btn" data-tab="iv-tab" onclick="show('iv-tab')">
+      <span class="icon">🧬</span> IV Rank
+    </button>
+    <button class="nav-btn" data-tab="gbl-tab" onclick="show('gbl-tab')">
+      <span class="icon">📓</span> Battle Log
     </button>
     <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">☀️</button>
   </div>
@@ -2635,6 +2714,159 @@
       </div>
       <div id="spawn-list" style="display:flex;flex-direction:column;gap:8px"></div>
       <div id="spawn-empty" style="color:var(--text3);font-size:13px;text-align:center;padding:24px 0">No spawn points saved yet. Click on the map to add your first one!</div>
+    </div>
+  </section>
+
+  <!-- ── IV RANK CHECKER ─────────────────────────────────────────────────── -->
+  <section id="iv-tab" class="tab">
+    <div class="page-header">
+      <h1>🧬 PvP IV Rank Checker</h1>
+      <p>Enter your Pokémon's IVs to see its stat-product rank (#1 = perfect) for each PvP league. Free &amp; offline – no app required.</p>
+    </div>
+
+    <div class="calc-card" style="margin-bottom:16px">
+      <div class="calc-card-title">🔍 Check IVs</div>
+      <div class="calc-form">
+        <div class="calc-form-row">
+          <span class="calc-label">Pokémon</span>
+          <input class="calc-input" id="iv-pokemon" type="text" placeholder="e.g. Azumarill" list="iv-pokemon-list" oninput="ivSuggestPokemon()" style="max-width:220px">
+          <datalist id="iv-pokemon-list"></datalist>
+        </div>
+        <div class="calc-form-row">
+          <span class="calc-label">Attack IV</span>
+          <input class="calc-input" id="iv-atk" type="number" min="0" max="15" value="15" style="max-width:80px">
+          <span style="color:var(--text3);font-size:12px;margin-left:4px">0–15</span>
+        </div>
+        <div class="calc-form-row">
+          <span class="calc-label">Defense IV</span>
+          <input class="calc-input" id="iv-def" type="number" min="0" max="15" value="15" style="max-width:80px">
+          <span style="color:var(--text3);font-size:12px;margin-left:4px">0–15</span>
+        </div>
+        <div class="calc-form-row">
+          <span class="calc-label">Stamina IV</span>
+          <input class="calc-input" id="iv-sta" type="number" min="0" max="15" value="15" style="max-width:80px">
+          <span style="color:var(--text3);font-size:12px;margin-left:4px">0–15</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="calc-btn" onclick="ivCheckRank()">✅ Check Rank</button>
+          <button class="calc-btn" onclick="ivReset()" style="background:var(--bg3)">🔄 Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="iv-result" style="display:none">
+      <div id="iv-result-gl" class="calc-card" style="margin-bottom:12px"></div>
+      <div id="iv-result-ul" class="calc-card" style="margin-bottom:12px"></div>
+      <div id="iv-result-ml" class="calc-card" style="margin-bottom:12px"></div>
+    </div>
+
+    <div class="calc-card" style="margin-top:4px">
+      <div class="calc-card-title">ℹ️ About IV Ranks</div>
+      <div class="calc-card-desc" style="font-size:13px;line-height:1.6">
+        <p><strong>Rank #1</strong> = the single best possible IV spread for a given league (maximises stat product).</p>
+        <p><strong>Stat Product</strong> = Attack × Defense × Stamina (all at the best level under the CP cap). Higher = more bulk and damage.</p>
+        <p><strong>Great League</strong> ≤ 1500 CP &nbsp;|&nbsp; <strong>Ultra League</strong> ≤ 2500 CP &nbsp;|&nbsp; <strong>Master League</strong> no cap (Level 40).</p>
+        <p>A top-100 spread (rank ≤ 100 out of 4096) is excellent for PvP. Top-500 is good. Top-1000 is acceptable.</p>
+        <p style="color:var(--text3)">IVs are determined by appraising your Pokémon in-game (3-bar appraisal system).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GBL BATTLE LOG ──────────────────────────────────────────────────── -->
+  <section id="gbl-tab" class="tab">
+    <div class="page-header">
+      <h1>📓 GBL Battle Log</h1>
+      <p>Track your GO Battle League sets, win rate and rating progress. All data is saved locally on your device.</p>
+    </div>
+
+    <!-- Season selector + stats summary -->
+    <div class="calc-card" style="margin-bottom:16px">
+      <div class="calc-card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span>📊 Season Stats</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select class="calc-select" id="gbl-season-select" onchange="gblSelectSeason()" style="max-width:160px">
+          </select>
+          <button class="calc-btn" onclick="gblNewSeason()" style="font-size:12px;padding:6px 12px">➕ New Season</button>
+          <button class="calc-btn" onclick="gblDeleteSeason()" style="font-size:12px;padding:6px 12px;background:var(--bg3)">🗑️ Delete</button>
+        </div>
+      </div>
+      <div id="gbl-stats-summary" style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px"></div>
+    </div>
+
+    <!-- Log a new set -->
+    <div class="calc-card" style="margin-bottom:16px">
+      <div class="calc-card-title">⚔️ Log a Set (5 Battles)</div>
+      <div class="calc-card-desc" style="font-size:13px;margin-bottom:10px">Select W (Win), L (Loss) or D (Draw) for each battle in the set.</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="gbl-set-buttons">
+        <div class="gbl-battle-entry" data-idx="0">
+          <span class="gbl-battle-label">B1</span>
+          <div class="gbl-btn-group">
+            <button class="gbl-outcome-btn active" data-outcome="W" onclick="gblSetOutcome(0,'W')">W</button>
+            <button class="gbl-outcome-btn" data-outcome="L" onclick="gblSetOutcome(0,'L')">L</button>
+            <button class="gbl-outcome-btn" data-outcome="D" onclick="gblSetOutcome(0,'D')">D</button>
+          </div>
+        </div>
+        <div class="gbl-battle-entry" data-idx="1">
+          <span class="gbl-battle-label">B2</span>
+          <div class="gbl-btn-group">
+            <button class="gbl-outcome-btn active" data-outcome="W" onclick="gblSetOutcome(1,'W')">W</button>
+            <button class="gbl-outcome-btn" data-outcome="L" onclick="gblSetOutcome(1,'L')">L</button>
+            <button class="gbl-outcome-btn" data-outcome="D" onclick="gblSetOutcome(1,'D')">D</button>
+          </div>
+        </div>
+        <div class="gbl-battle-entry" data-idx="2">
+          <span class="gbl-battle-label">B3</span>
+          <div class="gbl-btn-group">
+            <button class="gbl-outcome-btn active" data-outcome="W" onclick="gblSetOutcome(2,'W')">W</button>
+            <button class="gbl-outcome-btn" data-outcome="L" onclick="gblSetOutcome(2,'L')">L</button>
+            <button class="gbl-outcome-btn" data-outcome="D" onclick="gblSetOutcome(2,'D')">D</button>
+          </div>
+        </div>
+        <div class="gbl-battle-entry" data-idx="3">
+          <span class="gbl-battle-label">B4</span>
+          <div class="gbl-btn-group">
+            <button class="gbl-outcome-btn active" data-outcome="W" onclick="gblSetOutcome(3,'W')">W</button>
+            <button class="gbl-outcome-btn" data-outcome="L" onclick="gblSetOutcome(3,'L')">L</button>
+            <button class="gbl-outcome-btn" data-outcome="D" onclick="gblSetOutcome(3,'D')">D</button>
+          </div>
+        </div>
+        <div class="gbl-battle-entry" data-idx="4">
+          <span class="gbl-battle-label">B5</span>
+          <div class="gbl-btn-group">
+            <button class="gbl-outcome-btn active" data-outcome="W" onclick="gblSetOutcome(4,'W')">W</button>
+            <button class="gbl-outcome-btn" data-outcome="L" onclick="gblSetOutcome(4,'L')">L</button>
+            <button class="gbl-outcome-btn" data-outcome="D" onclick="gblSetOutcome(4,'D')">D</button>
+          </div>
+        </div>
+      </div>
+      <div class="calc-form-row" style="margin-bottom:8px">
+        <span class="calc-label">League</span>
+        <select class="calc-select" id="gbl-log-league" style="max-width:160px">
+          <option value="GL">🌿 Great League</option>
+          <option value="UL">💎 Ultra League</option>
+          <option value="ML">👑 Master League</option>
+          <option value="PL">🎉 Premier / Other</option>
+        </select>
+      </div>
+      <div class="calc-form-row" style="margin-bottom:8px">
+        <span class="calc-label">Rating after set</span>
+        <input class="calc-input" id="gbl-log-rating" type="number" min="0" max="9999" placeholder="e.g. 2450" style="max-width:120px">
+      </div>
+      <div class="calc-form-row" style="margin-bottom:12px">
+        <span class="calc-label">Note (optional)</span>
+        <input class="calc-input" id="gbl-log-note" type="text" placeholder="e.g. great team, tough meta" style="max-width:280px">
+      </div>
+      <button class="calc-btn" onclick="gblLogSet()">✅ Save Set</button>
+    </div>
+
+    <!-- History -->
+    <div class="calc-card">
+      <div class="calc-card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <span>📜 Set History</span>
+        <button class="calc-btn" onclick="gblExportCSV()" style="font-size:12px;padding:6px 12px">📥 Export CSV</button>
+      </div>
+      <div id="gbl-history-list" style="margin-top:10px;display:flex;flex-direction:column;gap:8px"></div>
+      <div id="gbl-history-empty" style="color:var(--text3);font-size:13px;text-align:center;padding:24px 0">No sets logged yet. Record your first GBL set above!</div>
     </div>
   </section>
 </main>
@@ -4362,6 +4594,7 @@ function show(tabId) {
   if (tabId === 'builder-tab') initBuilderTab();
   if (tabId === 'mega-tab')    renderMegaGuide();
   if (tabId === 'map-tab')     initSpawnMap();
+  if (tabId === 'gbl-tab')     initGblTab();
 }
 
 function toggleCard(num) {
@@ -5742,7 +5975,7 @@ if ('serviceWorker' in navigator) {
 document.addEventListener('keydown', e => {
   const tag = e.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
-  const shortcuts = { '1': 'home-tab', '2': 'ranking-tab', '3': 'moves-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'stardust-tab', '8': 'raid-tab', '9': 'builder-tab', 'q': 'mega-tab', 'w': 'map-tab' };
+  const shortcuts = { '1': 'home-tab', '2': 'ranking-tab', '3': 'moves-tab', '4': 'pokemon-tab', '5': 'types-tab', '6': 'team-tab', '7': 'stardust-tab', '8': 'raid-tab', '9': 'builder-tab', 'q': 'mega-tab', 'w': 'map-tab', 'e': 'iv-tab', 'r': 'gbl-tab' };
   if (shortcuts[e.key]) { e.preventDefault(); show(shortcuts[e.key]); }
 });
 
@@ -6620,6 +6853,800 @@ ${rtepts}
   window.exportGpx          = exportGpx;
   // initSpawnMap is called by show() – expose it too
   window.initSpawnMap = initSpawnMap;
+}());
+
+// ══════════════════════════════════════════════════════════════
+// ── IV RANK CHECKER ───────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  // CP-Multiplier table (Level → CPM), Pokémon GO official values
+  const CPM = [
+    [1,0.094],[1.5,0.1351],[2,0.1664],[2.5,0.1924],[3,0.2157],[3.5,0.2353],
+    [4,0.2561],[4.5,0.2752],[5,0.2924],[5.5,0.3082],[6,0.3229],[6.5,0.3366],
+    [7,0.3492],[7.5,0.3609],[8,0.3715],[8.5,0.3812],[9,0.3903],[9.5,0.3989],
+    [10,0.4067],[10.5,0.4143],[11,0.4215],[11.5,0.4286],[12,0.435],[12.5,0.4414],
+    [13,0.4475],[13.5,0.4535],[14,0.4591],[14.5,0.4649],[15,0.47],[15.5,0.4751],
+    [16,0.48],[16.5,0.4875],[17,0.49],[17.5,0.4925],[18,0.495],[18.5,0.4975],
+    [19,0.5],[19.5,0.5025],[20,0.5049],[20.5,0.5073],[21,0.5108],[21.5,0.514],
+    [22,0.5173],[22.5,0.5204],[23,0.5236],[23.5,0.5267],[24,0.5297],[24.5,0.5327],
+    [25,0.5357],[25.5,0.5386],[26,0.5416],[26.5,0.5445],[27,0.5474],[27.5,0.5502],
+    [28,0.553],[28.5,0.5559],[29,0.5587],[29.5,0.5614],[30,0.5642],[30.5,0.5669],
+    [31,0.5696],[31.5,0.5724],[32,0.5751],[32.5,0.5778],[33,0.5805],[33.5,0.5832],
+    [34,0.5858],[34.5,0.5885],[35,0.5911],[35.5,0.5937],[36,0.5964],[36.5,0.599],
+    [37,0.6016],[37.5,0.6042],[38,0.6068],[38.5,0.6095],[39,0.612],[39.5,0.6146],
+    [40,0.6172],[40.5,0.6198],[41,0.6224],[41.5,0.625],[42,0.6276],[42.5,0.6302],
+    [43,0.6328],[43.5,0.6354],[44,0.638],[44.5,0.6406],[45,0.6431],[45.5,0.6457],
+    [46,0.6483],[46.5,0.6509],[47,0.6535],[47.5,0.6561],[48,0.6587],[48.5,0.6613],
+    [49,0.6639],[49.5,0.6664],[50,0.669],[50.5,0.6716],[51,0.6742]
+  ];
+
+  // Base stats: ATK / DEF / STA for PvP-relevant Pokémon (Pokémon GO datamined values)
+  // Keyed by lowercase name (or form suffix). Covers top GL / UL / ML meta.
+  const BASE_STATS = {
+    'bulbasaur':{a:118,d:111,s:128},'ivysaur':{a:151,d:143,s:155},'venusaur':{a:198,d:189,s:190},
+    'charmander':{a:116,d:93,s:118},'charmeleon':{a:158,d:126,s:151},'charizard':{a:223,d:173,s:186},
+    'squirtle':{a:94,d:121,s:127},'wartortle':{a:126,d:155,s:153},'blastoise':{a:171,d:207,s:188},
+    'caterpie':{a:55,d:55,s:128},'metapod':{a:45,d:80,s:137},'butterfree':{a:167,d:137,s:155},
+    'weedle':{a:63,d:50,s:120},'kakuna':{a:46,d:75,s:128},'beedrill':{a:169,d:130,s:163},
+    'pidgey':{a:85,d:76,s:120},'pidgeotto':{a:117,d:108,s:160},'pidgeot':{a:166,d:154,s:195},
+    'rattata':{a:103,d:70,s:102},'raticate':{a:161,d:139,s:146},
+    'spearow':{a:112,d:60,s:120},'fearow':{a:182,d:133,s:163},
+    'ekans':{a:110,d:97,s:111},'arbok':{a:167,d:153,s:155},
+    'pikachu':{a:112,d:96,s:111},'raichu':{a:193,d:151,s:155},
+    'sandshrew':{a:90,d:114,s:137},'sandslash':{a:182,d:175,s:181},
+    'nidoran-f':{a:86,d:89,s:137},'nidorina':{a:117,d:120,s:172},'nidoqueen':{a:180,d:174,s:200},
+    'nidoran-m':{a:105,d:76,s:130},'nidorino':{a:137,d:111,s:163},'nidoking':{a:204,d:157,s:191},
+    'clefairy':{a:107,d:108,s:172},'clefable':{a:178,d:162,s:216},
+    'vulpix':{a:96,d:109,s:116},'ninetales':{a:169,d:190,s:177},
+    'jigglypuff':{a:80,d:41,s:251},'wigglytuff':{a:156,d:90,s:295},
+    'zubat':{a:83,d:73,s:120},'golbat':{a:161,d:150,s:181},
+    'oddish':{a:131,d:116,s:128},'gloom':{a:153,d:136,s:155},'vileplume':{a:202,d:167,s:181},
+    'paras':{a:121,d:99,s:111},'parasect':{a:165,d:146,s:155},
+    'venonat':{a:100,d:102,s:155},'venomoth':{a:179,d:143,s:172},
+    'diglett':{a:109,d:78,s:67},'dugtrio':{a:167,d:147,s:111},
+    'meowth':{a:92,d:78,s:120},'persian':{a:150,d:136,s:163},
+    'psyduck':{a:122,d:96,s:137},'golduck':{a:191,d:163,s:190},
+    'mankey':{a:148,d:82,s:120},'primeape':{a:207,d:138,s:163},
+    'growlithe':{a:136,d:96,s:146},'arcanine':{a:227,d:166,s:207},
+    'poliwag':{a:101,d:82,s:120},'poliwhirl':{a:130,d:123,s:163},'poliwrath':{a:182,d:184,s:207},
+    'abra':{a:195,d:82,s:93},'kadabra':{a:232,d:138,s:120},'alakazam':{a:271,d:167,s:146},
+    'machop':{a:137,d:82,s:172},'machoke':{a:177,d:130,s:207},'machamp':{a:234,d:159,s:207},
+    'bellsprout':{a:139,d:64,s:137},'weepinbell':{a:172,d:95,s:163},'victreebel':{a:207,d:135,s:190},
+    'tentacool':{a:106,d:136,s:120},'tentacruel':{a:166,d:209,s:190},
+    'geodude':{a:132,d:132,s:120},'graveler':{a:164,d:164,s:146},'golem':{a:211,d:198,s:190},
+    'ponyta':{a:170,d:127,s:137},'rapidash':{a:207,d:162,s:163},
+    'slowpoke':{a:109,d:98,s:207},'slowbro':{a:177,d:180,s:216},
+    'magnemite':{a:165,d:121,s:93},'magneton':{a:223,d:169,s:137},
+    'farfetchd':{a:124,d:115,s:141},'doduo':{a:158,d:83,s:111},'dodrio':{a:218,d:140,s:155},
+    'seel':{a:104,d:138,s:163},'dewgong':{a:139,d:177,s:225},
+    'grimer':{a:135,d:90,s:190},'muk':{a:190,d:172,s:233},
+    'shellder':{a:116,d:168,s:102},'cloyster':{a:186,d:256,s:137},
+    'gastly':{a:186,d:67,s:102},'haunter':{a:223,d:107,s:128},'gengar':{a:261,d:149,s:155},
+    'onix':{a:85,d:232,s:140},'drowzee':{a:144,d:137,s:155},'hypno':{a:144,d:193,s:216},
+    'krabby':{a:181,d:156,s:102},'kingler':{a:240,d:214,s:146},
+    'voltorb':{a:109,d:111,s:120},'electrode':{a:173,d:182,s:120},
+    'exeggcute':{a:107,d:125,s:155},'exeggutor':{a:233,d:149,s:216},
+    'cubone':{a:90,d:144,s:125},'marowak':{a:144,d:200,s:155},
+    'hitmonlee':{a:224,d:181,s:137},'hitmonchan':{a:193,d:197,s:137},'hitmontop':{a:173,d:207,s:137},
+    'lickitung':{a:108,d:137,s:260},'koffing':{a:119,d:141,s:120},'weezing':{a:174,d:197,s:163},
+    'rhyhorn':{a:140,d:127,s:190},'rhydon':{a:222,d:171,s:233},
+    'chansey':{a:60,d:128,s:487},'tangela':{a:183,d:169,s:163},
+    'kangaskhan':{a:181,d:165,s:233},'horsea':{a:129,d:103,s:102},'seadra':{a:187,d:182,s:146},
+    'goldeen':{a:123,d:110,s:128},'seaking':{a:175,d:154,s:190},
+    'staryu':{a:137,d:112,s:120},'starmie':{a:210,d:184,s:155},
+    'mr-mime':{a:192,d:205,s:120},'scyther':{a:218,d:170,s:172},
+    'jynx':{a:223,d:182,s:163},'electabuzz':{a:198,d:158,s:163},'magmar':{a:206,d:169,s:163},
+    'pinsir':{a:238,d:182,s:163},'tauros':{a:198,d:183,s:181},
+    'magikarp':{a:29,d:85,s:85},'gyarados':{a:237,d:186,s:216},
+    'lapras':{a:165,d:174,s:277},'ditto':{a:91,d:91,s:134},
+    'eevee':{a:104,d:114,s:146},'vaporeon':{a:205,d:177,s:277},'jolteon':{a:232,d:182,s:163},
+    'flareon':{a:246,d:179,s:163},'porygon':{a:153,d:136,s:163},
+    'omanyte':{a:155,d:153,s:102},'omastar':{a:207,d:201,s:155},
+    'kabuto':{a:148,d:142,s:102},'kabutops':{a:220,d:186,s:155},
+    'aerodactyl':{a:221,d:159,s:190},'snorlax':{a:190,d:169,s:330},
+    'articuno':{a:192,d:236,s:207},'zapdos':{a:253,d:185,s:207},'moltres':{a:251,d:181,s:207},
+    'dratini':{a:119,d:91,s:121},'dragonair':{a:163,d:135,s:156},'dragonite':{a:263,d:198,s:209},
+    'mewtwo':{a:300,d:182,s:214},'mew':{a:210,d:210,s:225},
+    // Gen 2
+    'chikorita':{a:92,d:122,s:128},'bayleef':{a:122,d:155,s:155},'meganium':{a:168,d:202,s:190},
+    'cyndaquil':{a:116,d:93,s:118},'quilava':{a:158,d:126,s:151},'typhlosion':{a:223,d:173,s:186},
+    'totodile':{a:117,d:116,s:137},'croconaw':{a:150,d:151,s:163},'feraligatr':{a:205,d:188,s:198},
+    'sentret':{a:79,d:73,s:111},'furret':{a:148,d:130,s:184},
+    'hoothoot':{a:67,d:101,s:128},'noctowl':{a:145,d:179,s:200},
+    'ledyba':{a:72,d:142,s:120},'ledian':{a:107,d:179,s:137},
+    'spinarak':{a:105,d:73,s:111},'ariados':{a:161,d:128,s:163},
+    'crobat':{a:194,d:178,s:198},'chinchou':{a:106,d:106,s:197},'lanturn':{a:146,d:137,s:270},
+    'pichu':{a:77,d:63,s:85},'cleffa':{a:75,d:79,s:137},'igglybuff':{a:69,d:32,s:207},
+    'togepi':{a:67,d:116,s:111},'togetic':{a:139,d:191,s:137},
+    'natu':{a:134,d:89,s:111},'xatu':{a:192,d:146,s:163},
+    'mareep':{a:114,d:82,s:128},'flaaffy':{a:145,d:112,s:163},'ampharos':{a:211,d:172,s:207},
+    'bellossom':{a:169,d:189,s:181},'marill':{a:37,d:93,s:172},'azumarill':{a:112,d:152,s:225},
+    'sudowoodo':{a:167,d:176,s:172},'politoed':{a:174,d:179,s:190},
+    'hoppip':{a:67,d:101,s:111},'skiploom':{a:91,d:127,s:137},'jumpluff':{a:118,d:183,s:181},
+    'aipom':{a:136,d:112,s:146},'sunkern':{a:55,d:55,s:102},'sunflora':{a:185,d:148,s:181},
+    'yanma':{a:154,d:94,s:163},'wooper':{a:75,d:75,s:155},'quagsire':{a:152,d:152,s:216},
+    'espeon':{a:261,d:175,s:163},'umbreon':{a:126,d:240,s:216},
+    'murkrow':{a:175,d:87,s:120},'slowking':{a:177,d:180,s:216},
+    'misdreavus':{a:167,d:154,s:155},'unown':{a:136,d:91,s:96},
+    'wobbuffet':{a:60,d:106,s:382},'girafarig':{a:182,d:133,s:172},
+    'pineco':{a:108,d:122,s:128},'forretress':{a:161,d:205,s:163},
+    'dunsparce':{a:131,d:131,s:225},'gligar':{a:143,d:184,s:163},
+    'steelix':{a:148,d:272,s:181},'snubbull':{a:129,d:105,s:155},'granbull':{a:212,d:131,s:207},
+    'qwilfish':{a:184,d:148,s:163},'scizor':{a:236,d:191,s:172},
+    'shuckle':{a:17,d:396,s:85},'heracross':{a:234,d:179,s:190},
+    'sneasel':{a:189,d:146,s:137},'teddiursa':{a:142,d:93,s:155},'ursaring':{a:236,d:144,s:207},
+    'slugma':{a:118,d:71,s:120},'magcargo':{a:139,d:191,s:137},
+    'swinub':{a:90,d:74,s:137},'piloswine':{a:181,d:138,s:225},
+    'corsola':{a:118,d:156,s:137},'remoraid':{a:127,d:69,s:111},'octillery':{a:197,d:141,s:190},
+    'delibird':{a:128,d:90,s:128},'mantine':{a:148,d:226,s:163},
+    'skarmory':{a:148,d:226,s:163},'houndour':{a:152,d:91,s:128},'houndoom':{a:224,d:144,s:181},
+    'kingdra':{a:187,d:182,s:181},'phanpy':{a:107,d:98,s:180},'donphan':{a:214,d:185,s:207},
+    'porygon2':{a:198,d:183,s:163},'stantler':{a:182,d:156,s:198},
+    'smeargle':{a:40,d:83,s:146},'tyrogue':{a:64,d:64,s:111},
+    'smoochum':{a:153,d:116,s:128},'elekid':{a:135,d:110,s:128},'magby':{a:151,d:108,s:128},
+    'miltank':{a:157,d:193,s:216},'blissey':{a:129,d:169,s:496},
+    'raikou':{a:241,d:195,s:207},'entei':{a:235,d:176,s:230},'suicune':{a:180,d:235,s:225},
+    'larvitar':{a:115,d:93,s:155},'pupitar':{a:155,d:133,s:172},'tyranitar':{a:251,d:207,s:225},
+    'lugia':{a:193,d:310,s:235},'ho-oh':{a:239,d:244,s:214},
+    'celebi':{a:210,d:210,s:225},
+    // Gen 3
+    'treecko':{a:124,d:94,s:120},'grovyle':{a:172,d:120,s:137},'sceptile':{a:223,d:169,s:172},
+    'torchic':{a:130,d:87,s:120},'combusken':{a:163,d:115,s:155},'blaziken':{a:239,d:141,s:190},
+    'mudkip':{a:126,d:93,s:137},'marshtomp':{a:156,d:133,s:172},'swampert':{a:208,d:175,s:225},
+    'poochyena':{a:108,d:79,s:128},'mightyena':{a:171,d:132,s:172},
+    'zigzagoon':{a:58,d:80,s:116},'linoone':{a:142,d:128,s:182},
+    'wurmple':{a:63,d:50,s:120},'silcoon':{a:60,d:95,s:128},'beautifly':{a:189,d:98,s:155},
+    'cascoon':{a:50,d:95,s:128},'dustox':{a:104,d:140,s:155},
+    'lotad':{a:71,d:86,s:120},'lombre':{a:112,d:119,s:155},'ludicolo':{a:173,d:176,s:207},
+    'seedot':{a:71,d:77,s:102},'nuzleaf':{a:134,d:78,s:155},'shiftry':{a:200,d:121,s:190},
+    'taillow':{a:106,d:73,s:120},'swellow':{a:185,d:122,s:155},
+    'wingull':{a:106,d:61,s:120},'pelipper':{a:130,d:160,s:195},
+    'ralts':{a:79,d:59,s:93},'kirlia':{a:117,d:90,s:111},'gardevoir':{a:237,d:195,s:169},
+    'surskit':{a:93,d:87,s:111},'masquerain':{a:192,d:150,s:163},
+    'shroomish':{a:74,d:110,s:128},'breloom':{a:241,d:144,s:155},
+    'slakoth':{a:104,d:82,s:155},'vigoroth':{a:159,d:104,s:190},'slaking':{a:290,d:166,s:273},
+    'nincada':{a:80,d:126,s:102},'ninjask':{a:199,d:114,s:156},'shedinja':{a:153,d:73,s:1},
+    'whismur':{a:92,d:42,s:155},'loudred':{a:126,d:74,s:190},'exploud':{a:179,d:138,s:246},
+    'makuhita':{a:99,d:54,s:172},'hariyama':{a:209,d:114,s:302},
+    'azurill':{a:36,d:71,s:137},'nosepass':{a:82,d:210,s:115},
+    'skitty':{a:84,d:83,s:128},'delcatty':{a:132,d:127,s:172},
+    'sableye':{a:141,d:141,s:137},'mawile':{a:155,d:141,s:137},
+    'aron':{a:121,d:198,s:120},'lairon':{a:158,d:230,s:146},'aggron':{a:198,d:257,s:172},
+    'meditite':{a:121,d:142,s:102},'medicham':{a:121,d:152,s:155},
+    'electrike':{a:123,d:67,s:120},'manectric':{a:215,d:127,s:163},
+    'plusle':{a:167,d:129,s:137},'minun':{a:167,d:137,s:137},
+    'volbeat':{a:143,d:166,s:163},'illumise':{a:143,d:166,s:163},
+    'roselia':{a:186,d:148,s:128},'gulpin':{a:80,d:99,s:172},'swalot':{a:140,d:162,s:225},
+    'carvanha':{a:171,d:60,s:128},'sharpedo':{a:243,d:83,s:172},
+    'wailmer':{a:130,d:87,s:250},'wailord':{a:175,d:87,s:347},
+    'numel':{a:119,d:68,s:155},'camerupt':{a:194,d:122,s:172},
+    'torkoal':{a:151,d:214,s:163},'spoink':{a:127,d:116,s:155},'grumpig':{a:171,d:190,s:190},
+    'spinda':{a:116,d:116,s:163},'trapinch':{a:162,d:78,s:128},'vibrava':{a:134,d:99,s:163},
+    'flygon':{a:205,d:168,s:190},'cacnea':{a:156,d:74,s:128},'cacturne':{a:221,d:115,s:172},
+    'swablu':{a:76,d:138,s:120},'altaria':{a:141,d:201,s:163},
+    'zangoose':{a:222,d:124,s:181},'seviper':{a:196,d:118,s:172},
+    'lunatone':{a:178,d:153,s:172},'solrock':{a:178,d:153,s:172},
+    'barboach':{a:93,d:82,s:137},'whiscash':{a:151,d:141,s:242},
+    'corphish':{a:141,d:99,s:155},'crawdaunt':{a:224,d:142,s:189},
+    'baltoy':{a:77,d:124,s:120},'claydol':{a:140,d:229,s:155},
+    'lileep':{a:105,d:150,s:165},'cradily':{a:152,d:191,s:200},
+    'anorith':{a:176,d:100,s:111},'armaldo':{a:222,d:174,s:181},
+    'feebas':{a:29,d:85,s:85},'milotic':{a:192,d:219,s:216},
+    'castform':{a:139,d:139,s:163},'kecleon':{a:161,d:189,s:163},
+    'shuppet':{a:138,d:70,s:111},'banette':{a:218,d:127,s:155},
+    'duskull':{a:70,d:162,s:85},'dusclops':{a:124,d:234,s:111},
+    'tropius':{a:136,d:163,s:223},'chimecho':{a:114,d:168,s:151},
+    'absol':{a:246,d:120,s:163},'wynaut':{a:52,d:70,s:223},'snorunt':{a:97,d:95,s:128},
+    'glalie':{a:162,d:162,s:190},'spheal':{a:95,d:90,s:172},'sealeo':{a:137,d:132,s:207},
+    'walrein':{a:182,d:176,s:220},'clamperl':{a:133,d:134,s:137},
+    'huntail':{a:197,d:179,s:146},'gorebyss':{a:211,d:179,s:146},
+    'relicanth':{a:162,d:203,s:225},'luvdisc':{a:96,d:124,s:128},
+    'bagon':{a:134,d:93,s:137},'shelgon':{a:172,d:155,s:163},'salamence':{a:277,d:168,s:216},
+    'beldum':{a:96,d:132,s:120},'metang':{a:138,d:176,s:155},'metagross':{a:257,d:228,s:190},
+    'regirock':{a:179,d:309,s:190},'regice':{a:179,d:309,s:190},'registeel':{a:143,d:285,s:190},
+    'latias':{a:228,d:246,s:190},'latios':{a:268,d:212,s:190},
+    'kyogre':{a:270,d:228,s:205},'groudon':{a:270,d:228,s:205},
+    'rayquaza':{a:284,d:170,s:213},'jirachi':{a:210,d:210,s:225},
+    // Gen 4
+    'turtwig':{a:119,d:110,s:146},'grotle':{a:157,d:143,s:172},'torterra':{a:202,d:197,s:216},
+    'chimchar':{a:125,d:96,s:128},'monferno':{a:158,d:105,s:163},'infernape':{a:222,d:151,s:183},
+    'piplup':{a:112,d:102,s:130},'prinplup':{a:145,d:136,s:155},'empoleon':{a:210,d:213,s:186},
+    'budew':{a:91,d:86,s:102},'roserade':{a:243,d:185,s:155},
+    'cranidos':{a:218,d:71,s:137},'rampardos':{a:295,d:109,s:181},
+    'shieldon':{a:76,d:195,s:120},'bastiodon':{a:94,d:286,s:155},
+    'burmy':{a:53,d:83,s:102},'wormadam':{a:105,d:150,s:155},'mothim':{a:185,d:98,s:155},
+    'combee':{a:71,d:86,s:102},'vespiquen':{a:149,d:190,s:172},
+    'pachirisu':{a:94,d:172,s:167},'buizel':{a:132,d:67,s:137},'floatzel':{a:207,d:109,s:185},
+    'cherubi':{a:108,d:92,s:111},'cherrim':{a:170,d:153,s:155},
+    'shellos':{a:97,d:121,s:155},'gastrodon':{a:169,d:168,s:244},
+    'ambipom':{a:205,d:143,s:169},'drifloon':{a:117,d:105,s:163},'drifblim':{a:180,d:154,s:242},
+    'buneary':{a:130,d:105,s:128},'lopunny':{a:156,d:194,s:163},
+    'mismagius':{a:211,d:187,s:155},'honchkrow':{a:243,d:103,s:181},
+    'glameow':{a:109,d:82,s:128},'purugly':{a:172,d:133,s:175},
+    'chingling':{a:69,d:101,s:111},'stunky':{a:121,d:90,s:155},'skuntank':{a:184,d:132,s:204},
+    'bronzor':{a:43,d:154,s:120},'bronzong':{a:123,d:233,s:172},
+    'bonsly':{a:124,d:133,s:137},'mime-jr':{a:125,d:142,s:85},
+    'happiny':{a:25,d:77,s:459},'chatot':{a:183,d:91,s:153},
+    'spiritomb':{a:92,d:192,s:162},'gible':{a:124,d:84,s:128},'gabite':{a:172,d:125,s:155},
+    'garchomp':{a:261,d:193,s:239},'munchlax':{a:137,d:117,s:286},
+    'riolu':{a:127,d:78,s:120},'lucario':{a:236,d:144,s:172},
+    'hippopotas':{a:124,d:118,s:176},'hippowdon':{a:201,d:191,s:239},
+    'skorupi':{a:93,d:151,s:120},'drapion':{a:180,d:202,s:172},
+    'croagunk':{a:116,d:99,s:137},'toxicroak':{a:211,d:133,s:195},
+    'carnivine':{a:187,d:136,s:163},'finneon':{a:115,d:96,s:128},'lumineon':{a:162,d:150,s:172},
+    'mantyke':{a:105,d:179,s:128},'snover':{a:115,d:105,s:163},'abomasnow':{a:178,d:158,s:207},
+    'weavile':{a:243,d:171,s:172},'magnezone':{a:238,d:205,s:172},
+    'lickilicky':{a:161,d:181,s:286},'rhyperior':{a:241,d:190,s:251},
+    'tangrowth':{a:207,d:184,s:225},'electivire':{a:249,d:163,s:181},'magmortar':{a:247,d:172,s:181},
+    'togekiss':{a:225,d:217,s:198},'yanmega':{a:218,d:155,s:190},
+    'leafeon':{a:216,d:219,s:163},'glaceon':{a:238,d:205,s:163},
+    'gliscor':{a:185,d:222,s:181},'mamoswine':{a:247,d:146,s:242},
+    'porygon-z':{a:264,d:150,s:163},'gallade':{a:237,d:195,s:169},
+    'probopass':{a:135,d:275,s:155},'dusknoir':{a:180,d:254,s:128},
+    'froslass':{a:171,d:150,s:163},'rotom':{a:185,d:160,s:137},
+    'uxie':{a:156,d:270,s:181},'mesprit':{a:212,d:212,s:190},'azelf':{a:270,d:151,s:181},
+    'dialga':{a:275,d:211,s:205},'palkia':{a:280,d:215,s:189},
+    'heatran':{a:251,d:213,s:209},'regigigas':{a:287,d:210,s:221},
+    'giratina':{a:187,d:225,s:284},'giratina-origin':{a:225,d:187,s:284},
+    'cresselia':{a:152,d:258,s:260},'phione':{a:192,d:192,s:225},'manaphy':{a:210,d:210,s:225},
+    'darkrai':{a:285,d:198,s:172},'shaymin':{a:210,d:210,s:225},'arceus':{a:238,d:238,s:225},
+    // Gen 5
+    'victini':{a:210,d:210,s:225},'snivy':{a:88,d:107,s:120},'servine':{a:122,d:152,s:137},
+    'serperior':{a:176,d:202,s:172},'tepig':{a:130,d:87,s:128},'pignite':{a:166,d:117,s:163},
+    'emboar':{a:235,d:127,s:242},'oshawott':{a:117,d:116,s:146},'dewott':{a:150,d:151,s:172},
+    'samurott':{a:212,d:157,s:225},'patrat':{a:73,d:63,s:111},'watchog':{a:167,d:139,s:172},
+    'lillipup':{a:90,d:77,s:128},'herdier':{a:138,d:122,s:163},'stoutland':{a:182,d:198,s:198},
+    'purrloin':{a:116,d:82,s:128},'liepard':{a:204,d:106,s:163},
+    'pansage':{a:104,d:94,s:120},'simisage':{a:206,d:133,s:172},
+    'pansear':{a:104,d:94,s:120},'simisear':{a:206,d:133,s:172},
+    'panpour':{a:104,d:94,s:120},'simipour':{a:206,d:133,s:172},
+    'munna':{a:111,d:139,s:190},'musharna':{a:183,d:178,s:242},
+    'pidove':{a:77,d:71,s:120},'tranquill':{a:117,d:105,s:155},'unfezant':{a:226,d:146,s:190},
+    'blitzle':{a:111,d:80,s:128},'zebstrika':{a:211,d:136,s:186},
+    'roggenrola':{a:116,d:116,s:137},'boldore':{a:143,d:173,s:155},'gigalith':{a:226,d:201,s:198},
+    'woobat':{a:106,d:90,s:128},'swoobat':{a:175,d:103,s:172},
+    'drilbur':{a:166,d:91,s:128},'excadrill':{a:255,d:129,s:242},
+    'audino':{a:114,d:163,s:230},'timburr':{a:134,d:87,s:155},'gurdurr':{a:180,d:131,s:190},
+    'conkeldurr':{a:243,d:158,s:233},'tympole':{a:95,d:79,s:128},'palpitoad':{a:130,d:118,s:163},
+    'seismitoad':{a:188,d:163,s:234},'throh':{a:172,d:160,s:225},'sawk':{a:231,d:153,s:172},
+    'sewaddle':{a:72,d:105,s:128},'swadloon':{a:72,d:133,s:128},'leavanny':{a:220,d:155,s:172},
+    'venipede':{a:83,d:114,s:111},'whirlipede':{a:93,d:169,s:137},'scolipede':{a:203,d:175,s:172},
+    'cottonee':{a:66,d:112,s:102},'whimsicott':{a:141,d:178,s:155},
+    'petilil':{a:115,d:86,s:120},'lilligant':{a:192,d:152,s:163},
+    'basculin':{a:188,d:135,s:172},'sandile':{a:102,d:90,s:128},'krokorok':{a:144,d:123,s:155},
+    'krookodile':{a:229,d:158,s:198},'darumaka':{a:168,d:74,s:155},'darmanitan':{a:263,d:91,s:233},
+    'maractus':{a:201,d:149,s:181},'dwebble':{a:118,d:160,s:120},'crustle':{a:188,d:200,s:163},
+    'scraggy':{a:132,d:132,s:137},'scrafty':{a:163,d:222,s:163},
+    'sigilyph':{a:177,d:154,s:163},'yamask':{a:80,d:147,s:128},'cofagrigus':{a:163,d:239,s:163},
+    'tirtouga':{a:134,d:146,s:137},'carracosta':{a:192,d:207,s:181},
+    'archen':{a:176,d:112,s:128},'archeops':{a:292,d:139,s:190},
+    'trubbish':{a:89,d:110,s:137},'garbodor':{a:172,d:175,s:190},
+    'zorua':{a:150,d:91,s:137},'zoroark':{a:222,d:154,s:181},
+    'minccino':{a:102,d:78,s:146},'cinccino':{a:198,d:144,s:186},
+    'gothita':{a:90,d:110,s:120},'gothorita':{a:130,d:143,s:148},'gothitelle':{a:176,d:205,s:172},
+    'solosis':{a:155,d:67,s:120},'duosion':{a:182,d:93,s:146},'reuniclus':{a:214,d:152,s:216},
+    'ducklett':{a:76,d:102,s:128},'swanna':{a:182,d:132,s:181},
+    'vanillite':{a:83,d:102,s:120},'vanillish':{a:117,d:136,s:148},'vanilluxe':{a:218,d:184,s:190},
+    'deerling':{a:116,d:96,s:155},'sawsbuck':{a:198,d:146,s:190},
+    'emolga':{a:158,d:127,s:128},'karrablast':{a:134,d:94,s:120},'escavalier':{a:223,d:198,s:172},
+    'foongus':{a:69,d:110,s:165},'amoonguss':{a:121,d:157,s:242},
+    'frillish':{a:97,d:129,s:163},'jellicent':{a:159,d:178,s:240},
+    'alomomola':{a:189,d:97,s:338},'joltik':{a:105,d:93,s:102},'galvantula':{a:201,d:128,s:163},
+    'ferroseed':{a:82,d:166,s:128},'ferrothorn':{a:158,d:209,s:179},
+    'klink':{a:98,d:121,s:120},'klang':{a:138,d:166,s:146},'klinklang':{a:199,d:214,s:172},
+    'tynamo':{a:61,d:55,s:83},'eelektrik':{a:134,d:134,s:155},'eelektross':{a:208,d:163,s:216},
+    'elgyem':{a:148,d:114,s:128},'beheeyem':{a:188,d:167,s:172},
+    'litwick':{a:119,d:93,s:102},'lampent':{a:135,d:116,s:128},'chandelure':{a:271,d:182,s:155},
+    'axew':{a:154,d:101,s:130},'fraxure':{a:185,d:131,s:155},'haxorus':{a:284,d:172,s:172},
+    'cubchoo':{a:128,d:72,s:128},'beartic':{a:233,d:152,s:207},
+    'cryogonal':{a:190,d:218,s:163},'shelmet':{a:63,d:155,s:120},'accelgor':{a:179,d:121,s:172},
+    'stunfisk':{a:144,d:175,s:240},'mienfoo':{a:148,d:100,s:128},'mienshao':{a:258,d:127,s:172},
+    'druddigon':{a:213,d:170,s:184},'golett':{a:124,d:116,s:155},'golurk':{a:222,d:154,s:205},
+    'pawniard':{a:154,d:116,s:128},'bisharp':{a:249,d:183,s:172},
+    'bouffalant':{a:195,d:192,s:207},'rufflet':{a:138,d:96,s:155},'braviary':{a:232,d:152,s:209},
+    'vullaby':{a:91,d:134,s:146},'mandibuzz':{a:148,d:179,s:216},
+    'heatmor':{a:204,d:129,s:181},'durant':{a:198,d:218,s:163},
+    'deino':{a:116,d:93,s:155},'zweilous':{a:160,d:137,s:181},'hydreigon':{a:256,d:188,s:211},
+    'larvesta':{a:156,d:107,s:146},'volcarona':{a:264,d:167,s:207},
+    'cobalion':{a:192,d:229,s:209},'terrakion':{a:260,d:192,s:209},'virizion':{a:192,d:229,s:209},
+    'tornadus':{a:266,d:164,s:188},'thundurus':{a:266,d:164,s:188},
+    'reshiram':{a:275,d:211,s:205},'zekrom':{a:275,d:211,s:205},
+    'landorus':{a:261,d:193,s:205},'kyurem':{a:246,d:170,s:245},
+    'keldeo':{a:260,d:192,s:209},'meloetta':{a:250,d:225,s:225},
+    // Gen 6
+    'chespin':{a:122,d:106,s:155},'quilladin':{a:158,d:140,s:190},'chesnaught':{a:201,d:168,s:236},
+    'fennekin':{a:116,d:96,s:120},'braixen':{a:160,d:128,s:148},'delphox':{a:230,d:189,s:181},
+    'froakie':{a:101,d:79,s:111},'frogadier':{a:138,d:107,s:128},'greninja':{a:223,d:152,s:176},
+    'bunnelby':{a:68,d:68,s:128},'diggersby':{a:192,d:162,s:198},
+    'fletchling':{a:106,d:73,s:128},'fletchinder':{a:148,d:126,s:155},'talonflame':{a:176,d:155,s:186},
+    'scatterbug':{a:63,d:55,s:111},'spewpa':{a:50,d:95,s:128},'vivillon':{a:185,d:139,s:172},
+    'litleo':{a:138,d:94,s:155},'pyroar':{a:221,d:146,s:198},
+    'flabebe':{a:115,d:108,s:111},'floette':{a:129,d:128,s:120},'florges':{a:212,d:247,s:186},
+    'skiddo':{a:118,d:118,s:163},'gogoat':{a:198,d:163,s:240},
+    'pancham':{a:153,d:94,s:155},'pangoro':{a:226,d:139,s:207},
+    'furfrou':{a:164,d:165,s:181},'espurr':{a:120,d:114,s:120},'meowstic':{a:177,d:177,s:163},
+    'honedge':{a:135,d:172,s:120},'doublade':{a:150,d:214,s:137},'aegislash':{a:97,d:291,s:163},
+    'spritzee':{a:110,d:113,s:163},'aromatisse':{a:173,d:179,s:207},
+    'swirlix':{a:108,d:115,s:155},'slurpuff':{a:168,d:163,s:207},
+    'inkay':{a:96,d:104,s:137},'malamar':{a:177,d:178,s:190},
+    'binacle':{a:154,d:131,s:102},'barbaracle':{a:218,d:178,s:172},
+    'skrelp':{a:115,d:105,s:137},'dragalge':{a:177,d:207,s:163},
+    'clauncher':{a:117,d:105,s:128},'clawitzer':{a:222,d:163,s:172},
+    'helioptile':{a:108,d:107,s:120},'heliolisk':{a:185,d:149,s:181},
+    'tyrunt':{a:136,d:89,s:134},'tyrantrum':{a:227,d:158,s:193},
+    'amaura':{a:132,d:108,s:185},'aurorus':{a:212,d:131,s:242},
+    'sylveon':{a:203,d:205,s:216},'hawlucha':{a:195,d:151,s:163},
+    'dedenne':{a:151,d:133,s:163},'carbink':{a:95,d:259,s:137},
+    'goomy':{a:118,d:108,s:137},'sliggoo':{a:152,d:139,s:169},'goodra':{a:220,d:242,s:207},
+    'klefki':{a:160,d:179,s:137},'phantump':{a:129,d:107,s:130},'trevenant':{a:182,d:133,s:198},
+    'pumpkaboo':{a:121,d:119,s:163},'gourgeist':{a:163,d:186,s:207},
+    'bergmite':{a:103,d:154,s:128},'avalugg':{a:148,d:264,s:207},
+    'noibat':{a:83,d:72,s:111},'noivern':{a:205,d:175,s:187},
+    'xerneas':{a:250,d:185,s:246},'yveltal':{a:250,d:185,s:246},
+    'zygarde':{a:203,d:219,s:225},'diancie':{a:190,d:285,s:137},'hoopa':{a:261,d:187,s:173},
+    'volcanion':{a:251,d:194,s:192},
+    // Gen 7
+    'rowlet':{a:106,d:104,s:120},'dartrix':{a:138,d:132,s:148},'decidueye':{a:210,d:179,s:172},
+    'litten':{a:128,d:82,s:128},'torracat':{a:165,d:104,s:163},'incineroar':{a:228,d:177,s:205},
+    'popplio':{a:94,d:110,s:137},'brionne':{a:123,d:140,s:163},'primarina':{a:232,d:195,s:207},
+    'pikipek':{a:107,d:73,s:120},'trumbeak':{a:131,d:89,s:155},'toucannon':{a:218,d:131,s:190},
+    'yungoos':{a:103,d:71,s:128},'gumshoos':{a:184,d:139,s:181},
+    'grubbin':{a:78,d:59,s:128},'charjabug':{a:90,d:150,s:155},'vikavolt':{a:254,d:152,s:163},
+    'crabrawler':{a:153,d:107,s:137},'crabominable':{a:176,d:147,s:207},
+    'oricorio':{a:175,d:131,s:163},'cutiefly':{a:102,d:93,s:102},'ribombee':{a:198,d:145,s:155},
+    'rockruff':{a:117,d:91,s:128},'lycanroc':{a:231,d:140,s:163},
+    'wishiwashi':{a:55,d:52,s:163},'mareanie':{a:96,d:120,s:128},'toxapex':{a:114,d:273,s:155},
+    'mudbray':{a:110,d:121,s:155},'mudsdale':{a:214,d:185,s:242},
+    'dewpider':{a:72,d:123,s:128},'araquanid':{a:148,d:214,s:172},
+    'fomantis':{a:115,d:99,s:128},'lurantis':{a:204,d:196,s:172},
+    'morelull':{a:101,d:111,s:128},'shiinotic':{a:145,d:165,s:163},
+    'salandit':{a:129,d:79,s:120},'salazzle':{a:228,d:114,s:168},
+    'stufful':{a:120,d:105,s:155},'bewear':{a:226,d:136,s:220},
+    'bounsweet':{a:55,d:67,s:119},'steenee':{a:78,d:87,s:137},'tsareena':{a:214,d:185,s:183},
+    'comfey':{a:111,d:178,s:146},'oranguru':{a:166,d:184,s:195},
+    'passimian':{a:240,d:158,s:198},'wimpod':{a:40,d:82,s:102},'golisopod':{a:218,d:206,s:216},
+    'sandygast':{a:72,d:131,s:155},'palossand':{a:152,d:204,s:207},
+    'pyukumuku':{a:55,d:228,s:190},'type-null':{a:149,d:176,s:193},'silvally':{a:222,d:182,s:209},
+    'minior':{a:145,d:224,s:137},'komala':{a:185,d:172,s:207},
+    'turtonator':{a:176,d:176,s:154},'togedemaru':{a:148,d:172,s:155},
+    'mimikyu':{a:177,d:190,s:163},'bruxish':{a:197,d:157,s:163},
+    'drampa':{a:180,d:131,s:198},'dhelmise':{a:203,d:229,s:172},
+    'jangmo-o':{a:101,d:112,s:128},'hakamo-o':{a:144,d:151,s:155},'kommo-o':{a:222,d:174,s:181},
+    'tapu-koko':{a:250,d:181,s:172},'tapu-lele':{a:259,d:208,s:172},
+    'tapu-bulu':{a:249,d:210,s:172},'tapu-fini':{a:195,d:218,s:182},
+    'solgaleo':{a:255,d:191,s:209},'lunala':{a:255,d:188,s:264},
+    'nihilego':{a:249,d:210,s:172},'buzzwole':{a:236,d:188,s:216},
+    'pheromosa':{a:316,d:100,s:163},'xurkitree':{a:330,d:144,s:190},
+    'celesteela':{a:222,d:170,s:290},'kartana':{a:259,d:261,s:148},
+    'guzzlord':{a:188,d:99,s:440},'necrozma':{a:251,d:177,s:190},
+    'magearna':{a:215,d:239,s:172},'marshadow':{a:292,d:179,s:181},
+    'poipole':{a:188,d:119,s:155},'naganadel':{a:263,d:158,s:193},
+    'stakataka':{a:213,d:298,s:135},'blacephalon':{a:318,d:121,s:163},'zeraora':{a:277,d:179,s:188},
+    // Gen 8
+    'grookey':{a:123,d:100,s:155},'thwackey':{a:153,d:125,s:172},'rillaboom':{a:228,d:181,s:216},
+    'scorbunny':{a:128,d:101,s:128},'raboot':{a:162,d:125,s:163},'cinderace':{a:243,d:136,s:186},
+    'sobble':{a:117,d:96,s:128},'drizzile':{a:141,d:106,s:155},'inteleon':{a:251,d:128,s:176},
+    'skwovet':{a:97,d:88,s:155},'greedent':{a:134,d:160,s:260},
+    'rookidee':{a:83,d:81,s:120},'corvisquire':{a:116,d:120,s:155},'corviknight':{a:192,d:211,s:198},
+    'blipbug':{a:37,d:80,s:111},'dottler':{a:50,d:157,s:137},'orbeetle':{a:145,d:248,s:154},
+    'nickit':{a:86,d:82,s:120},'thievul':{a:174,d:136,s:163},
+    'gossifleur':{a:69,d:112,s:128},'eldegoss':{a:144,d:187,s:155},
+    'wooloo':{a:73,d:96,s:155},'dubwool':{a:143,d:154,s:190},
+    'chewtle':{a:102,d:101,s:155},'drednaw':{a:192,d:185,s:207},
+    'yamper':{a:78,d:90,s:137},'boltund':{a:197,d:147,s:172},
+    'rolycoly':{a:90,d:106,s:128},'carkol':{a:120,d:149,s:163},'coalossal':{a:179,d:168,s:242},
+    'applin':{a:60,d:118,s:120},'flapple':{a:191,d:166,s:172},'appletun':{a:162,d:194,s:207},
+    'silicobra':{a:85,d:109,s:146},'sandaconda':{a:182,d:185,s:211},
+    'cramorant':{a:170,d:131,s:163},'arrokuda':{a:131,d:81,s:128},'barraskewda':{a:231,d:115,s:172},
+    'toxel':{a:60,d:70,s:137},'toxtricity':{a:227,d:147,s:188},
+    'sizzlipede':{a:114,d:100,s:128},'centiskorch':{a:222,d:169,s:207},
+    'clobbopus':{a:116,d:100,s:128},'grapploct':{a:218,d:169,s:188},
+    'sinistea':{a:88,d:111,s:102},'polteageist':{a:182,d:167,s:130},
+    'hatenna':{a:79,d:119,s:111},'hattrem':{a:111,d:154,s:128},'hatterene':{a:228,d:241,s:147},
+    'impidimp':{a:105,d:96,s:120},'morgrem':{a:133,d:123,s:146},'grimmsnarl':{a:240,d:168,s:207},
+    'obstagoon':{a:190,d:185,s:198},'perrserker':{a:232,d:168,s:172},
+    'cursola':{a:91,d:173,s:120},'sirfetchd':{a:226,d:176,s:163},
+    'mr-rime':{a:169,d:189,s:198},'runerigus':{a:143,d:277,s:155},
+    'milcery':{a:39,d:91,s:137},'alcremie':{a:152,d:225,s:180},
+    'falinks':{a:221,d:159,s:163},'pincurchin':{a:168,d:130,s:163},
+    'snom':{a:40,d:65,s:102},'frosmoth':{a:179,d:158,s:172},
+    'stonjourner':{a:215,d:179,s:190},'eiscue':{a:142,d:166,s:176},
+    'indeedee':{a:180,d:150,s:163},'morpeko':{a:182,d:127,s:155},
+    'cufant':{a:122,d:120,s:181},'copperajah':{a:238,d:172,s:242},
+    'dracozolt':{a:175,d:162,s:185},'arctozolt':{a:160,d:152,s:185},
+    'dracovish':{a:215,d:183,s:185},'arctovish':{a:183,d:195,s:185},
+    'duraludon':{a:222,d:175,s:172},'dreepy':{a:89,d:79,s:120},'drakloak':{a:128,d:116,s:148},
+    'dragapult':{a:263,d:163,s:191},'zacian':{a:254,d:236,s:192},'zamazenta':{a:254,d:236,s:192},
+    'eternatus':{a:265,d:228,s:270},'kubfu':{a:142,d:95,s:155},'urshifu':{a:263,d:166,s:211},
+    'zarude':{a:242,d:195,s:207},'regieleki':{a:306,d:134,s:155},'regidrago':{a:216,d:98,s:279},
+    'glastrier':{a:289,d:222,s:205},'spectrier':{a:300,d:162,s:205},
+    'calyrex':{a:164,d:178,s:192},
+    // Forms & variants
+    'marowak-alolan':{a:144,d:186,s:155},
+    'ninetales-alolan':{a:170,d:193,s:177},
+    'raichu-alolan':{a:201,d:154,s:155},
+    'sandshrew-alolan':{a:125,d:145,s:137},
+    'sandslash-alolan':{a:166,d:181,s:181},
+    'vulpix-alolan':{a:96,d:109,s:116},
+    'meowth-alolan':{a:99,d:82,s:120},
+    'persian-alolan':{a:158,d:136,s:163},
+    'geodude-alolan':{a:132,d:132,s:120},
+    'graveler-alolan':{a:164,d:164,s:146},
+    'golem-alolan':{a:211,d:198,s:190},
+    'grimer-alolan':{a:135,d:90,s:190},
+    'muk-alolan':{a:190,d:172,s:233},
+    'exeggutor-alolan':{a:230,d:153,s:216},
+    'meowth-galarian':{a:92,d:78,s:120},
+    'ponyta-galarian':{a:168,d:137,s:163},
+    'rapidash-galarian':{a:207,d:162,s:163},
+    'slowpoke-galarian':{a:109,d:98,s:207},
+    'slowbro-galarian':{a:182,d:156,s:216},
+    'farfetchd-galarian':{a:174,d:122,s:141},
+    'weezing-galarian':{a:174,d:197,s:163},
+    'mr-mime-galarian':{a:192,d:205,s:120},
+    'corsola-galarian':{a:55,d:150,s:128},
+    'zigzagoon-galarian':{a:58,d:80,s:116},
+    'linoone-galarian':{a:142,d:128,s:182},
+    'stunfisk-galarian':{a:144,d:181,s:240},
+    'articuno-galarian':{a:192,d:236,s:207},
+    'zapdos-galarian':{a:253,d:185,s:207},
+    'moltres-galarian':{a:251,d:181,s:207},
+    'castform-rainy':{a:139,d:139,s:163},
+    'castform-snowy':{a:139,d:139,s:163},
+    'castform-sunny':{a:139,d:139,s:163},
+    'deoxys-attack':{a:414,d:46,s:93},
+    'deoxys-defense':{a:144,d:330,s:137},
+    'deoxys-speed':{a:230,d:218,s:137},
+    'deoxys-normal':{a:345,d:115,s:137},
+    'wormadam-plant':{a:105,d:150,s:155},
+    'wormadam-sandy':{a:105,d:150,s:155},
+    'wormadam-trash':{a:105,d:150,s:155},
+    'rotom-heat':{a:204,d:219,s:137},
+    'rotom-wash':{a:204,d:219,s:137},
+    'rotom-frost':{a:204,d:219,s:137},
+    'rotom-fan':{a:204,d:219,s:137},
+    'rotom-mow':{a:204,d:219,s:137},
+    'giratina-altered':{a:187,d:225,s:284},
+    'shaymin-sky':{a:261,d:166,s:225},
+    'basculin-blue-striped':{a:188,d:135,s:172},
+    'darmanitan-zen':{a:147,d:163,s:233},
+    'tornadus-therian':{a:266,d:164,s:188},
+    'thundurus-therian':{a:266,d:164,s:188},
+    'landorus-therian':{a:261,d:193,s:205},
+    'kyurem-black':{a:310,d:187,s:245},
+    'kyurem-white':{a:310,d:187,s:245},
+    'meloetta-pirouette':{a:250,d:225,s:225},
+    'aegislash-blade':{a:268,d:134,s:163},
+    'meowstic-female':{a:177,d:177,s:163},
+    'pumpkaboo-super':{a:126,d:125,s:207},
+    'gourgeist-super':{a:181,d:195,s:251},
+    'lycanroc-midday':{a:231,d:140,s:163},
+    'lycanroc-midnight':{a:218,d:152,s:163},
+    'lycanroc-dusk':{a:231,d:140,s:163},
+    'wishiwashi-school':{a:140,d:139,s:215},
+    'toxtricity-low-key':{a:227,d:147,s:188},
+    'urshifu-rapid-strike':{a:263,d:166,s:211},
+  };
+
+  // CP formula: floor((atk + ivA) * sqrt(def + ivD) * sqrt(sta + ivS) * cpm² / 10), min 10
+  function calcCP(base, ivA, ivD, ivS, cpm) {
+    return Math.max(10, Math.floor((base.a + ivA) * Math.sqrt(base.d + ivD) * Math.sqrt(base.s + ivS) * cpm * cpm / 10));
+  }
+
+  // Stat product = effective atk * effective def * effective sta
+  function calcSP(base, ivA, ivD, ivS, cpm) {
+    return (base.a + ivA) * cpm * (base.d + ivD) * cpm * (base.s + ivS) * cpm;
+  }
+
+  // Returns { rank, total, level, cp, sp, percentile, top }
+  function rankIVs(base, ivA, ivD, ivS, cpCap) {
+    const all = [];
+    const maxLvlIdx = cpCap > 0 ? CPM.length - 1 : CPM.findIndex(e => e[0] === 40);
+    for (let a = 0; a <= 15; a++) {
+      for (let d = 0; d <= 15; d++) {
+        for (let s = 0; s <= 15; s++) {
+          let bestSP = -1, bestLvl = 1, bestCP = 10;
+          for (let i = 0; i <= maxLvlIdx; i++) {
+            const cpm = CPM[i][1];
+            const cp = calcCP(base, a, d, s, cpm);
+            if (cpCap > 0 && cp > cpCap) break;
+            const sp = calcSP(base, a, d, s, cpm);
+            if (sp > bestSP) { bestSP = sp; bestLvl = CPM[i][0]; bestCP = cp; }
+          }
+          all.push({ a, d, s, sp: bestSP, level: bestLvl, cp: bestCP });
+        }
+      }
+    }
+    all.sort((x, y) => y.sp - x.sp);
+    const rank = all.findIndex(c => c.a === ivA && c.d === ivD && c.s === ivS) + 1;
+    const entry = all[rank - 1];
+    const top = all[0];
+    const percentile = +(100 * (1 - (rank - 1) / all.length)).toFixed(1);
+    return { rank, total: all.length, level: entry.level, cp: entry.cp, sp: +entry.sp.toFixed(1), percentile, top };
+  }
+
+  function ivRankLabel(rank) {
+    if (rank <= 10) return { text: '🥇 Top 10', cls: 'iv-rank-s' };
+    if (rank <= 100) return { text: '⭐ Top 100', cls: 'iv-rank-a' };
+    if (rank <= 500) return { text: '✅ Top 500', cls: 'iv-rank-b' };
+    return { text: `#${rank}`, cls: 'iv-rank-c' };
+  }
+
+  function ivRenderResult(containerId, leagueName, capLabel, result) {
+    const el = document.getElementById(containerId);
+    const label = ivRankLabel(result.rank);
+    el.innerHTML = `
+      <div class="calc-card-title">${leagueName} <small style="color:var(--text3);font-size:12px">${capLabel}</small></div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <span style="font-size:28px;font-weight:900;color:var(--accent)">#${result.rank}</span>
+        <span class="iv-rank-badge ${label.cls}">${label.text}</span>
+        <span style="color:var(--text3);font-size:13px">out of ${result.total}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:10px;font-size:13px">
+        <div style="background:var(--bg3);padding:8px 10px;border-radius:8px">
+          <div style="color:var(--text3);font-size:11px">STAT PRODUCT</div>
+          <div style="font-weight:700">${result.sp.toLocaleString()}</div>
+        </div>
+        <div style="background:var(--bg3);padding:8px 10px;border-radius:8px">
+          <div style="color:var(--text3);font-size:11px">BEST LEVEL</div>
+          <div style="font-weight:700">Lvl ${result.level}</div>
+        </div>
+        <div style="background:var(--bg3);padding:8px 10px;border-radius:8px">
+          <div style="color:var(--text3);font-size:11px">CP AT CAP</div>
+          <div style="font-weight:700">${result.cp}</div>
+        </div>
+        <div style="background:var(--bg3);padding:8px 10px;border-radius:8px">
+          <div style="color:var(--text3);font-size:11px">PERCENTILE</div>
+          <div style="font-weight:700">${result.percentile}%</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function ivCheckRank() {
+    const name = (document.getElementById('iv-pokemon').value || '').trim().toLowerCase();
+    const key = name.replace(/['']/g, '').replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const base = BASE_STATS[key] || BASE_STATS[name];
+    if (!base) {
+      alert(`Pokémon "${escHtml(name)}" not found in the IV database.\nCheck the spelling or try a common form like "marowak-alolan".`);
+      return;
+    }
+    const ivA = Math.min(15, Math.max(0, parseInt(document.getElementById('iv-atk').value, 10) || 0));
+    const ivD = Math.min(15, Math.max(0, parseInt(document.getElementById('iv-def').value, 10) || 0));
+    const ivS = Math.min(15, Math.max(0, parseInt(document.getElementById('iv-sta').value, 10) || 0));
+
+    const gl = rankIVs(base, ivA, ivD, ivS, 1500);
+    const ul = rankIVs(base, ivA, ivD, ivS, 2500);
+    const ml = rankIVs(base, ivA, ivD, ivS, 0);   // no cap → level 40
+
+    ivRenderResult('iv-result-gl', '🌿 Great League', '≤ 1500 CP', gl);
+    ivRenderResult('iv-result-ul', '💎 Ultra League', '≤ 2500 CP', ul);
+    ivRenderResult('iv-result-ml', '👑 Master League', 'Level 40', ml);
+
+    document.getElementById('iv-result').style.display = 'block';
+  }
+
+  function ivReset() {
+    document.getElementById('iv-pokemon').value = '';
+    document.getElementById('iv-atk').value = 15;
+    document.getElementById('iv-def').value = 15;
+    document.getElementById('iv-sta').value = 15;
+    document.getElementById('iv-result').style.display = 'none';
+  }
+
+  function ivSuggestPokemon() {
+    const dl = document.getElementById('iv-pokemon-list');
+    if (dl.options.length) return; // already populated
+    Object.keys(BASE_STATS).forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      dl.appendChild(opt);
+    });
+  }
+
+  window.ivCheckRank = ivCheckRank;
+  window.ivReset = ivReset;
+  window.ivSuggestPokemon = ivSuggestPokemon;
+}());
+
+// ══════════════════════════════════════════════════════════════
+// ── GBL BATTLE LOG ────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'gblSeasons';
+
+  // --- persistence helpers ---
+  function loadSeasons() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+  }
+  function saveSeasons(data) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch { /* quota */ }
+  }
+
+  // --- current outcomes state (5 battles in a set) ---
+  let _outcomes = ['W','W','W','W','W'];
+
+  function gblSetOutcome(idx, outcome) {
+    _outcomes[idx] = outcome;
+    // update button highlight in that group
+    const entry = document.querySelector(`.gbl-battle-entry[data-idx="${idx}"]`);
+    if (!entry) return;
+    entry.querySelectorAll('.gbl-outcome-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.outcome === outcome);
+    });
+  }
+
+  function gblCurrentSeasonIdx() {
+    const sel = document.getElementById('gbl-season-select');
+    return sel ? parseInt(sel.value, 10) : 0;
+  }
+
+  function gblSelectSeason() {
+    renderGblHistory();
+    renderGblStats();
+  }
+
+  function gblNewSeason() {
+    const name = prompt('Season name (e.g. "Season 19 – GL"):');
+    if (!name) return;
+    const seasons = loadSeasons();
+    seasons.push({ name: escHtml(name), sets: [] });
+    saveSeasons(seasons);
+    renderGblSeasonSelect(seasons.length - 1);
+    renderGblHistory();
+    renderGblStats();
+  }
+
+  function gblDeleteSeason() {
+    const seasons = loadSeasons();
+    if (!seasons.length) return;
+    const idx = gblCurrentSeasonIdx();
+    if (!confirm(`Delete season "${seasons[idx].name}"? This cannot be undone.`)) return;
+    seasons.splice(idx, 1);
+    saveSeasons(seasons);
+    renderGblSeasonSelect(0);
+    renderGblHistory();
+    renderGblStats();
+  }
+
+  function gblLogSet() {
+    const seasons = loadSeasons();
+    if (!seasons.length) {
+      alert('Create a season first with the ➕ New Season button.');
+      return;
+    }
+    const idx = gblCurrentSeasonIdx();
+    const rating = parseInt(document.getElementById('gbl-log-rating').value, 10) || null;
+    const note = document.getElementById('gbl-log-note').value.trim().slice(0, 120);
+    const league = document.getElementById('gbl-log-league').value;
+    const set = {
+      ts: Date.now(),
+      outcomes: [..._outcomes],
+      league,
+      rating: rating || null,
+      note: note || null
+    };
+    seasons[idx].sets.push(set);
+    saveSeasons(seasons);
+    // reset form
+    _outcomes = ['W','W','W','W','W'];
+    document.querySelectorAll('.gbl-outcome-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.outcome === 'W');
+    });
+    document.getElementById('gbl-log-rating').value = '';
+    document.getElementById('gbl-log-note').value = '';
+    renderGblHistory();
+    renderGblStats();
+  }
+
+  function renderGblSeasonSelect(activeIdx) {
+    const seasons = loadSeasons();
+    const sel = document.getElementById('gbl-season-select');
+    if (!sel) return;
+    sel.innerHTML = seasons.length
+      ? seasons.map((s, i) => `<option value="${i}"${i === activeIdx ? ' selected' : ''}>${escHtml(s.name)}</option>`).join('')
+      : '<option value="">— No seasons yet —</option>';
+  }
+
+  function renderGblStats() {
+    const seasons = loadSeasons();
+    const el = document.getElementById('gbl-stats-summary');
+    if (!el) return;
+    if (!seasons.length) { el.innerHTML = '<p style="color:var(--text3);font-size:13px">No season data yet.</p>'; return; }
+    const idx = gblCurrentSeasonIdx();
+    const season = seasons[idx];
+    let w = 0, l = 0, d = 0, sets = season.sets.length;
+    season.sets.forEach(s => s.outcomes.forEach(o => { if (o === 'W') w++; else if (o === 'L') l++; else d++; }));
+    const total = w + l + d;
+    const wr = total ? ((w / total) * 100).toFixed(1) : '—';
+    const lastRating = season.sets.length ? season.sets[season.sets.length - 1].rating : null;
+    el.innerHTML = `
+      <div class="gbl-stat-box"><div class="gbl-stat-value">${sets}</div><div class="gbl-stat-label">Sets played</div></div>
+      <div class="gbl-stat-box"><div class="gbl-stat-value" style="color:#27ae60">${w}</div><div class="gbl-stat-label">Wins</div></div>
+      <div class="gbl-stat-box"><div class="gbl-stat-value" style="color:var(--red)">${l}</div><div class="gbl-stat-label">Losses</div></div>
+      <div class="gbl-stat-box"><div class="gbl-stat-value" style="color:#e67e22">${d}</div><div class="gbl-stat-label">Draws</div></div>
+      <div class="gbl-stat-box"><div class="gbl-stat-value">${wr}%</div><div class="gbl-stat-label">Win rate</div></div>
+      ${lastRating !== null ? `<div class="gbl-stat-box"><div class="gbl-stat-value">${lastRating}</div><div class="gbl-stat-label">Latest rating</div></div>` : ''}
+    `;
+  }
+
+  function renderGblHistory() {
+    const seasons = loadSeasons();
+    const listEl = document.getElementById('gbl-history-list');
+    const emptyEl = document.getElementById('gbl-history-empty');
+    if (!listEl) return;
+    if (!seasons.length || !seasons[gblCurrentSeasonIdx()]) {
+      listEl.innerHTML = ''; emptyEl.style.display = 'block'; return;
+    }
+    const sets = seasons[gblCurrentSeasonIdx()].sets.slice().reverse();
+    if (!sets.length) { listEl.innerHTML = ''; emptyEl.style.display = 'block'; return; }
+    emptyEl.style.display = 'none';
+    const leagueLabel = { GL: '🌿 GL', UL: '💎 UL', ML: '👑 ML', PL: '🎉 PL' };
+    listEl.innerHTML = sets.map((s, i) => {
+      const date = new Date(s.ts).toLocaleString();
+      const pips = s.outcomes.map(o => `<span class="gbl-pip gbl-pip-${o}">${o}</span>`).join('');
+      const wins = s.outcomes.filter(o => o === 'W').length;
+      const losses = s.outcomes.filter(o => o === 'L').length;
+      return `<div class="gbl-set-row">
+        <div class="gbl-set-outcomes">${pips}</div>
+        <span style="font-weight:700;color:${wins >= losses ? '#27ae60' : 'var(--red)'}">${wins}–${losses}</span>
+        <span style="color:var(--text3);font-size:12px">${leagueLabel[s.league] || s.league}</span>
+        ${s.rating !== null ? `<span style="color:var(--accent);font-size:12px">⭐ ${s.rating}</span>` : ''}
+        ${s.note ? `<span style="color:var(--text2);font-size:12px;font-style:italic">${escHtml(s.note)}</span>` : ''}
+        <span style="color:var(--text3);font-size:11px;margin-left:auto">${date}</span>
+        <button onclick="gblDeleteSet(${sets.length - 1 - i})" style="background:transparent;border:1px solid var(--red);color:var(--red);cursor:pointer;padding:2px 7px;border-radius:4px;font-size:11px" title="Delete this set">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  function gblDeleteSet(idx) {
+    const seasons = loadSeasons();
+    const si = gblCurrentSeasonIdx();
+    if (!confirm('Delete this set?')) return;
+    seasons[si].sets.splice(idx, 1);
+    saveSeasons(seasons);
+    renderGblHistory();
+    renderGblStats();
+  }
+
+  function gblExportCSV() {
+    const seasons = loadSeasons();
+    if (!seasons.length) return;
+    const si = gblCurrentSeasonIdx();
+    const season = seasons[si];
+    const rows = [['Date','League','B1','B2','B3','B4','B5','Wins','Losses','Rating','Note']];
+    season.sets.forEach(s => {
+      const w = s.outcomes.filter(o => o === 'W').length;
+      const l = s.outcomes.filter(o => o === 'L').length;
+      rows.push([new Date(s.ts).toLocaleString(), s.league, ...s.outcomes, w, l, s.rating ?? '', s.note ?? '']);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = `gbl-${season.name.replace(/[^a-z0-9]/gi, '_')}.csv`;
+    a.click();
+  }
+
+  // Init on tab show
+  function initGblTab() {
+    const seasons = loadSeasons();
+    renderGblSeasonSelect(seasons.length ? seasons.length - 1 : 0);
+    renderGblHistory();
+    renderGblStats();
+  }
+
+  window.gblSetOutcome  = gblSetOutcome;
+  window.gblSelectSeason = gblSelectSeason;
+  window.gblNewSeason   = gblNewSeason;
+  window.gblDeleteSeason = gblDeleteSeason;
+  window.gblLogSet      = gblLogSet;
+  window.gblDeleteSet   = gblDeleteSet;
+  window.gblExportCSV   = gblExportCSV;
+  window.initGblTab     = initGblTab;
 }());
 </script>
 </body>

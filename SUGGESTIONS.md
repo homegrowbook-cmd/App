@@ -33,10 +33,10 @@ The following five Pokémon GO community sites were reviewed and compared agains
 
 | # | Feature | Priority | Inspiration | Description |
 |---|---------|----------|-------------|-------------|
-| 1 | **GBL Season Battle Log** | 🔥 High | GO Battle Log | Let users log their daily GBL sets (team used, win/loss, opponent lead). Display a season summary: win rate, rating progress graph, most-faced Pokémon. All data stored in `localStorage` – no account needed. |
+| 1 | **GBL Season Battle Log** ✅ *Implemented* | 🔥 High | GO Battle Log | Log daily GBL sets, win/loss tracking per season, rating history, CSV export. All data in `localStorage`. |
 | 2 | **Custom Cup / Format Builder** | 🔥 High | PvPoke – Custom Rankings | Allow users to define a custom cup: choose CP cap, restrict or exclude Pokémon families or types, then re-rank the Pokédex entries accordingly. Useful for community tournaments and remote events. |
 | 3 | **CMP (Charge Move Priority) Table** | 🟡 Medium | PvPoke – CMP Chart | Add a reference table in the Battle tab showing which Pokémon win CMP ties at common breakpoints. Critical for competitive play where simultaneous charge moves decide the outcome. |
-| 4 | **PvP IV Rank Checker** | 🟡 Medium | BattleFlow / pvpivs.com | Extend the Calculator tab with a stat-product rank lookup: given a Pokémon's IV and level, display its rank (#1 = best) and stat product for GL (1500 CP), UL (2500 CP) and ML. Highlight whether the spread is top-100. |
+| 4 | **PvP IV Rank Checker** ✅ *Implemented* | 🟡 Medium | BattleFlow / pvpivs.com | Stat-product rank lookup for GL / UL / ML given any Pokémon's IVs. Shows rank #N/4096, stat product, best level, CP, and percentile. Covers 600+ Pokémon including regional forms. |
 | 5 | **Role-Based Team Analyzer** | 🟢 Low | GamePress / BattleFlow | In the Team Builder tab, automatically classify each Pokémon as *Lead*, *Safe Switch*, or *Closer* based on bulk, fast charge energy, and type coverage. Flag if the team has two leads or no safe switch. |
 | 6 | **Community Spawn Map** ✅ *Implemented* | 🔥 High | Silph Road Atlas / community reports | A Leaflet.js map where players manually mark Pokémon spawn points they've personally observed. Points are stored in `localStorage`. Each marker holds Pokémon name, spawn category (Normal / Nest / Biome / Event), optional note, and GPS coordinates. Users can export/import their data as JSON to share with others. No game API access required – fully community-driven and ToS-compliant. |
 
