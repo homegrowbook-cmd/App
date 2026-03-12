@@ -1985,7 +1985,7 @@
 <div id="update-banner" role="alert" aria-live="polite">
   <span>🆕 A new version is available!</span>
   <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
-    <button id="update-banner-btn" onclick="applyUpdate()">Refresh</button>
+    <button id="update-banner-btn" onclick="applyUpdate()">Restart</button>
     <button id="update-banner-close" onclick="dismissUpdate()" aria-label="Dismiss">✕</button>
   </div>
 </div>
@@ -5682,11 +5682,20 @@ function showUpdateBanner() {
   document.getElementById('update-banner').classList.add('show');
 }
 function applyUpdate() {
+  const btn = document.getElementById('update-banner-btn');
+  if (btn) btn.disabled = true;
+  // Fallback: if controllerchange hasn't reloaded the page within 3 s, reload manually.
+  const fallback = setTimeout(() => window.location.reload(), 3000);
   if (!_waitingSW) {
-    console.warn('applyUpdate: no waiting service worker found.');
+    // No waiting SW – just reload to pick up any network-served changes.
+    clearTimeout(fallback);
+    window.location.reload();
     return;
   }
-  document.getElementById('update-banner-btn').disabled = true;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    clearTimeout(fallback);
+    window.location.reload();
+  }, { once: true });
   _waitingSW.postMessage({ type: 'SKIP_WAITING' });
 }
 function dismissUpdate() {
@@ -5950,19 +5959,18 @@ function parseFutureEventDate(dateStr) {
 }
 
 /** Parse a raid note's leading date range, e.g. "11–17 Mar" or "30 Mar–5 Apr".
- *  Year is inferred as the current year; if the end month is more than 3 months in the
- *  past it wraps to next year (handles Dec→Jan cross-year cases). */
+ *  Year is inferred: if the 1st of the given month is more than 90 days in the past,
+ *  the raid is assumed to be for the following year (handles Dec→Jan rollover). */
 function parseRaidNoteDate(note) {
   if (!note) return null;
   const now = new Date();
   const yr  = now.getFullYear();
-  const curMon = now.getMonth();
-  /** Choose a year so that the resulting date is as close to today as possible. */
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
+  /** Pick the year where the 1st of `mon` is closest to today without being >90 days past. */
   function inferYear(mon) {
-    // If the month is more than 3 months behind the current month it is likely
-    // a wrap-around (e.g. Dec raid listed while current month is Jan).
-    const diff = curMon - mon;
-    return (diff > 3) ? yr + 1 : yr;
+    const d = new Date(yr, mon, 1);
+    return (today - d > NINETY_DAYS_MS) ? yr + 1 : yr;
   }
   let m;
   // "DD–DD Mon" or "D–DD Mon"  (same-month range, e.g. "11–17 Mar")
@@ -5974,13 +5982,15 @@ function parseRaidNoteDate(note) {
       return { start: new Date(y, mon, +m[1]), end: new Date(y, mon, +m[2], 23, 59, 59) };
     }
   }
-  // "DD Mon–DD Mon"  (cross-month range, e.g. "30 Mar–5 Apr")
+  // "DD Mon–DD Mon"  (cross-month range, e.g. "30 Mar–5 Apr" or "29 Dec–4 Jan")
   m = note.match(/^(\d{1,2})\s+([A-Za-z]{3})[–\-](\d{1,2})\s+([A-Za-z]{3})/);
   if (m) {
     const mon1 = _MON[m[2].toLowerCase()], mon2 = _MON[m[4].toLowerCase()];
     if (mon1 !== undefined && mon2 !== undefined) {
-      const y = inferYear(mon1);
-      return { start: new Date(y, mon1, +m[1]), end: new Date(y, mon2, +m[3], 23, 59, 59) };
+      const y1 = inferYear(mon1);
+      // If end month is earlier than start month the range crosses a year boundary.
+      const y2 = (mon2 < mon1) ? y1 + 1 : y1;
+      return { start: new Date(y1, mon1, +m[1]), end: new Date(y2, mon2, +m[3], 23, 59, 59) };
     }
   }
   return null;

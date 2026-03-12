@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pvp-advisor-v3';
+const CACHE_NAME = 'pvp-advisor-v4';
 const HTML_URL = './pokemon-go-advisor.html';
 const STATIC_ASSETS = [
   './logo.svg',
