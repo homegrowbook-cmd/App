@@ -1,308 +1,212 @@
 {
-  "lastUpdated": "2026-03-11",
-  "autoUpdated": true,
+  "lastUpdated": "2026-03-12",
+  "autoUpdated": false,
   "sources": {
-    "wildnis": "https://leekduck.com/events/",
-    "raids": "https://leekduck.com/raid-bosses/",
-    "bonuses": "https://pokemongolive.com",
-    "futureEvents": "https://leekduck.com/events/"
+    "wildnis": "https://pokemongolive.com/en/post/memories-in-motion-season/",
+    "raids": "https://pokemongohub.net/post/guide/current-go-raids/",
+    "bonuses": "https://pokemongolive.com/en/post/memories-in-motion-season/",
+    "futureEvents": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
   },
   "wildnis": [
     {
-      "num": 1,
-      "name": "Bulbasaur",
+      "num": 813,
+      "name": "Scorbunny",
+      "types": [
+        "fire"
+      ],
+      "from": "14.03.2026",
+      "to": "14.03.2026",
+      "note": "Community Day – boosted spawns 14:00–17:00",
+      "source": "https://pokemongohub.net/post/event/scorbunny-cd-march-2026/"
+    },
+    {
+      "num": 265,
+      "name": "Wurmple",
+      "types": [
+        "bug"
+      ],
+      "from": "17.03.2026",
+      "to": "23.03.2026",
+      "note": "Bug Out 2026",
+      "source": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
+    },
+    {
+      "num": 290,
+      "name": "Nincada",
+      "types": [
+        "bug",
+        "ground"
+      ],
+      "from": "17.03.2026",
+      "to": "23.03.2026",
+      "note": "Bug Out 2026",
+      "source": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
+    },
+    {
+      "num": 347,
+      "name": "Anorith",
+      "types": [
+        "rock",
+        "bug"
+      ],
+      "from": "17.03.2026",
+      "to": "23.03.2026",
+      "note": "Bug Out 2026",
+      "source": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
+    },
+    {
+      "num": 840,
+      "name": "Applin",
       "types": [
         "grass",
-        "poison"
+        "dragon"
       ],
-      "from": "01.03.2026",
-      "to": "31.03.2026",
-      "note": "Spring Season",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+      "from": "03.03.2026",
+      "to": "02.06.2026",
+      "note": "Memories in Motion season",
+      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
     },
     {
-      "num": 152,
-      "name": "Chikorita",
+      "num": 25,
+      "name": "Pikachu",
       "types": [
-        "grass"
+        "electric"
       ],
-      "from": "01.03.2026",
-      "to": "31.03.2026",
-      "note": "Spring Season",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
-    },
-    {
-      "num": 252,
-      "name": "Treecko",
-      "types": [
-        "grass"
-      ],
-      "from": "01.03.2026",
-      "to": "31.03.2026",
-      "note": "Spring Season",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
-    },
-    {
-      "num": 387,
-      "name": "Turtwig",
-      "types": [
-        "grass"
-      ],
-      "from": "01.03.2026",
-      "to": "31.03.2026",
-      "note": "Spring Season",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
-    },
-    {
-      "num": 495,
-      "name": "Snivy",
-      "types": [
-        "grass"
-      ],
-      "from": "01.03.2026",
-      "to": "31.03.2026",
-      "note": "Spring Season",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
-    },
-    {
-      "num": 650,
-      "name": "Chespin",
-      "types": [
-        "grass"
-      ],
-      "from": "01.03.2026",
-      "to": "31.03.2026",
-      "note": "Spring Season",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
-    },
-    {
-      "num": 810,
-      "name": "Grookey",
-      "types": [
-        "grass"
-      ],
-      "from": "14.03.2026",
-      "to": "22.03.2026",
-      "note": "Community Day Week",
-      "source": "https://pokemongolive.com/post/community-day-march-2026/"
-    },
-    {
-      "num": 133,
-      "name": "Eevee",
-      "types": [
-        "normal"
-      ],
-      "from": "14.03.2026",
-      "to": "17.03.2026",
-      "note": "Spotlight Hour",
-      "source": "https://pokemongolive.com/post/spotlight-hour-march-2026/"
+      "from": "03.03.2026",
+      "to": "09.03.2026",
+      "note": "30th Anniversary – Gen 1 wild boost",
+      "source": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
     }
   ],
   "raids": {
     "1★": [
       {
-        "num": 25,
-        "name": "Pikachu (Red's Hat)",
+        "num": 316,
+        "name": "Gulpin",
         "types": [
-          "electric"
+          "poison"
         ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
-        "num": 25,
-        "name": "Pikachu (Leaf's Hat)",
+        "num": 529,
+        "name": "Drilbur",
         "types": [
-          "electric"
+          "ground"
         ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
-        "num": 25,
-        "name": "Pikachu (Ethan's Hat)",
+        "num": 532,
+        "name": "Timburr",
         "types": [
-          "electric"
+          "fighting"
         ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
-        "num": 25,
-        "name": "Pikachu (Brendan's Hat)",
+        "num": 572,
+        "name": "Minccino",
         "types": [
-          "electric"
+          "normal"
         ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 25,
-        "name": "Pikachu (Lucas's Hat)",
-        "types": [
-          "electric"
-        ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 25,
-        "name": "Pikachu (Hilbert's Hat)",
-        "types": [
-          "electric"
-        ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 25,
-        "name": "Pikachu (Calem's Hat)",
-        "types": [
-          "electric"
-        ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       }
     ],
     "3★": [
       {
-        "num": 3,
-        "name": "Venusaur",
+        "num": 131,
+        "name": "Lapras",
         "types": [
-          "grass",
-          "poison"
+          "water",
+          "ice"
         ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
-        "num": 6,
-        "name": "Charizard",
+        "num": 143,
+        "name": "Snorlax",
         "types": [
-          "fire",
+          "normal"
+        ],
+        "note": "Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
+      },
+      {
+        "num": 149,
+        "name": "Dragonite",
+        "types": [
+          "dragon",
           "flying"
         ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 9,
-        "name": "Blastoise",
-        "types": [
-          "water"
-        ],
-        "note": "30th Anniversary",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       }
     ],
     "5★": [
       {
-        "num": 144,
-        "name": "Articuno",
+        "num": 888,
+        "name": "Zacian (Hero of Many Battles)",
         "types": [
-          "ice",
-          "flying"
+          "fairy"
         ],
-        "note": "30th Anniversary – until 17 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "11–17 Mar · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
-        "num": 145,
-        "name": "Zapdos",
+        "num": 889,
+        "name": "Zamazenta (Hero of Many Battles)",
         "types": [
-          "electric",
-          "flying"
+          "fighting"
         ],
-        "note": "30th Anniversary – until 17 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "18–24 Mar · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
-        "num": 146,
-        "name": "Moltres",
-        "types": [
-          "fire",
-          "flying"
-        ],
-        "note": "30th Anniversary – until 17 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 150,
-        "name": "Mewtwo",
-        "types": [
-          "psychic"
-        ],
-        "note": "30th Anniversary – from 17 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 243,
-        "name": "Raikou",
+        "num": 894,
+        "name": "Regieleki",
         "types": [
           "electric"
         ],
-        "note": "30th Anniversary – from 17 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 244,
-        "name": "Entei",
-        "types": [
-          "fire"
-        ],
-        "note": "30th Anniversary – from 17 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 245,
-        "name": "Suicune",
-        "types": [
-          "water"
-        ],
-        "note": "30th Anniversary – from 17 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 249,
-        "name": "Lugia",
-        "types": [
-          "psychic",
-          "flying"
-        ],
-        "note": "30th Anniversary – from 22 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
-      },
-      {
-        "num": 250,
-        "name": "Ho-Oh",
-        "types": [
-          "fire",
-          "flying"
-        ],
-        "note": "30th Anniversary – from 22 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "25–31 Mar · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       }
     ],
     "Mega": [
       {
-        "num": 127,
-        "name": "Mega Pinsir",
+        "num": 208,
+        "name": "Mega Steelix",
         "types": [
-          "bug",
-          "flying"
+          "steel",
+          "ground"
         ],
-        "note": "until 10 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "11–17 Mar · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
-        "num": 94,
-        "name": "Mega Gengar",
+        "num": 80,
+        "name": "Mega Slowbro",
         "types": [
-          "ghost",
-          "poison"
+          "water",
+          "psychic"
         ],
-        "note": "from 10 Mar",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "18–24 Mar · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
+      },
+      {
+        "num": 229,
+        "name": "Mega Houndoom",
+        "types": [
+          "dark",
+          "fire"
+        ],
+        "note": "25–31 Mar · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       }
     ],
     "Shadow": [
@@ -313,8 +217,8 @@
           "dragon",
           "psychic"
         ],
-        "note": "5★ Shadow – all month",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "5★ Shadow – weekends all March · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
         "num": 147,
@@ -322,8 +226,8 @@
         "types": [
           "dragon"
         ],
-        "note": "1★ Shadow",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "1★ Shadow · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
         "num": 207,
@@ -332,8 +236,27 @@
           "ground",
           "flying"
         ],
+        "note": "1★ Shadow · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
+      },
+      {
+        "num": 331,
+        "name": "Shadow Cacnea",
+        "types": [
+          "grass"
+        ],
+        "note": "1★ Shadow · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
+      },
+      {
+        "num": 595,
+        "name": "Shadow Joltik",
+        "types": [
+          "bug",
+          "electric"
+        ],
         "note": "1★ Shadow",
-        "source": "https://leekduck.com/raid-bosses/"
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
         "num": 105,
@@ -342,8 +265,8 @@
           "fire",
           "ghost"
         ],
-        "note": "3★ Shadow",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "3★ Shadow · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       },
       {
         "num": 131,
@@ -352,90 +275,120 @@
           "water",
           "ice"
         ],
-        "note": "3★ Shadow",
-        "source": "https://leekduck.com/raid-bosses/"
+        "note": "3★ Shadow · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
+      },
+      {
+        "num": 234,
+        "name": "Shadow Stantler",
+        "types": [
+          "normal"
+        ],
+        "note": "3★ Shadow · Shiny available",
+        "source": "https://pokemongohub.net/post/guide/current-go-raids/"
       }
     ]
   },
   "bonuses": [
     {
-      "icon": "⭐",
-      "text": "2× Stardust for catching Pokémon",
-      "from": "01.03.2026",
-      "to": "31.03.2026",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
-    },
-    {
-      "icon": "🥚",
-      "text": "Half egg hatch distance",
-      "from": "01.03.2026",
-      "to": "14.03.2026",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+      "icon": "��",
+      "text": "Guaranteed Candy XL for Trainers level 31+ when trading",
+      "from": "03.03.2026",
+      "to": "02.06.2026",
+      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
     },
     {
       "icon": "🍬",
-      "text": "3× XP for evolutions",
+      "text": "+1 Candy when trading",
+      "from": "03.03.2026",
+      "to": "02.06.2026",
+      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
+    },
+    {
+      "icon": "⭐",
+      "text": "Increased XP for 7-day PokéStop spin streaks",
+      "from": "03.03.2026",
+      "to": "02.06.2026",
+      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
+    },
+    {
+      "icon": "⭐",
+      "text": "Increased XP & Stardust for 7-day catch streaks",
+      "from": "03.03.2026",
+      "to": "02.06.2026",
+      "source": "https://pokemongolive.com/en/post/memories-in-motion-season/"
+    },
+    {
+      "icon": "🐣",
+      "text": "¼ Egg Hatch Distance during Community Day (Scorbunny)",
       "from": "14.03.2026",
-      "to": "17.03.2026",
-      "source": "https://pokemongolive.com/post/community-day-march-2026/"
+      "to": "14.03.2026",
+      "source": "https://pokemongohub.net/post/event/scorbunny-cd-march-2026/"
     },
     {
-      "icon": "🎁",
-      "text": "3× Candy for catching Pokémon (Community Day)",
-      "from": "16.03.2026",
-      "to": "16.03.2026",
-      "source": "https://pokemongolive.com/post/community-day-march-2026/"
-    },
-    {
-      "icon": "🔋",
-      "text": "Charge move costume bonus active",
-      "from": "07.03.2026",
-      "to": "21.03.2026",
-      "source": "https://pokemongolive.com/post/season-of-spring-2026/"
+      "icon": "🍬",
+      "text": "2× Catch Candy – Scorbunny Community Day",
+      "from": "14.03.2026",
+      "to": "14.03.2026",
+      "source": "https://pokemongohub.net/post/event/scorbunny-cd-march-2026/"
     }
   ],
   "futureEvents": [
     {
-      "icon": "🎂",
-      "name": "30th Anniversary Celebration – Phase 2",
-      "date": "17–22 Mar 2026",
-      "desc": "Mewtwo, Raikou, Entei & Suicune appear in 5★ raids. Special 30th anniversary field research.",
-      "source": "https://pokemongolive.com/post/pokemon-go-30th-anniversary/"
+      "icon": "🐰",
+      "name": "Scorbunny Community Day",
+      "date": "14 Mar 2026, 14:00–17:00",
+      "desc": "Scorbunny floods the wild with boosted shiny odds. Evolve Raboot into Cinderace during or up to 4 h after the event for the exclusive Charged Attack Blast Burn.",
+      "source": "https://pokemongohub.net/post/event/scorbunny-cd-march-2026/"
     },
     {
-      "icon": "🌸",
-      "name": "Spring Community Day – Grookey",
-      "date": "16 Mar 2026, 14:00–17:00",
-      "desc": "Grookey with exclusive move Razor Leaf in the wild & raids.",
-      "source": "https://pokemongolive.com/post/community-day-march-2026/"
+      "icon": "⚔️",
+      "name": "Zamazenta (Hero) 5★ Raids",
+      "date": "18–24 Mar 2026",
+      "desc": "Zamazenta (Hero of Many Battles) replaces Zacian in 5-star raids. Shiny Zamazenta available.",
+      "source": "https://pokemongohub.net/post/guide/current-go-raids/"
     },
     {
-      "icon": "🐣",
-      "name": "Spring into Spring Event",
-      "date": "22–27 Mar 2026",
-      "desc": "Springtime-themed wild spawns, 2km egg hatches & themed field research. Chansey, Exeggcute and Togetic in the spotlight.",
-      "source": "https://pokemongolive.com/post/spring-into-spring-2026/"
+      "icon": "🐛",
+      "name": "Bug Out 2026",
+      "date": "17–23 Mar 2026",
+      "desc": "Debut of Blipbug, Dottler and Orbeetle. Shiny Sizzlipede available. Boosted Bug-type wild spawns and themed raids.",
+      "source": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
+    },
+    {
+      "icon": "💧",
+      "name": "Replay: Water Research Day",
+      "date": "21 Mar 2026, 14:00–17:00",
+      "desc": "Features Lotad, Feebas and Clamperl with boosted shiny rates and special Field Research tasks.",
+      "source": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
     },
     {
       "icon": "⚡",
-      "name": "GO Battle League – Season 17 Start",
-      "date": "22 Mar 2026",
-      "desc": "New league season with Premiere Cup and Pokémon GO Cup. Lugia & Ho-Oh in 5★ raids.",
-      "source": "https://pokemongolive.com/post/go-battle-league-season-17/"
-    },
-    {
-      "icon": "🌍",
-      "name": "GO Fest 2026 – Global",
-      "date": "19–21 Jul 2026",
-      "desc": "Worldwide simultaneous event – special spawns, raids & field research.",
-      "source": "https://pokemongolive.com/post/go-fest-2026-global/"
+      "name": "Regieleki 5★ Raids",
+      "date": "25–31 Mar 2026",
+      "desc": "Regieleki appears in 5-star raids. Shiny Regieleki available. Mega Houndoom in Mega Raids.",
+      "source": "https://pokemongohub.net/post/guide/current-go-raids/"
     },
     {
       "icon": "🏟️",
-      "name": "GO Fest 2026 – Live Madrid",
-      "date": "30 May–01 Jun 2026",
-      "desc": "In-person event in Madrid with exclusive spawns and raids.",
-      "source": "https://pokemongolive.com/post/go-fest-2026-madrid/"
+      "name": "GO Fest 2026 – Tokyo",
+      "date": "29 May–01 Jun 2026",
+      "desc": "In-person event in Tokyo (Bay Area). Citywide Ticketed Gameplay from 25 May.",
+      "source": "https://pokemongo.com/news/save-the-date-go-fest-2026"
+    },
+    {
+      "icon": "🏟️",
+      "name": "GO Fest 2026 – Chicago",
+      "date": "05–07 Jun 2026",
+      "desc": "In-person event in Chicago (Grant Park). Citywide Ticketed Gameplay from 4 Jun.",
+      "source": "https://pokemongo.com/news/save-the-date-go-fest-2026"
+    },
+    {
+      "icon": "🏟️",
+      "name": "GO Fest 2026 – Copenhagen",
+      "date": "12–14 Jun 2026",
+      "desc": "In-person event in Copenhagen (Fælledparken). Citywide Ticketed Gameplay from 11 Jun.",
+      "source": "https://pokemongo.com/news/save-the-date-go-fest-2026"
     }
   ]
 }
