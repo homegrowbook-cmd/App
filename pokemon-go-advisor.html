@@ -1766,6 +1766,45 @@
   .bonus-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
   .bonus-dates { font-size: 11px; color: var(--text3); margin-top: 2px; }
 
+  /* Active / upcoming state modifiers for event items */
+  .wildnis-item--active  { border: 1px solid var(--accent); }
+  .wildnis-item--upcoming { opacity: 0.55; }
+  .bonus-item--active  { border-left: 3px solid var(--accent); padding-left: 7px; }
+  .bonus-item--upcoming { opacity: 0.55; }
+
+  /* "LIVE" and "Soon" inline badges */
+  .event-live-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 5px;
+    vertical-align: middle;
+    animation: event-badge-pulse 2s ease-in-out infinite;
+  }
+  .event-soon-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    background: var(--text3);
+    color: var(--bg);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+  @keyframes event-badge-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
   /* Future events list */
   .future-events-list { display: flex; flex-direction: column; gap: 8px; }
   .future-event-item {
@@ -1775,6 +1814,11 @@
     background: var(--bg3);
     border-radius: 10px;
     padding: 10px 12px;
+  }
+  /* Highlighted active future event */
+  .future-event-item--active {
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 14px rgba(124,131,245,0.18);
   }
   .future-event-icon { font-size: 22px; flex-shrink: 0; }
   .future-event-info { flex: 1; }
@@ -5796,6 +5840,64 @@ function srcLink(url) {
   return ` <a class="source-link" href="${url}" target="_blank" rel="noopener" title="Source">[src]</a>`;
 }
 
+/** Parse "DD.MM.YYYY" → Date (midnight local). Returns null if unparseable. */
+function parseDMY(str) {
+  const m = (str || '').match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if (!m) return null;
+  return new Date(+m[3], +m[2] - 1, +m[1]);
+}
+
+/** Parse human-readable future-event date strings into {start, end} Dates.
+ *  Handles:
+ *    "17–22 Mar 2026"            same-month range
+ *    "30 May–01 Jun 2026"        cross-month range
+ *    "16 Mar 2026, 14:00–17:00"  single day (with optional time)
+ *    "22 Mar 2026"               single day
+ */
+const _MON = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+function parseFutureEventDate(dateStr) {
+  if (!dateStr) return null;
+  const s = dateStr.trim();
+  let m;
+  // "DD–DD Mon YYYY"  (same-month range, e.g. "17–22 Mar 2026")
+  m = s.match(/^(\d{1,2})[–\-](\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+  if (m) {
+    const mon = _MON[m[3].toLowerCase()];
+    if (mon !== undefined)
+      return { start: new Date(+m[4], mon, +m[1]), end: new Date(+m[4], mon, +m[2], 23, 59, 59) };
+  }
+  // "DD Mon–DD Mon YYYY"  (cross-month range, e.g. "30 May–01 Jun 2026")
+  m = s.match(/^(\d{1,2})\s+([A-Za-z]{3})[–\-](\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+  if (m) {
+    const mon1 = _MON[m[2].toLowerCase()], mon2 = _MON[m[4].toLowerCase()];
+    if (mon1 !== undefined && mon2 !== undefined)
+      return { start: new Date(+m[5], mon1, +m[1]), end: new Date(+m[5], mon2, +m[3], 23, 59, 59) };
+  }
+  // "DD Mon YYYY"  (single day, optionally followed by time info)
+  m = s.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+  if (m) {
+    const mon = _MON[m[2].toLowerCase()];
+    if (mon !== undefined)
+      return { start: new Date(+m[3], mon, +m[1]), end: new Date(+m[3], mon, +m[1], 23, 59, 59) };
+  }
+  return null;
+}
+
+/** Returns true if today falls inside the [from, to] window (inclusive, day-level). */
+function isEventActiveToday(from, to) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+  return from <= todayEnd && to >= today;
+}
+
+/** Returns true if from > today (event hasn't started yet). */
+function isEventUpcoming(from) {
+  const now = new Date();
+  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+  return from > todayEnd;
+}
+
 function renderCurrentEvents() {
   const SPRITE_BASE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
 
@@ -5809,15 +5911,24 @@ function renderCurrentEvents() {
   // Wildnis
   const wildnisEl = document.getElementById('wildnis-list');
   if (wildnisEl && wildnisEl.children.length === 0) {
-    wildnisEl.innerHTML = CURRENT_EVENTS.wildnis.map(p => `
-      <div class="wildnis-item">
+    wildnisEl.innerHTML = CURRENT_EVENTS.wildnis.map(p => {
+      const from = parseDMY(p.from), to = parseDMY(p.to);
+      const active   = from && to ? isEventActiveToday(from, to) : false;
+      const upcoming = from ? isEventUpcoming(from) : false;
+      const cls    = upcoming ? ' wildnis-item--upcoming' : (active ? ' wildnis-item--active' : '');
+      const badge  = upcoming
+        ? '<span class="event-soon-badge">Soon</span>'
+        : (active ? '<span class="event-live-badge">Live</span>' : '');
+      return `
+      <div class="wildnis-item${cls}">
         <img class="wildnis-sprite" src="${SPRITE_BASE}${p.num}.png" alt="${p.name}" onerror="this.style.opacity=0.3">
         <div class="wildnis-info">
-          <div class="wildnis-name">${p.name}</div>
+          <div class="wildnis-name">${p.name}${badge}</div>
           <div class="wildnis-types">${p.types.map(t => typeBadge(t)).join('')}</div>
           <div class="wildnis-date">${p.from} – ${p.to}${p.note ? ' · ' + p.note : ''}${srcLink(p.source)}</div>
         </div>
-      </div>`).join('') +
+      </div>`;
+    }).join('') +
       `<div class="event-panel-source">Source: <a href="${CURRENT_EVENTS.sources.wildnis}" target="_blank" rel="noopener">Leek Duck Events</a></div>`;
   }
 
@@ -5858,30 +5969,45 @@ function renderCurrentEvents() {
   // Bonuses
   const bonusEl = document.getElementById('bonus-list');
   if (bonusEl && bonusEl.children.length === 0) {
-    bonusEl.innerHTML = CURRENT_EVENTS.bonuses.map(b => `
-      <div class="bonus-item">
+    bonusEl.innerHTML = CURRENT_EVENTS.bonuses.map(b => {
+      const from = parseDMY(b.from), to = parseDMY(b.to);
+      const active   = from && to ? isEventActiveToday(from, to) : false;
+      const upcoming = from ? isEventUpcoming(from) : false;
+      const cls    = upcoming ? ' bonus-item--upcoming' : (active ? ' bonus-item--active' : '');
+      const badge  = upcoming
+        ? '<span class="event-soon-badge">Soon</span>'
+        : (active ? '<span class="event-live-badge">Live</span>' : '');
+      return `
+      <div class="bonus-item${cls}">
         <span class="bonus-icon">${b.icon}</span>
         <div>
-          <div>${b.text}${srcLink(b.source)}</div>
+          <div>${b.text}${badge}${srcLink(b.source)}</div>
           ${b.from ? `<div class="bonus-dates">${b.from}${b.to && b.to !== b.from ? ' – ' + b.to : ''}</div>` : ''}
         </div>
-      </div>`).join('') +
+      </div>`;
+    }).join('') +
       `<div class="event-panel-source">Source: <a href="${CURRENT_EVENTS.sources.bonuses}" target="_blank" rel="noopener">Pokémon GO Live</a></div>`;
   }
 
   // Future Events
   const futureEl = document.getElementById('future-events-list');
   if (futureEl && futureEl.children.length === 0) {
-    futureEl.innerHTML = CURRENT_EVENTS.futureEvents.map(ev => `
-      <div class="future-event-item">
+    futureEl.innerHTML = CURRENT_EVENTS.futureEvents.map(ev => {
+      const parsed  = parseFutureEventDate(ev.date);
+      const active  = parsed ? isEventActiveToday(parsed.start, parsed.end) : false;
+      const cls     = active ? ' future-event-item--active' : '';
+      const badge   = active ? '<span class="event-live-badge">Live</span>' : '';
+      return `
+      <div class="future-event-item${cls}">
         <span class="future-event-icon">${ev.icon}</span>
         <div class="future-event-info">
-          <div class="future-event-name">${ev.name}</div>
+          <div class="future-event-name">${ev.name}${badge}</div>
           <div class="future-event-date">📅 ${ev.date}</div>
           ${ev.desc ? `<div class="future-event-desc">${ev.desc}</div>` : ''}
           ${ev.source ? `<div class="future-event-source"><a href="${ev.source}" target="_blank" rel="noopener">🔗 Official announcement</a></div>` : ''}
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 }
 
