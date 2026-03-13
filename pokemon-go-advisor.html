@@ -4238,7 +4238,11 @@ function show(tabId, direction) {
 
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
-  if (activeBtn) activeBtn.classList.add('active');
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+    // Scroll the active nav button into view inside the horizontally-scrollable nav bar
+    activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+  }
   if (tabId === 'moves-tab')    { renderMoves(); renderEliteTMGuide(); }
   if (tabId === 'pokemon-tab')  renderPokemon();
   if (tabId === 'types-tab')    { renderTypes(); initDualTypeSelects(); }
@@ -5664,10 +5668,12 @@ document.addEventListener('keydown', e => {
   let dragDir = 0;           // -1 = left (→ next tab), +1 = right (→ prev tab)
   let activeEl = null, previewEl = null;
   let committing = false;    // true while commit/snap animation runs
+  let touchLocked = false;   // true if touch started inside a h-scrollable element
 
-  const NAV_H = 58;          // px – matches .nav-inner height in CSS
+  const NAV_H = 58;          // px – matches .nav-inner height in CSS (fallback)
   const COMMIT_RATIO = 0.30; // fraction of vw needed to commit
   const COMMIT_VEL  = 0.35;  // px/ms velocity threshold to commit
+  const _navEl = document.querySelector('nav'); // cached – nav never changes
 
   // Apply drag styles: active tab stays in normal flow (preserving scroll),
   // preview tab is fixed-positioned from the side.
@@ -5678,9 +5684,10 @@ document.addEventListener('keydown', e => {
   }
 
   function applyPreview(tx) {
+    const navH = _navEl ? _navEl.getBoundingClientRect().bottom : NAV_H;
     previewEl.style.cssText =
       `display:block;position:fixed;` +
-      `top:${NAV_H}px;left:0;right:0;bottom:0;` +
+      `top:${navH}px;left:0;right:0;bottom:0;` +
       `overflow-y:auto;overflow-x:hidden;` +
       `-webkit-overflow-scrolling:touch;` +
       `background:var(--bg);` +
@@ -5710,10 +5717,22 @@ document.addEventListener('keydown', e => {
     dragDir      = 0;
     activeEl     = null;
     previewEl    = null;
+    // Detect if the touch started inside a horizontally-scrollable element;
+    // if so, let that element handle its own scroll and skip tab swipe.
+    touchLocked = false;
+    let el = e.target;
+    while (el && el !== document.documentElement) {
+      const ov = window.getComputedStyle(el).overflowX;
+      if ((ov === 'auto' || ov === 'scroll') && el.scrollWidth > el.clientWidth) {
+        touchLocked = true;
+        break;
+      }
+      el = el.parentElement;
+    }
   }, { passive: true });
 
   document.addEventListener('touchmove', function(e) {
-    if (e.touches.length !== 1 || committing) return;
+    if (e.touches.length !== 1 || committing || touchLocked) return;
 
     curX = e.touches[0].clientX;
     const dx = curX - startX;
@@ -5756,6 +5775,7 @@ document.addEventListener('keydown', e => {
   }, { passive: false }); // non-passive so we can preventDefault
 
   document.addEventListener('touchend', function(e) {
+    if (touchLocked) { touchLocked = false; return; }
     if (!isDragging) {
       // Fallback: simple tap-swipe with no drag preview shown
       const dx = (e.changedTouches[0].clientX) - startX;
