@@ -5054,6 +5054,39 @@ function toggleRankCard(id) {
 }
 
 // ── TYPE EFFECTIVENESS HELPERS ────────────────────────────────────────────
+// Types that resist an attacking type (key = defending type, value = attacking types it resists)
+const TYPE_RESISTS = {
+  normal:   ['ghost'],
+  fire:     ['fire','grass','ice','bug','steel','fairy'],
+  water:    ['fire','water','ice','steel'],
+  grass:    ['water','grass','electric','ground'],
+  electric: ['electric','flying','steel'],
+  ice:      ['ice'],
+  fighting: ['bug','rock','dark'],
+  poison:   ['grass','fighting','poison','bug','fairy'],
+  ground:   ['poison','rock'],
+  flying:   ['grass','fighting','bug'],
+  psychic:  ['fighting','psychic'],
+  bug:      ['grass','fighting','ground'],
+  rock:     ['normal','fire','poison','flying'],
+  ghost:    ['poison','bug'],
+  dragon:   ['fire','water','grass','electric'],
+  dark:     ['ghost','dark'],
+  steel:    ['normal','grass','ice','flying','psychic','bug','rock','dragon','steel','fairy'],
+  fairy:    ['fighting','bug','dark'],
+};
+// Types immune to certain attacking types (key = defending type, value = attacking types it's immune to)
+const TYPE_IMMUNE_DEFENSES = {
+  normal:   ['ghost'],
+  electric: ['ground'],
+  flying:   ['ground'],
+  ground:   ['electric'],
+  ghost:    ['normal','fighting'],
+  dark:     ['psychic'],
+  steel:    ['poison'],
+  fairy:    ['dragon'],
+};
+
 // Returns weaknesses, strengths (attack), resistances and immunities for given types
 function getRankingTypeInfo(types) {
   const weakSet     = new Set();
@@ -5123,46 +5156,15 @@ function getRankingTypeInfo(types) {
   // We need the ×0.5 case.
   //
   // The only proper way is to have the full type chart.
-  // Let's add a minimal resistance map as a lookup:
-  const RESISTS = {
-    normal:   ['ghost'],
-    fire:     ['fire','grass','ice','bug','steel','fairy'],
-    water:    ['fire','water','ice','steel'],
-    grass:    ['water','grass','electric','ground'],
-    electric: ['electric','flying','steel'],
-    ice:      ['ice'],
-    fighting: ['bug','rock','dark'],
-    poison:   ['grass','fighting','poison','bug','fairy'],
-    ground:   ['poison','rock'],
-    flying:   ['grass','fighting','bug'],
-    psychic:  ['fighting','psychic'],
-    bug:      ['grass','fighting','ground'],
-    rock:     ['normal','fire','poison','flying'],
-    ghost:    ['poison','bug'],
-    dragon:   ['fire','water','grass','electric'],
-    dark:     ['ghost','dark'],
-    steel:    ['normal','grass','ice','flying','psychic','bug','rock','dragon','steel','fairy'],
-    fairy:    ['fighting','bug','dark'],
-  };
-  // Also immunities from pokemon type perspective (what attacks don't hit our type at all in GO)
-  const IMMUNE_DEFENSES = {
-    normal:   ['ghost'],
-    electric: ['ground'],
-    flying:   ['ground'],
-    ground:   ['electric'],
-    ghost:    ['normal','fighting'],
-    dark:     ['psychic'],
-    steel:    ['poison'],
-    fairy:    ['dragon'],
-  };
+  // Use the module-level TYPE_RESISTS and TYPE_IMMUNE_DEFENSES lookup maps:
 
   for (const typeName of types) {
     const t = typeName.toLowerCase();
-    const resists = RESISTS[t] || [];
+    const resists = TYPE_RESISTS[t] || [];
     resists.forEach(r => {
       if (!immuneSet.has(r) && !weakSet.has(r)) resistSet.add(r.charAt(0).toUpperCase() + r.slice(1));
     });
-    const immDef = IMMUNE_DEFENSES[t] || [];
+    const immDef = TYPE_IMMUNE_DEFENSES[t] || [];
     immDef.forEach(i => {
       const cap = i.charAt(0).toUpperCase() + i.slice(1);
       weakSet.delete(cap);
@@ -5334,6 +5336,23 @@ function renderRaidCounters() {
   const name = opt.textContent.split(' (')[0];
   document.getElementById('raid-boss-any').value = '';
   renderRaidCountersForTypes(types, name);
+}
+
+function getBattleTypeEff(moveType, defenderTypes) {
+  let mult = 1.0;
+  const mt = moveType.toLowerCase();
+  const moveTd = TYPES.find(t => t.name.toLowerCase() === mt);
+  for (const defType of defenderTypes) {
+    const dt = defType.toLowerCase();
+    if ((TYPE_IMMUNE_DEFENSES[dt] || []).includes(mt)) {
+      mult *= 0.390625;
+    } else if (moveTd && moveTd.strong.some(s => s.toLowerCase() === dt)) {
+      mult *= 1.6;
+    } else if ((TYPE_RESISTS[dt] || []).includes(mt)) {
+      mult *= 0.625;
+    }
+  }
+  return mult;
 }
 
 function renderRaidCountersForTypes(bossTypes, bossName) {
