@@ -2,6 +2,8 @@
 
 A **mobile-first** Progressive Web App (PWA) for Pokémon GO PvP — optimised for smartphones and installable on iOS and Android. Includes a move database, Pokédex, type overview, meta teams, league rankings, battle simulator, calculators and more.
 
+The advisor covers all three competitive leagues — Great League (1500 CP), Ultra League (2500 CP), and Master League (no cap) — and is continuously updated to reflect the current meta. Whether you are a casual player looking for a team recommendation or a competitive battler fine-tuning IVs and move sets, the app provides the tools you need. All data is sourced from publicly available community resources and does not require any connection to the Niantic game API.
+
 ## Features
 
 - **⚡ Move Database** – All fast and charge moves with PvE and PvP power values, searchable and sortable; incl. **✦ Elite TM Comparison** showing which Pokémon benefit most from exclusive moves
@@ -37,6 +39,10 @@ When a new version of the app is deployed, your device will automatically downlo
 
 The service worker uses a **network-first** strategy for the main HTML document, ensuring you always receive the latest version when online. All other static assets (logo, manifest, sprites) are served from cache for fast load times and offline support.
 
+## How It Works
+
+The entire application lives in a single self-contained HTML file with no external build step required. CSS styles and JavaScript logic are embedded directly so the file can be opened locally in any modern browser without a web server. Data such as Pokémon stats, move power values and type effectiveness multipliers are compiled into the file at authoring time from verified community datasets. The live event section is the only component that reaches out to the network: it fetches `events.json` from GitHub on startup and gracefully falls back to built-in defaults when offline. The service worker (`sw.js`) caches all static resources after the first visit so the app is fully functional without any internet connection on subsequent loads.
+
 ## Usage
 
 The app consists of a single HTML file and requires no installation.
@@ -54,11 +60,21 @@ The app fetches the latest `events.json` from GitHub on page load and updates th
 
 If the remote data is unavailable (offline, CORS), the app falls back to the hardcoded baseline in `CURRENT_EVENTS`.
 
+## Privacy & Data
+
+The app stores only two kinds of data on your device: your preferences (theme, last active tab) and any community spawn markers you have manually placed on the map. No personal data, game account credentials or location information is ever transmitted to an external server. All localStorage entries use unprefixed keys and can be cleared at any time through your browser settings. The Python scraper that generates `events.json` fetches only publicly accessible news pages from official Niantic sources and well-known community sites. No reverse-engineering of the Pokémon GO game client or its live API is involved at any point in the data pipeline.
+
+## Browser Support
+
+The app is tested and works correctly on current versions of Chrome, Safari, Firefox and Edge, both on desktop and mobile. PWA installation ("Add to Home Screen") is supported on iOS 16.4+ and Android with Chrome 73+. The interactive map feature uses the Leaflet.js library, which requires a WebGL-capable browser but works on virtually all modern devices. For the best experience, iOS users are recommended to install the app via Safari, since service worker support on iOS is only available in that browser.
+
 ## Logo
 
 The app logo is available as [`logo.svg`](logo.svg) and is embedded as the browser favicon and PWA icon.
 
 ## Technology
+
+The app is built with pure HTML, CSS and JavaScript — no external frameworks are required, and the entire codebase can be read, audited and modified in a standard text editor. The PWA layer relies on a service worker (`sw.js`) and a Web App Manifest (`manifest.json`) to enable offline support and installation on home screens. Mobile-specific enhancements such as `viewport-fit=cover`, Apple PWA meta tags and safe-area-inset padding ensure the app looks polished on notched and island-display devices. Pokémon sprites are loaded on demand from [PokéAPI](https://pokeapi.co/), while typography uses [Bangers](https://fonts.google.com/specimen/Bangers) and [DM Sans](https://fonts.google.com/specimen/DM+Sans) served by Google Fonts.
 
 - Pure HTML, CSS and JavaScript (no external frameworks)
 - **PWA**: Service Worker (`sw.js`) + Web App Manifest (`manifest.json`) — installable, works offline
