@@ -2076,14 +2076,8 @@
     <button class="nav-btn" data-tab="types-tab" onclick="show('types-tab')">
       <span class="icon">🔮</span> Types
     </button>
-    <button class="nav-btn" data-tab="ranking-tab" onclick="show('ranking-tab')">
-      <span class="icon">📊</span> Tierlist
-    </button>
-    <button class="nav-btn" data-tab="team-tab" onclick="show('team-tab')">
-      <span class="icon">🏆</span> Teams
-    </button>
-    <button class="nav-btn" data-tab="builder-tab" onclick="show('builder-tab')">
-      <span class="icon">🏗️</span> TeamBuilder
+    <button class="nav-btn" data-tab="pvp-tab" onclick="show('pvp-tab')">
+      <span class="icon">⚔️</span> PVP
     </button>
     <button class="nav-btn" data-tab="stardust-tab" onclick="show('stardust-tab')">
       <span class="icon">⭐</span> Stardust
@@ -2280,56 +2274,90 @@
     <div id="dual-type-result" class="dual-type-result hidden"></div>
   </section>
 
-  <!-- ── TAB 4: TEAMS ─────────────────────────────────────── -->
-  <section id="team-tab" class="tab">
+  <!-- ── PVP TAB (Tierlist + Teams + TeamBuilder) ──────────── -->
+  <section id="pvp-tab" class="tab">
     <div class="page-header">
-      <h1>🏆 Meta Teams</h1>
-      <p>Top recommended teams for each league – select a league and click a team for details</p>
+      <h1>⚔️ PVP</h1>
+      <p>League Rankings, Meta Teams and Team Builder – all PVP tools in one place.</p>
     </div>
 
     <div class="controls-row">
-      <div class="pills" id="team-league-pills">
-        <button class="pill active" onclick="setTeamLeague('gl')">🌿 Great League (≤1500)</button>
-        <button class="pill" onclick="setTeamLeague('ul')">💎 Ultra League (≤2500)</button>
-        <button class="pill" onclick="setTeamLeague('ml')">👑 Master League</button>
+      <div class="pills" id="pvp-sub-pills">
+        <button class="pill active" data-sub="ranking" onclick="showPvpSub('ranking')">📊 Tierlist</button>
+        <button class="pill" data-sub="team" onclick="showPvpSub('team')">🏆 Teams</button>
+        <button class="pill" data-sub="builder" onclick="showPvpSub('builder')">🏗️ Team Builder</button>
       </div>
     </div>
 
-    <div id="team-selector" class="meta-teams-grid"></div>
-    <div id="team-detail"></div>
-  </section>
-
-  <!-- ── TAB 5: LEAGUE RANKINGS ───────────────────────────── -->
-  <section id="ranking-tab" class="tab">
-    <div class="page-header">
-      <h1>📊 League Rankings</h1>
-      <p>Top Pokémon for Great League, Ultra League and Master League – based on PVPoke &amp; GamePress</p>
-    </div>
-
-    <div class="controls-row">
-      <div class="pills" id="league-pills">
-        <button class="pill active" onclick="setLeague('gl')">🌿 Great League (≤1500)</button>
-        <button class="pill" onclick="setLeague('ul')">💎 Ultra League (≤2500)</button>
-        <button class="pill" onclick="setLeague('ml')">👑 Master League</button>
+    <!-- ── Sub-section: Tierlist ─────────────────────────────── -->
+    <div id="pvp-sub-ranking" class="pvp-sub">
+      <div class="controls-row" style="margin-top:8px">
+        <div class="pills" id="league-pills">
+          <button class="pill active" onclick="setLeague('gl')">🌿 Great League (≤1500)</button>
+          <button class="pill" onclick="setLeague('ul')">💎 Ultra League (≤2500)</button>
+          <button class="pill" onclick="setLeague('ml')">👑 Master League</button>
+        </div>
+      </div>
+      <div class="controls-row" style="margin-top:8px">
+        <button class="calc-btn" id="refresh-meta-btn" onclick="refreshMetaFromAPI()" style="max-width:220px">🔄 Refresh from PVPoke</button>
+      </div>
+      <div id="refresh-meta-info" style="margin-top:6px;font-size:12px;color:var(--text3);padding:0 4px"></div>
+      <div class="controls-row" style="margin-top:8px">
+        <div class="search-wrap">
+          <span class="icon">🔍</span>
+          <input class="search-input" id="rank-search" type="text" placeholder="Search Pokémon in rankings…" oninput="rankSearch=this.value; renderRanking()">
+        </div>
+      </div>
+      <div id="ranking-grid" class="rank-grid"></div>
+      <div class="source-note">
+        Sources: <a href="https://pvpoke.com" target="_blank" rel="noopener">PVPoke</a> ·
+        <a href="https://gamepress.gg/pokemongo" target="_blank" rel="noopener">GamePress</a> ·
+        <a href="https://pokemongohub.net" target="_blank" rel="noopener">GO Hub</a>
       </div>
     </div>
-    <div class="controls-row" style="margin-top:8px">
-      <button class="calc-btn" id="refresh-meta-btn" onclick="refreshMetaFromAPI()" style="max-width:220px">🔄 Refresh from PVPoke</button>
-    </div>
-    <div id="refresh-meta-info" style="margin-top:6px;font-size:12px;color:var(--text3);padding:0 4px"></div>
-    <div class="controls-row" style="margin-top:8px">
-      <div class="search-wrap">
-        <span class="icon">🔍</span>
-        <input class="search-input" id="rank-search" type="text" placeholder="Search Pokémon in rankings…" oninput="rankSearch=this.value; renderRanking()">
+
+    <!-- ── Sub-section: Teams ───────────────────────────────── -->
+    <div id="pvp-sub-team" class="pvp-sub" style="display:none">
+      <div class="controls-row" style="margin-top:8px">
+        <div class="pills" id="team-league-pills">
+          <button class="pill active" onclick="setTeamLeague('gl')">🌿 Great League (≤1500)</button>
+          <button class="pill" onclick="setTeamLeague('ul')">💎 Ultra League (≤2500)</button>
+          <button class="pill" onclick="setTeamLeague('ml')">👑 Master League</button>
+        </div>
       </div>
+      <div id="team-selector" class="meta-teams-grid"></div>
+      <div id="team-detail"></div>
     </div>
 
-    <div id="ranking-grid" class="rank-grid"></div>
-
-    <div class="source-note">
-      Sources: <a href="https://pvpoke.com" target="_blank" rel="noopener">PVPoke</a> ·
-      <a href="https://gamepress.gg/pokemongo" target="_blank" rel="noopener">GamePress</a> ·
-      <a href="https://pokemongohub.net" target="_blank" rel="noopener">GO Hub</a>
+    <!-- ── Sub-section: Team Builder ────────────────────────── -->
+    <div id="pvp-sub-builder" class="pvp-sub" style="display:none">
+      <div class="battle-grid" style="grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px">
+        <div class="battle-pokemon-panel">
+          <div class="battle-panel-header">🔵 Slot 1</div>
+          <select class="calc-select" id="builder-slot-0" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
+            <option value="">– Select –</option>
+          </select>
+          <div id="builder-preview-0"></div>
+        </div>
+        <div class="battle-pokemon-panel">
+          <div class="battle-panel-header">🟡 Slot 2</div>
+          <select class="calc-select" id="builder-slot-1" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
+            <option value="">– Select –</option>
+          </select>
+          <div id="builder-preview-1"></div>
+        </div>
+        <div class="battle-pokemon-panel">
+          <div class="battle-panel-header">🔴 Slot 3</div>
+          <select class="calc-select" id="builder-slot-2" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
+            <option value="">– Select –</option>
+          </select>
+          <div id="builder-preview-2"></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin:16px 0">
+        <button class="calc-btn" onclick="resetTeamBuilder()" style="max-width:200px;display:inline-block;background:var(--bg3)">🔄 Reset Team</button>
+      </div>
+      <div id="builder-result" style="margin-top:8px"></div>
     </div>
   </section>
 
@@ -2408,41 +2436,6 @@
       </div>
     </div>
     <div id="raid-counters-result" style="margin-top:16px"></div>
-  </section>
-
-  <!-- ── TAB 11: TEAM BUILDER ──────────────────────────────────────────── -->
-  <section id="builder-tab" class="tab">
-    <div class="page-header">
-      <h1>🏗️ Team Builder</h1>
-      <p>Build a 3-Pokémon team and analyze type coverage, shared weaknesses and team synergy.</p>
-    </div>
-    <div class="battle-grid" style="grid-template-columns:repeat(3,1fr);gap:12px">
-      <div class="battle-pokemon-panel">
-        <div class="battle-panel-header">🔵 Slot 1</div>
-        <select class="calc-select" id="builder-slot-0" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
-          <option value="">– Select –</option>
-        </select>
-        <div id="builder-preview-0"></div>
-      </div>
-      <div class="battle-pokemon-panel">
-        <div class="battle-panel-header">🟡 Slot 2</div>
-        <select class="calc-select" id="builder-slot-1" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
-          <option value="">– Select –</option>
-        </select>
-        <div id="builder-preview-1"></div>
-      </div>
-      <div class="battle-pokemon-panel">
-        <div class="battle-panel-header">🔴 Slot 3</div>
-        <select class="calc-select" id="builder-slot-2" onchange="renderTeamBuilder()" style="width:100%;margin-bottom:8px">
-          <option value="">– Select –</option>
-        </select>
-        <div id="builder-preview-2"></div>
-      </div>
-    </div>
-    <div style="text-align:center;margin:16px 0">
-      <button class="calc-btn" onclick="resetTeamBuilder()" style="max-width:200px;display:inline-block;background:var(--bg3)">🔄 Reset Team</button>
-    </div>
-    <div id="builder-result" style="margin-top:8px"></div>
   </section>
 
   <!-- ── TAB 12: MEGA GUIDE ──────────────────────────────────────────────── -->
@@ -4278,7 +4271,7 @@ function pvpDiffHtml(pvp, power) {
 }
 
 // ── TAB ORDER (used by show() and swipe navigation) ───────────────────────
-const TAB_ORDER = ['home-tab','pokemon-tab','moves-tab','types-tab','ranking-tab','team-tab','builder-tab','stardust-tab','raid-tab','mega-tab','settings-tab'];
+const TAB_ORDER = ['home-tab','pokemon-tab','moves-tab','types-tab','pvp-tab','stardust-tab','raid-tab','mega-tab','settings-tab'];
 
 function show(tabId, direction) {
   const currentActive = document.querySelector('section.tab.active');
@@ -4313,14 +4306,31 @@ function show(tabId, direction) {
   if (tabId === 'moves-tab')    { renderMoves(); renderEliteTMGuide(); }
   if (tabId === 'pokemon-tab')  renderPokemon();
   if (tabId === 'types-tab')    { renderTypes(); initDualTypeSelects(); }
-  if (tabId === 'team-tab')     renderTeam();
-  if (tabId === 'ranking-tab')  renderRanking();
+  if (tabId === 'pvp-tab') {
+    const pill = document.querySelector('#pvp-sub-pills .pill.active');
+    const sub = pill ? pill.dataset.sub : 'ranking';
+    if (sub === 'ranking') renderRanking();
+    if (sub === 'team')    renderTeam();
+    if (sub === 'builder') initBuilderTab();
+  }
   if (tabId === 'home-tab')     updateHomeStats();
   if (tabId === 'stardust-tab') renderStardust();
   if (tabId === 'raid-tab')    initRaidTab();
-  if (tabId === 'builder-tab') initBuilderTab();
   if (tabId === 'mega-tab')    renderMegaGuide();
   if (tabId === 'settings-tab') renderSettings();
+}
+
+// ── PVP SUB-TAB NAVIGATION ────────────────────────────────────────────────
+function showPvpSub(sub) {
+  document.querySelectorAll('#pvp-tab .pvp-sub').forEach(el => el.style.display = 'none');
+  const target = document.getElementById('pvp-sub-' + sub);
+  if (target) target.style.display = '';
+  document.querySelectorAll('#pvp-sub-pills .pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.sub === sub);
+  });
+  if (sub === 'ranking') renderRanking();
+  if (sub === 'team')    renderTeam();
+  if (sub === 'builder') initBuilderTab();
 }
 
 function toggleCard(num) {
@@ -5727,7 +5737,7 @@ if ('serviceWorker' in navigator) {
 document.addEventListener('keydown', e => {
   const tag = e.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
-  const shortcuts = { '1': 'home-tab', '2': 'pokemon-tab', '3': 'moves-tab', '4': 'types-tab', '5': 'ranking-tab', '6': 'team-tab', '7': 'builder-tab', '8': 'stardust-tab', '9': 'raid-tab', 'q': 'mega-tab', 'e': 'settings-tab' };
+  const shortcuts = { '1': 'home-tab', '2': 'pokemon-tab', '3': 'moves-tab', '4': 'types-tab', '5': 'pvp-tab', '6': 'stardust-tab', '7': 'raid-tab', '8': 'mega-tab', '9': 'settings-tab' };
   if (shortcuts[e.key]) { e.preventDefault(); show(shortcuts[e.key]); }
 });
 
@@ -5743,12 +5753,16 @@ document.addEventListener('keydown', e => {
       if (tabId === 'moves-tab')    { renderMoves(); renderEliteTMGuide(); }
       if (tabId === 'pokemon-tab')  renderPokemon();
       if (tabId === 'types-tab')    { renderTypes(); }
-      if (tabId === 'team-tab')     renderTeam();
-      if (tabId === 'ranking-tab')  renderRanking();
+      if (tabId === 'pvp-tab') {
+        const pill = document.querySelector('#pvp-sub-pills .pill.active');
+        const sub = pill ? pill.dataset.sub : 'ranking';
+        if (sub === 'ranking') renderRanking();
+        if (sub === 'team')    renderTeam();
+        if (sub === 'builder') initBuilderTab();
+      }
       if (tabId === 'home-tab')     updateHomeStats();
       if (tabId === 'stardust-tab') renderStardust();
       if (tabId === 'raid-tab')     initRaidTab();
-      if (tabId === 'builder-tab')  initBuilderTab();
       if (tabId === 'mega-tab')     renderMegaGuide();
       el.dataset.swipeReady = '1';
     } catch (_) { /* ignore pre-render errors */ }
@@ -6066,7 +6080,7 @@ function updateHomeStats() {
   if (spotlightEl && spotlightEl.children.length === 0) {
     const glSTier = (RANKING_DATA['gl'] || []).filter(e => e.tier === 'S').slice(0, 3);
     spotlightEl.innerHTML = glSTier.map(e => `
-      <div class="meta-spotlight-card" onclick="show('ranking-tab')">
+      <div class="meta-spotlight-card" onclick="show('pvp-tab')">
         <img class="meta-spotlight-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${e.num}.png" alt="${e.name}" onerror="this.style.opacity=0.3">
         <div class="meta-spotlight-name">${e.name}</div>
         <div class="meta-spotlight-types">${e.types.map(t=>typeBadge(t)).join('')}</div>
