@@ -2454,23 +2454,27 @@
 
     <!-- Mega Energy Info -->
     <div class="calc-card" style="margin-bottom:16px">
-      <div class="calc-card-title">💡 Mega-Energie Kosten</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px">
+      <div class="calc-card-title">💡 Mega-Energie Kosten (1. Mega-Entwicklung)</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:8px">
+        <div style="background:var(--bg3);border-radius:10px;padding:12px;text-align:center">
+          <div style="font-size:22px;font-weight:700;color:var(--green)">100</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – z.B. Beedrill, Pidgeot, Slowbro, Medicham, Banette, Abomasnow</div>
+        </div>
         <div style="background:var(--bg3);border-radius:10px;padding:12px;text-align:center">
           <div style="font-size:22px;font-weight:700;color:var(--accent)">200</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – 1. Mega-Entwicklung</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – z.B. Charizard, Blastoise, Gengar, Tyranitar, Blaziken</div>
         </div>
         <div style="background:var(--bg3);border-radius:10px;padding:12px;text-align:center">
-          <div style="font-size:22px;font-weight:700;color:var(--green)">40</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – Folge-Entwicklungen (7-Tage-Fenster)</div>
+          <div style="font-size:22px;font-weight:700;color:var(--gold)">300</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – z.B. Gyarados, Altaria, Latias, Latios, Salamence, Diancie</div>
         </div>
         <div style="background:var(--bg3);border-radius:10px;padding:12px;text-align:center">
-          <div style="font-size:22px;font-weight:700;color:var(--gold)">400</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – Mega Rayquaza (Ausnahme)</div>
+          <div style="font-size:22px;font-weight:700;color:var(--red)">400</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – Mega Rayquaza (Sonderfall)</div>
         </div>
       </div>
       <div style="font-size:12px;color:var(--text3);margin-top:10px;line-height:1.6">
-        💡 Kosten sinken mit jeder weiteren Mega-Entwicklung desselben Pokémon. Nach genug Entwicklungen wird der Cooldown aufgehoben und die Kosten entfallen.
+        💡 Die genauen Kosten je Pokémon sind in der Tabelle unten aufgeführt. Nach der ersten Mega-Entwicklung sinken die Kosten mit jeder weiteren Entwicklung. Nach genug Entwicklungen wird der Cooldown aufgehoben und die Kosten entfallen.
       </div>
     </div>
 
@@ -2521,6 +2525,7 @@
           <tr style="background:var(--bg3)">
             <th style="text-align:left;padding:10px 12px;color:var(--text2)">Pokémon → Mega</th>
             <th style="text-align:left;padding:10px 12px;color:var(--text2)">Typ</th>
+            <th style="text-align:center;padding:10px 12px;color:var(--text2)">Kosten</th>
             <th style="text-align:center;padding:10px 12px;color:var(--text2)">Raid</th>
             <th style="text-align:center;padding:10px 12px;color:var(--text2)">PvP</th>
             <th style="text-align:left;padding:10px 12px;color:var(--text2)">Hinweis</th>
@@ -5564,47 +5569,47 @@ function renderTeamBuilder() {
 
 // ── MEGA GUIDE ─────────────────────────────────────────────────────────────
 const MEGA_DATA = [
-  {base:'Mewtwo',      mega:'Mega Mewtwo X',      types:['psychic','fighting'], raid:'★★★★★',   pvp:'Limited', notes:'Raid DPS king'},
-  {base:'Mewtwo',      mega:'Mega Mewtwo Y',      types:['psychic'],            raid:'★★★★★',   pvp:'Limited', notes:'Highest Psychic DPS'},
-  {base:'Charizard',   mega:'Mega Charizard X',   types:['fire','dragon'],      raid:'★★★★',    pvp:'Niche',   notes:'Dragon raid support'},
-  {base:'Charizard',   mega:'Mega Charizard Y',   types:['fire','flying'],      raid:'★★★★★',   pvp:'Limited', notes:'Top Fire DPS'},
-  {base:'Blastoise',   mega:'Mega Blastoise',      types:['water'],              raid:'★★★',     pvp:'Niche',   notes:''},
-  {base:'Venusaur',    mega:'Mega Venusaur',       types:['grass','poison'],     raid:'★★★★',    pvp:'Niche',   notes:''},
-  {base:'Gengar',      mega:'Mega Gengar',         types:['ghost','poison'],     raid:'★★★★★',   pvp:'Limited', notes:'Top Ghost DPS'},
-  {base:'Alakazam',    mega:'Mega Alakazam',       types:['psychic'],            raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Slowbro',     mega:'Mega Slowbro',        types:['water','psychic'],    raid:'★★★',     pvp:'Niche',   notes:''},
-  {base:'Pidgeot',     mega:'Mega Pidgeot',        types:['normal','flying'],    raid:'★★',      pvp:'Limited', notes:''},
-  {base:'Beedrill',    mega:'Mega Beedrill',       types:['bug','poison'],       raid:'★★',      pvp:'Niche',   notes:'🍬 Candy ★★★★★'},
-  {base:'Kangaskhan',  mega:'Mega Kangaskhan',     types:['normal'],             raid:'★★',      pvp:'No',      notes:''},
-  {base:'Pinsir',      mega:'Mega Pinsir',         types:['bug','flying'],       raid:'★★★',     pvp:'Limited', notes:''},
-  {base:'Gyarados',    mega:'Mega Gyarados',       types:['water','dark'],       raid:'★★★★',    pvp:'Niche',   notes:''},
-  {base:'Aerodactyl',  mega:'Mega Aerodactyl',     types:['rock','flying'],      raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Ampharos',    mega:'Mega Ampharos',       types:['electric','dragon'],  raid:'★★★',     pvp:'Niche',   notes:''},
-  {base:'Scizor',      mega:'Mega Scizor',         types:['bug','steel'],        raid:'★★★',     pvp:'Niche',   notes:''},
-  {base:'Houndoom',    mega:'Mega Houndoom',       types:['dark','fire'],        raid:'★★★★',    pvp:'Niche',   notes:''},
-  {base:'Heracross',   mega:'Mega Heracross',      types:['bug','fighting'],     raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Tyranitar',   mega:'Mega Tyranitar',      types:['rock','dark'],        raid:'★★★★★',   pvp:'Limited', notes:'Top Rock DPS'},
-  {base:'Latias',      mega:'Mega Latias',         types:['dragon','psychic'],   raid:'★★★',     pvp:'Limited', notes:'Dragon ★★★★'},
-  {base:'Latios',      mega:'Mega Latios',         types:['dragon','psychic'],   raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Gardevoir',   mega:'Mega Gardevoir',      types:['psychic','fairy'],    raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Absol',       mega:'Mega Absol',          types:['dark'],               raid:'★★★',     pvp:'No',      notes:'🍬 Candy ★★★★★'},
-  {base:'Manectric',   mega:'Mega Manectric',      types:['electric'],           raid:'★★★',     pvp:'Niche',   notes:''},
-  {base:'Aggron',      mega:'Mega Aggron',         types:['steel'],              raid:'★★★',     pvp:'No',      notes:''},
-  {base:'Blaziken',    mega:'Mega Blaziken',       types:['fire','fighting'],    raid:'★★★★★',   pvp:'Limited', notes:''},
-  {base:'Swampert',    mega:'Mega Swampert',       types:['water','ground'],     raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Sceptile',    mega:'Mega Sceptile',       types:['grass','dragon'],     raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Banette',     mega:'Mega Banette',        types:['ghost'],              raid:'★★★',     pvp:'No',      notes:'🍬 Candy ★★★★★'},
-  {base:'Altaria',     mega:'Mega Altaria',        types:['dragon','fairy'],     raid:'★★★',     pvp:'★★★★',   notes:'Top GL/UL fairy'},
-  {base:'Lopunny',     mega:'Mega Lopunny',        types:['normal','fighting'],  raid:'★★★',     pvp:'Niche',   notes:''},
-  {base:'Salamence',   mega:'Mega Salamence',      types:['dragon','flying'],    raid:'★★★★★',   pvp:'Limited', notes:''},
-  {base:'Medicham',    mega:'Mega Medicham',       types:['fighting','psychic'], raid:'★★★',     pvp:'★★★★',   notes:'GL powerhouse'},
-  {base:'Steelix',     mega:'Mega Steelix',        types:['steel','ground'],     raid:'★★',      pvp:'No',      notes:''},
-  {base:'Glalie',      mega:'Mega Glalie',         types:['ice'],                raid:'★★★',     pvp:'Niche',   notes:''},
-  {base:'Abomasnow',   mega:'Mega Abomasnow',      types:['grass','ice'],        raid:'★★★',     pvp:'Niche',   notes:''},
-  {base:'Gallade',     mega:'Mega Gallade',        types:['psychic','fighting'], raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Diancie',     mega:'Mega Diancie',        types:['rock','fairy'],       raid:'★★★★',    pvp:'Limited', notes:''},
-  {base:'Audino',      mega:'Mega Audino',         types:['normal','fairy'],     raid:'★',       pvp:'No',      notes:''},
-  {base:'Rayquaza',    mega:'Mega Rayquaza',       types:['dragon','flying'],    raid:'★★★★★',   pvp:'Limited', notes:'🏆 BEST Raid DPS overall'},
+  {base:'Mewtwo',      mega:'Mega Mewtwo X',      types:['psychic','fighting'], cost:300, raid:'★★★★★',   pvp:'Limited', notes:'Raid DPS king'},
+  {base:'Mewtwo',      mega:'Mega Mewtwo Y',      types:['psychic'],            cost:300, raid:'★★★★★',   pvp:'Limited', notes:'Highest Psychic DPS'},
+  {base:'Charizard',   mega:'Mega Charizard X',   types:['fire','dragon'],      cost:200, raid:'★★★★',    pvp:'Niche',   notes:'Dragon raid support'},
+  {base:'Charizard',   mega:'Mega Charizard Y',   types:['fire','flying'],      cost:200, raid:'★★★★★',   pvp:'Limited', notes:'Top Fire DPS'},
+  {base:'Blastoise',   mega:'Mega Blastoise',      types:['water'],              cost:200, raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Venusaur',    mega:'Mega Venusaur',       types:['grass','poison'],     cost:200, raid:'★★★★',    pvp:'Niche',   notes:''},
+  {base:'Gengar',      mega:'Mega Gengar',         types:['ghost','poison'],     cost:200, raid:'★★★★★',   pvp:'Limited', notes:'Top Ghost DPS'},
+  {base:'Alakazam',    mega:'Mega Alakazam',       types:['psychic'],            cost:200, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Slowbro',     mega:'Mega Slowbro',        types:['water','psychic'],    cost:100, raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Pidgeot',     mega:'Mega Pidgeot',        types:['normal','flying'],    cost:100, raid:'★★',      pvp:'Limited', notes:''},
+  {base:'Beedrill',    mega:'Mega Beedrill',       types:['bug','poison'],       cost:100, raid:'★★',      pvp:'Niche',   notes:'🍬 Candy ★★★★★'},
+  {base:'Kangaskhan',  mega:'Mega Kangaskhan',     types:['normal'],             cost:200, raid:'★★',      pvp:'No',      notes:''},
+  {base:'Pinsir',      mega:'Mega Pinsir',         types:['bug','flying'],       cost:200, raid:'★★★',     pvp:'Limited', notes:''},
+  {base:'Gyarados',    mega:'Mega Gyarados',       types:['water','dark'],       cost:300, raid:'★★★★',    pvp:'Niche',   notes:''},
+  {base:'Aerodactyl',  mega:'Mega Aerodactyl',     types:['rock','flying'],      cost:200, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Ampharos',    mega:'Mega Ampharos',       types:['electric','dragon'],  cost:200, raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Scizor',      mega:'Mega Scizor',         types:['bug','steel'],        cost:200, raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Houndoom',    mega:'Mega Houndoom',       types:['dark','fire'],        cost:200, raid:'★★★★',    pvp:'Niche',   notes:''},
+  {base:'Heracross',   mega:'Mega Heracross',      types:['bug','fighting'],     cost:200, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Tyranitar',   mega:'Mega Tyranitar',      types:['rock','dark'],        cost:200, raid:'★★★★★',   pvp:'Limited', notes:'Top Rock DPS'},
+  {base:'Latias',      mega:'Mega Latias',         types:['dragon','psychic'],   cost:300, raid:'★★★',     pvp:'Limited', notes:'Dragon ★★★★'},
+  {base:'Latios',      mega:'Mega Latios',         types:['dragon','psychic'],   cost:300, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Gardevoir',   mega:'Mega Gardevoir',      types:['psychic','fairy'],    cost:200, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Absol',       mega:'Mega Absol',          types:['dark'],               cost:200, raid:'★★★',     pvp:'No',      notes:'🍬 Candy ★★★★★'},
+  {base:'Manectric',   mega:'Mega Manectric',      types:['electric'],           cost:200, raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Aggron',      mega:'Mega Aggron',         types:['steel'],              cost:200, raid:'★★★',     pvp:'No',      notes:''},
+  {base:'Blaziken',    mega:'Mega Blaziken',       types:['fire','fighting'],    cost:200, raid:'★★★★★',   pvp:'Limited', notes:''},
+  {base:'Swampert',    mega:'Mega Swampert',       types:['water','ground'],     cost:200, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Sceptile',    mega:'Mega Sceptile',       types:['grass','dragon'],     cost:200, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Banette',     mega:'Mega Banette',        types:['ghost'],              cost:100, raid:'★★★',     pvp:'No',      notes:'🍬 Candy ★★★★★'},
+  {base:'Altaria',     mega:'Mega Altaria',        types:['dragon','fairy'],     cost:300, raid:'★★★',     pvp:'★★★★',   notes:'Top GL/UL fairy'},
+  {base:'Lopunny',     mega:'Mega Lopunny',        types:['normal','fighting'],  cost:200, raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Salamence',   mega:'Mega Salamence',      types:['dragon','flying'],    cost:300, raid:'★★★★★',   pvp:'Limited', notes:''},
+  {base:'Medicham',    mega:'Mega Medicham',       types:['fighting','psychic'], cost:100, raid:'★★★',     pvp:'★★★★',   notes:'GL powerhouse'},
+  {base:'Steelix',     mega:'Mega Steelix',        types:['steel','ground'],     cost:200, raid:'★★',      pvp:'No',      notes:''},
+  {base:'Glalie',      mega:'Mega Glalie',         types:['ice'],                cost:200, raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Abomasnow',   mega:'Mega Abomasnow',      types:['grass','ice'],        cost:100, raid:'★★★',     pvp:'Niche',   notes:''},
+  {base:'Gallade',     mega:'Mega Gallade',        types:['psychic','fighting'], cost:200, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Diancie',     mega:'Mega Diancie',        types:['rock','fairy'],       cost:300, raid:'★★★★',    pvp:'Limited', notes:''},
+  {base:'Audino',      mega:'Mega Audino',         types:['normal','fairy'],     cost:200, raid:'★',       pvp:'No',      notes:''},
+  {base:'Rayquaza',    mega:'Mega Rayquaza',       types:['dragon','flying'],    cost:400, raid:'★★★★★',   pvp:'Limited', notes:'🏆 BEST Raid DPS overall'},
 ];
 
 let megaFilter = 'all';
@@ -5630,15 +5635,17 @@ function renderMegaGuide() {
   tbody.innerHTML = data.map(m => {
     const raidColor = m.raid.length >= 5 ? 'var(--green)' : m.raid.length >= 4 ? 'var(--accent)' : m.raid.length >= 3 ? 'var(--text)' : 'var(--text3)';
     const pvpColor  = m.pvp === '★★★★' ? 'var(--green)' : m.pvp === 'Limited' ? 'var(--accent)' : m.pvp === 'No' ? 'var(--red)' : m.pvp === 'Niche' ? 'var(--text3)' : 'var(--text2)';
+    const costColor = m.cost >= 400 ? 'var(--red)' : m.cost >= 300 ? 'var(--gold)' : m.cost >= 200 ? 'var(--accent)' : 'var(--green)';
     const notesHtml = m.notes ? `<span style="color:var(--text2)">${m.notes}</span>` : '<span style="color:var(--text3)">—</span>';
     return '<tr style="border-bottom:1px solid var(--border)">'
       + '<td style="padding:10px 12px"><div style="font-weight:700;white-space:nowrap">' + m.mega + '</div><div style="font-size:11px;color:var(--text3)">' + m.base + '</div></td>'
       + '<td style="padding:10px 12px">' + m.types.map(t => typeBadge(t)).join('') + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;font-weight:700;color:' + costColor + ';white-space:nowrap">' + m.cost + ' ⚡</td>'
       + '<td style="padding:10px 12px;text-align:center;font-weight:700;color:' + raidColor + ';white-space:nowrap">' + m.raid + '</td>'
       + '<td style="padding:10px 12px;text-align:center;font-weight:700;color:' + pvpColor  + ';white-space:nowrap">' + m.pvp  + '</td>'
       + '<td style="padding:10px 12px;font-size:12px">' + notesHtml + '</td>'
     + '</tr>';
-  }).join('') || '<tr><td colspan="5" style="padding:20px;text-align:center;color:var(--text3)">Keine Ergebnisse gefunden.</td></tr>';
+  }).join('') || '<tr><td colspan="6" style="padding:20px;text-align:center;color:var(--text3)">Keine Ergebnisse gefunden.</td></tr>';
 }
 
 function escHtml(str) {
