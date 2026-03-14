@@ -1,5 +1,5 @@
-const CACHE_NAME = 'pvp-advisor-v3';
-const HTML_URL = './pokemon-go-advisor.html';
+const CACHE_NAME = 'pvp-advisor-v4';
+const HTML_URL = './index.html';
 const STATIC_ASSETS = [
   './logo.svg',
   './manifest.json'
@@ -35,7 +35,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
   // Network-first for the main HTML document so updates are always delivered.
-  if (url.pathname.endsWith('pokemon-go-advisor.html') || url.pathname === '/' || url.pathname.endsWith('index.html')) {
+  if (url.pathname.endsWith('index.html') || url.pathname.endsWith('pokemon-go-advisor.html') || url.pathname === '/' || url.pathname === '') {
     event.respondWith(
       fetch(event.request)
         .then(response => {
