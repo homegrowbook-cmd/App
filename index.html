@@ -128,6 +128,75 @@
   }
   .nav-btn .icon { font-size: 16px; }
 
+  /* ── HOVER DROPDOWN MENUS ───────────────────────────────── */
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.18s, color 0.18s;
+    user-select: none;
+  }
+  .nav-dropdown:hover .nav-dropdown-trigger,
+  .nav-dropdown-trigger:hover { background: var(--bg3); color: var(--text); }
+  .nav-dropdown-trigger.has-active { background: var(--accent2); color: #fff; }
+  .nav-dropdown-trigger .icon { font-size: 16px; }
+  .nav-dropdown-trigger .caret { font-size: 10px; opacity: 0.65; margin-left: 1px; }
+  .nav-dropdown-menu {
+    display: none;
+    position: fixed;
+    top: 64px; /* nav bar is 58px + 6px gap */
+    left: 0;   /* overridden dynamically by JS */
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    overflow: hidden;
+    min-width: 175px;
+    z-index: 500;
+    box-shadow: 0 8px 24px var(--shadow);
+    padding: 4px;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown.open .nav-dropdown-menu {
+    display: block;
+    animation: dropdownIn 0.15s ease;
+  }
+  @keyframes dropdownIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .nav-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    width: 100%;
+    text-align: left;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
+  }
+  .nav-dropdown-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-dropdown-item.active { background: var(--accent2); color: #fff; }
+
   /* ── MAIN ───────────────────────────────────────────────── */
   main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 60px; touch-action: pan-y; }
 
@@ -2067,26 +2136,35 @@
     <button class="nav-btn active" data-tab="home-tab" onclick="show('home-tab')">
       <span class="icon">🏠</span> Home
     </button>
-    <button class="nav-btn" data-tab="pokemon-tab" onclick="show('pokemon-tab')">
-      <span class="icon">🎯</span> Pokédex
-    </button>
-    <button class="nav-btn" data-tab="moves-tab" onclick="show('moves-tab')">
-      <span class="icon">⚡</span> Moves
-    </button>
-    <button class="nav-btn" data-tab="types-tab" onclick="show('types-tab')">
-      <span class="icon">🔮</span> Types
-    </button>
-    <button class="nav-btn" data-tab="pvp-tab" onclick="show('pvp-tab')">
-      <span class="icon">⚔️</span> PVP
-    </button>
-    <button class="nav-btn" data-tab="stardust-tab" onclick="show('stardust-tab')">
-      <span class="icon">⭐</span> Stardust
-    </button>
+
+    <!-- ── Pokémon Hover Dropdown ── -->
+    <div class="nav-dropdown" id="pokemon-dropdown">
+      <button class="nav-dropdown-trigger" id="pokemon-dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+        <span class="icon">🎯</span> Pokémon <span class="caret">▾</span>
+      </button>
+      <div class="nav-dropdown-menu" role="menu">
+        <button class="nav-dropdown-item" data-tab="pokemon-tab" onclick="show('pokemon-tab')" role="menuitem">🎯 Pokédex</button>
+        <button class="nav-dropdown-item" data-tab="types-tab"   onclick="show('types-tab')"   role="menuitem">🔮 Types</button>
+        <button class="nav-dropdown-item" data-tab="moves-tab"   onclick="show('moves-tab')"   role="menuitem">⚡ Moves</button>
+        <button class="nav-dropdown-item" data-tab="stardust-tab" onclick="show('stardust-tab')" role="menuitem">⭐ Stardust</button>
+        <button class="nav-dropdown-item" data-tab="mega-tab"    onclick="show('mega-tab')"    role="menuitem">🌀 Mega</button>
+      </div>
+    </div>
+
+    <!-- ── PVP Hover Dropdown ── -->
+    <div class="nav-dropdown" id="pvp-dropdown">
+      <button class="nav-dropdown-trigger" id="pvp-dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+        <span class="icon">⚔️</span> PVP <span class="caret">▾</span>
+      </button>
+      <div class="nav-dropdown-menu" role="menu">
+        <button class="nav-dropdown-item" data-tab="pvp-tab" data-pvp-sub="ranking" onclick="showPvpTab('ranking')" role="menuitem">📊 Tierlist</button>
+        <button class="nav-dropdown-item" data-tab="pvp-tab" data-pvp-sub="team"    onclick="showPvpTab('team')"    role="menuitem">🏆 Teams</button>
+        <button class="nav-dropdown-item" data-tab="pvp-tab" data-pvp-sub="builder" onclick="showPvpTab('builder')" role="menuitem">🏗️ Team Builder</button>
+      </div>
+    </div>
+
     <button class="nav-btn" data-tab="raid-tab" onclick="show('raid-tab')">
       <span class="icon">🔥</span> Raids
-    </button>
-    <button class="nav-btn" data-tab="mega-tab" onclick="show('mega-tab')">
-      <span class="icon">🌀</span> Mega
     </button>
     <button class="nav-btn" data-tab="settings-tab" onclick="show('settings-tab')">
       <span class="icon">⚙️</span> Einstellungen
@@ -2279,14 +2357,6 @@
     <div class="page-header">
       <h1>⚔️ PVP</h1>
       <p>League Rankings, Meta Teams and Team Builder – all PVP tools in one place.</p>
-    </div>
-
-    <div class="controls-row">
-      <div class="pills" id="pvp-sub-pills">
-        <button class="pill active" data-sub="ranking" onclick="showPvpSub('ranking')">📊 Tierlist</button>
-        <button class="pill" data-sub="team" onclick="showPvpSub('team')">🏆 Teams</button>
-        <button class="pill" data-sub="builder" onclick="showPvpSub('builder')">🏗️ Team Builder</button>
-      </div>
     </div>
 
     <!-- ── Sub-section: Tierlist ─────────────────────────────── -->
@@ -4272,6 +4342,7 @@ function pvpDiffHtml(pvp, power) {
 
 // ── TAB ORDER (used by show() and swipe navigation) ───────────────────────
 const TAB_ORDER = ['home-tab','pokemon-tab','moves-tab','types-tab','pvp-tab','stardust-tab','raid-tab','mega-tab','settings-tab'];
+let _pvpActiveSub = 'ranking'; // tracks which PVP sub to display
 
 function show(tabId, direction) {
   const currentActive = document.querySelector('section.tab.active');
@@ -4297,22 +4368,27 @@ function show(tabId, direction) {
   }
 
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-dropdown-trigger').forEach(t => t.classList.remove('has-active'));
+
   const activeBtn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
   if (activeBtn) {
     activeBtn.classList.add('active');
     // Scroll the active nav button into view inside the horizontally-scrollable nav bar
     activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
   }
+  // Highlight dropdown trigger when the tab lives inside a dropdown
+  const dropdownItem = document.querySelector(`.nav-dropdown-item[data-tab="${tabId}"]`);
+  if (dropdownItem) {
+    const trigger = dropdownItem.closest('.nav-dropdown')?.querySelector('.nav-dropdown-trigger');
+    if (trigger) {
+      trigger.classList.add('has-active');
+      trigger.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
+  }
   if (tabId === 'moves-tab')    { renderMoves(); renderEliteTMGuide(); }
   if (tabId === 'pokemon-tab')  renderPokemon();
   if (tabId === 'types-tab')    { renderTypes(); initDualTypeSelects(); }
-  if (tabId === 'pvp-tab') {
-    const pill = document.querySelector('#pvp-sub-pills .pill.active');
-    const sub = pill ? pill.dataset.sub : 'ranking';
-    if (sub === 'ranking') renderRanking();
-    if (sub === 'team')    renderTeam();
-    if (sub === 'builder') initBuilderTab();
-  }
+  if (tabId === 'pvp-tab')      showPvpSub(_pvpActiveSub);
   if (tabId === 'home-tab')     updateHomeStats();
   if (tabId === 'stardust-tab') renderStardust();
   if (tabId === 'raid-tab')    initRaidTab();
@@ -4320,14 +4396,21 @@ function show(tabId, direction) {
   if (tabId === 'settings-tab') renderSettings();
 }
 
+// ── PVP DROPDOWN NAVIGATION ───────────────────────────────────────────────
+function showPvpTab(sub) {
+  _pvpActiveSub = sub;
+  show('pvp-tab');
+  // Mark the correct dropdown item as active
+  document.querySelectorAll('#pvp-dropdown .nav-dropdown-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.pvpSub === sub);
+  });
+}
+
 // ── PVP SUB-TAB NAVIGATION ────────────────────────────────────────────────
 function showPvpSub(sub) {
   document.querySelectorAll('#pvp-tab .pvp-sub').forEach(el => el.style.display = 'none');
   const target = document.getElementById('pvp-sub-' + sub);
   if (target) target.style.display = '';
-  document.querySelectorAll('#pvp-sub-pills .pill').forEach(p => {
-    p.classList.toggle('active', p.dataset.sub === sub);
-  });
   if (sub === 'ranking') renderRanking();
   if (sub === 'team')    renderTeam();
   if (sub === 'builder') initBuilderTab();
@@ -5754,11 +5837,7 @@ document.addEventListener('keydown', e => {
       if (tabId === 'pokemon-tab')  renderPokemon();
       if (tabId === 'types-tab')    { renderTypes(); }
       if (tabId === 'pvp-tab') {
-        const pill = document.querySelector('#pvp-sub-pills .pill.active');
-        const sub = pill ? pill.dataset.sub : 'ranking';
-        if (sub === 'ranking') renderRanking();
-        if (sub === 'team')    renderTeam();
-        if (sub === 'builder') initBuilderTab();
+        showPvpSub(_pvpActiveSub);
       }
       if (tabId === 'home-tab')     updateHomeStats();
       if (tabId === 'stardust-tab') renderStardust();
@@ -6533,6 +6612,60 @@ async function confirmAppReset() {
       inp.focus();
     }
   };
+}());
+
+// ── DROPDOWN MOBILE TOGGLE ─────────────────────────────────────────────────
+// On touch devices hover doesn't work; toggle with a tap on the trigger button
+(function () {
+  // Position a dropdown menu so it aligns with its trigger (needed because menu is position:fixed)
+  function positionDropdown(trigger) {
+    var menu = trigger.closest('.nav-dropdown').querySelector('.nav-dropdown-menu');
+    if (!menu) return;
+    var rect = trigger.getBoundingClientRect();
+    // Keep menu within viewport horizontally
+    var menuWidth = menu.offsetWidth || 175;
+    var left = Math.min(rect.left, window.innerWidth - menuWidth - 8);
+    menu.style.left = Math.max(8, left) + 'px';
+  }
+
+  document.querySelectorAll('.nav-dropdown-trigger').forEach(function (trigger) {
+    // Position on hover (desktop)
+    trigger.addEventListener('mouseenter', function () { positionDropdown(trigger); });
+
+    trigger.addEventListener('click', function (e) {
+      var dropdown = trigger.closest('.nav-dropdown');
+      var isOpen = dropdown.classList.contains('open');
+      // Close all other open dropdowns
+      document.querySelectorAll('.nav-dropdown.open').forEach(function (d) { d.classList.remove('open'); });
+      if (!isOpen) {
+        positionDropdown(trigger);
+        dropdown.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      } else {
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+      e.stopPropagation();
+    });
+  });
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.nav-dropdown.open').forEach(function (d) {
+      d.classList.remove('open');
+      var t = d.querySelector('.nav-dropdown-trigger');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
+  });
+  // Close dropdown after an item is clicked
+  document.querySelectorAll('.nav-dropdown-item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      var dropdown = item.closest('.nav-dropdown');
+      if (dropdown) {
+        dropdown.classList.remove('open');
+        var t = dropdown.querySelector('.nav-dropdown-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
 }());
 
 </script>
