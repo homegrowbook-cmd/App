@@ -2448,8 +2448,8 @@
   <!-- ── TAB 12: MEGA GUIDE ──────────────────────────────────────────────── -->
   <section id="mega-tab" class="tab">
     <div class="page-header">
-      <h1>🌀 Mega Evolution Guide</h1>
-      <p>Welche Mega-Entwicklungen lohnen sich? Sortiert nach Raid- und PvP-Stärke.</p>
+      <h1>🌀 Mega & Primal Guide</h1>
+      <p>Welche Mega- und Primal-Entwicklungen lohnen sich? Sortiert nach Raid- und PvP-Stärke.</p>
     </div>
 
     <!-- Mega Energy Info -->
@@ -2470,11 +2470,11 @@
         </div>
         <div style="background:var(--bg3);border-radius:10px;padding:12px;text-align:center">
           <div style="font-size:22px;font-weight:700;color:var(--red)">400</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – Mega Rayquaza (Sonderfall)</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">Energie – Mega Rayquaza, Primal Groudon, Primal Kyogre (Sonderfälle)</div>
         </div>
       </div>
       <div style="font-size:12px;color:var(--text3);margin-top:10px;line-height:1.6">
-        💡 Die genauen Kosten je Pokémon sind in der Tabelle unten aufgeführt. Nach der ersten Mega-Entwicklung sinken die Kosten mit jeder weiteren Entwicklung. Nach genug Entwicklungen wird der Cooldown aufgehoben und die Kosten entfallen.
+        💡 Die genauen Kosten je Pokémon sind in der Tabelle unten aufgeführt. Nach der ersten Mega- oder Primal-Entwicklung sinken die Kosten mit jeder weiteren Entwicklung. Nach genug Entwicklungen wird der Cooldown aufgehoben und die Kosten entfallen.
       </div>
     </div>
 
@@ -2511,6 +2511,7 @@
         <button class="pill" onclick="setMegaFilter('raid5')">⭐ Top Raid</button>
         <button class="pill" onclick="setMegaFilter('pvp')">🏆 PvP Viable</button>
         <button class="pill" onclick="setMegaFilter('candy')">🍬 Candy-Wert</button>
+        <button class="pill" onclick="setMegaFilter('primal')">🔴 Primal</button>
       </div>
       <div class="search-wrap">
         <span class="icon">🔍</span>
@@ -2523,7 +2524,7 @@
       <table style="width:100%;border-collapse:collapse;font-size:13px" id="mega-table">
         <thead>
           <tr style="background:var(--bg3)">
-            <th style="text-align:left;padding:10px 12px;color:var(--text2)">Pokémon → Mega</th>
+            <th style="text-align:left;padding:10px 12px;color:var(--text2)">Pokémon → Mega/Primal</th>
             <th style="text-align:left;padding:10px 12px;color:var(--text2)">Typ</th>
             <th style="text-align:center;padding:10px 12px;color:var(--text2)">Kosten</th>
             <th style="text-align:center;padding:10px 12px;color:var(--text2)">Raid</th>
@@ -5610,13 +5611,15 @@ const MEGA_DATA = [
   {base:'Diancie',     mega:'Mega Diancie',        types:['rock','fairy'],       cost:300, raid:'★★★★',    pvp:'Limited', notes:''},
   {base:'Audino',      mega:'Mega Audino',         types:['normal','fairy'],     cost:200, raid:'★',       pvp:'No',      notes:''},
   {base:'Rayquaza',    mega:'Mega Rayquaza',       types:['dragon','flying'],    cost:400, raid:'★★★★★',   pvp:'Limited', notes:'🏆 BEST Raid DPS overall'},
+  {base:'Groudon',     mega:'Primal Groudon',      types:['ground','fire'],      cost:400, raid:'★★★★★',   pvp:'Limited', notes:'Top Ground & Fire DPS'},
+  {base:'Kyogre',      mega:'Primal Kyogre',       types:['water'],              cost:400, raid:'★★★★★',   pvp:'Limited', notes:'Top Water DPS'},
 ];
 
 let megaFilter = 'all';
 function setMegaFilter(f) {
   megaFilter = f;
   document.querySelectorAll('#mega-filter-pills .pill').forEach((p, i) => {
-    p.classList.toggle('active', ['all','raid5','pvp','candy'][i] === f);
+    p.classList.toggle('active', ['all','raid5','pvp','candy','primal'][i] === f);
   });
   renderMegaGuide();
 }
@@ -5628,8 +5631,9 @@ function renderMegaGuide() {
 
   let data = MEGA_DATA.slice().sort((a, b) => b.raid.length - a.raid.length || a.mega.localeCompare(b.mega));
   if (megaFilter === 'raid5')  data = data.filter(m => m.raid.length >= 5);
-  else if (megaFilter === 'pvp')   data = data.filter(m => m.pvp !== 'No' && m.pvp !== 'Niche');
-  else if (megaFilter === 'candy') data = data.filter(m => m.notes.includes('Candy'));
+  else if (megaFilter === 'pvp')    data = data.filter(m => m.pvp !== 'No' && m.pvp !== 'Niche');
+  else if (megaFilter === 'candy')  data = data.filter(m => m.notes.includes('Candy'));
+  else if (megaFilter === 'primal') data = data.filter(m => m.mega.startsWith('Primal'));
   if (search) data = data.filter(m => m.mega.toLowerCase().includes(search) || m.base.toLowerCase().includes(search));
 
   tbody.innerHTML = data.map(m => {
