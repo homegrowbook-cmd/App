@@ -1,8 +1,8 @@
 {
-  "name": "Pokémon GO PvP Advisor",
-  "short_name": "PvP Advisor",
+  "name": "PGO",
+  "short_name": "PGO",
   "description": "Pokémon GO PvP tier lists, rankings, calculators and battle tools",
-  "start_url": "./pokemon-go-advisor.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
