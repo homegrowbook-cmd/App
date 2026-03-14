@@ -1983,9 +1983,149 @@
   }
   .page-footer-refresh:hover { background: var(--bg4); color: var(--text); }
   .page-footer-refresh:active { background: var(--accent2); color: #fff; }
+
+  /* ── LOGIN OVERLAY ──────────────────────────────────────── */
+  #login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(14,15,26,0.97);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #login-overlay.hidden { display: none; }
+  .login-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    width: 320px;
+    max-width: calc(100vw - 48px);
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  }
+  .login-logo { font-size: 48px; margin-bottom: 12px; }
+  .login-box h2 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .login-box p  { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+  .login-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: var(--accent); }
+  .login-input.login-input--error { border-color: var(--red); animation: login-shake 0.3s; }
+  .login-btn {
+    width: 100%;
+    padding: 11px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+  }
+  .login-btn:hover { background: var(--accent2); }
+  .login-error { color: var(--red); font-size: 12px; margin-top: 8px; min-height: 16px; }
+  @keyframes login-shake {
+    0%,100% { transform: translateX(0); }
+    25%      { transform: translateX(-6px); }
+    75%      { transform: translateX(6px); }
+  }
+
+  /* ── ACTIVE RAIDS BANNER ────────────────────────────────── */
+  #raids-banner {
+    background: linear-gradient(135deg, rgba(124,131,245,0.13), rgba(90,97,232,0.07));
+    border-bottom: 2px solid rgba(124,131,245,0.35);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  #raids-banner.hidden { display: none; }
+  .raids-banner-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .raids-banner-list {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+    align-items: center;
+  }
+  .raids-banner-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 8px 3px 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .raids-banner-chip img { width: 24px; height: 24px; object-fit: contain; }
+  .raids-banner-tier { font-size: 10px; color: var(--text3); margin-left: 2px; }
+  .raids-banner-dismiss { margin-left: auto; flex-shrink: 0; }
+  .raids-banner-dismiss-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+  }
+  .raids-banner-dismiss-btn:hover { background: var(--bg3); color: var(--text); }
 </style>
 </head>
 <body>
+
+<!-- ── LOGIN OVERLAY ──────────────────────────────────────── -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">🔐</div>
+    <h2>Pokémon GO Advisor</h2>
+    <p>Bitte Passwort eingeben, um fortzufahren.</p>
+    <input type="password" id="login-password" class="login-input" placeholder="Passwort …"
+           autofocus autocomplete="current-password"
+           onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Entsperren 🔓</button>
+    <div id="login-error" class="login-error"></div>
+  </div>
+</div>
+
+<!-- ── ACTIVE RAIDS BANNER ────────────────────────────────── -->
+<div id="raids-banner" class="hidden">
+  <span class="raids-banner-title">⚔️ Aktive Raids:</span>
+  <div class="raids-banner-list" id="raids-banner-list"></div>
+  <div class="raids-banner-dismiss">
+    <button class="raids-banner-dismiss-btn" onclick="dismissRaidsBanner()">✓ 12h ausblenden</button>
+  </div>
+</div>
 
 <div id="update-banner" role="alert" aria-live="polite">
   <span>🆕 A new version is available!</span>
@@ -6780,6 +6920,103 @@ ${rtepts}
   window.exportGpx          = exportGpx;
   // initSpawnMap is called by show() – expose it too
   window.initSpawnMap = initSpawnMap;
+}());
+
+// ── ONE-TIME LOGIN OVERLAY ───────────────────────────────────────────────────
+(function () {
+  const PASS    = 'pogo';
+  const STORE   = 'pogo-unlocked';
+  const overlay = document.getElementById('login-overlay');
+  if (!overlay) return;
+
+  // Already unlocked in a previous session?
+  try {
+    if (localStorage.getItem(STORE) === '1') {
+      overlay.classList.add('hidden');
+      return;
+    }
+  } catch (_) {}
+
+  // Block background scrolling while overlay is visible
+  document.body.style.overflow = 'hidden';
+
+  window.doLogin = function () {
+    const inp = document.getElementById('login-password');
+    const err = document.getElementById('login-error');
+    if (inp.value === PASS) {
+      try { localStorage.setItem(STORE, '1'); } catch (_) {}
+      overlay.classList.add('hidden');
+      document.body.style.overflow = '';
+    } else {
+      inp.classList.add('login-input--error');
+      err.textContent = 'Falsches Passwort – bitte erneut versuchen.';
+      setTimeout(function () { inp.classList.remove('login-input--error'); }, 400);
+      inp.value = '';
+      inp.focus();
+    }
+  };
+}());
+
+// ── ACTIVE RAIDS BANNER ───────────────────────────────────────────────────────
+(function () {
+  const HIDE_KEY       = 'raids-banner-hidden-until';
+  const HIDE_MS        = 12 * 60 * 60 * 1000; // 12 hours in ms
+  const MAX_CHIPS      = 15; // max number of raid boss chips shown in the banner
+  const banner         = document.getElementById('raids-banner');
+  const list           = document.getElementById('raids-banner-list');
+  if (!banner || !list) return;
+
+  // Still dismissed?
+  try {
+    const until = parseInt(localStorage.getItem(HIDE_KEY) || '0', 10);
+    if (Date.now() < until) return;
+  } catch (_) {}
+
+  // Collect all active raid bosses across tiers
+  const SPRITE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+  const TIER_ORDER = ['5★', 'Mega', 'Shadow', '3★', '1★'];
+  const chips = [];
+  TIER_ORDER.forEach(function (tier) {
+    const bosses = ((CURRENT_EVENTS || {}).raids || {})[tier] || [];
+    bosses.forEach(function (p) {
+      const dr = parseRaidDateFromNote(p.note);
+      if (!dr || isEventActiveToday(dr.start, dr.end)) {
+        chips.push({ num: p.num, name: p.name, tier: tier });
+      }
+    });
+  });
+
+  if (!chips.length) return; // no active raids → banner stays hidden
+
+  // Build chip elements using DOM APIs to avoid XSS from remotely-fetched event data
+  const fragment = document.createDocumentFragment();
+  chips.slice(0, MAX_CHIPS).forEach(function (c) {
+    const chip = document.createElement('span');
+    chip.className = 'raids-banner-chip';
+
+    const img = document.createElement('img');
+    img.src = SPRITE + encodeURIComponent(c.num) + '.png';
+    img.alt = c.name;
+    img.addEventListener('error', function () { this.style.display = 'none'; });
+    chip.appendChild(img);
+
+    chip.appendChild(document.createTextNode(c.name));
+
+    const tierSpan = document.createElement('span');
+    tierSpan.className = 'raids-banner-tier';
+    tierSpan.textContent = c.tier;
+    chip.appendChild(tierSpan);
+
+    fragment.appendChild(chip);
+  });
+  list.appendChild(fragment);
+
+  banner.classList.remove('hidden');
+
+  window.dismissRaidsBanner = function () {
+    try { localStorage.setItem(HIDE_KEY, String(Date.now() + HIDE_MS)); } catch (_) {}
+    banner.classList.add('hidden');
+  };
 }());
 </script>
 </body>
