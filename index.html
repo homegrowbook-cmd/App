@@ -1700,6 +1700,19 @@
   /* inline stardust badge (shown only on mobile) */
   .sd-mobile-val { display: none; }
 
+  /* ── STARDUST NOW PANEL ───────────────────────────────────────── */
+  .sd-now-panel { margin-bottom: 20px; }
+  .sd-now-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text2); margin-bottom: 10px; }
+  .sd-now-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .sd-now-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 82px; max-width: 100px; text-align: center; transition: background 0.15s; }
+  .sd-now-card:hover { background: var(--bg3); }
+  .sd-now-sprite { width: 44px; height: 44px; image-rendering: pixelated; }
+  .sd-now-name { font-size: 11px; font-weight: 700; color: var(--text); line-height: 1.2; word-break: break-word; }
+  .sd-now-types { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; margin-top: 2px; }
+  .sd-now-sd { font-family: 'Bangers', cursive; font-size: 15px; letter-spacing: 1px; margin-top: 2px; }
+  .sd-now-note { font-size: 9px; color: var(--text3); line-height: 1.2; margin-top: 2px; max-width: 96px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .sd-now-empty { font-size: 13px; color: var(--text3); padding: 10px 0; }
+
   /* ── HERO GRADIENT ANIMATION ─────────────────────────────────── */
   @keyframes heroGradientShift {
     0%   { background-position: 0% 50%; }
@@ -2437,6 +2450,12 @@
     <div class="page-header">
       <h1>⭐ Stardust Rewards</h1>
       <p>Special catch bonus Pokémon – before Star Piece (+50%), weather boost (+25%), or event multipliers. Standard Pokémon give 100/300/500 ⭐ by evolution stage. Source: <a href="https://pokemongohub.net/post/guide/pokemon-that-give-extra-stardust-on-catch/" target="_blank" rel="noopener" style="color:inherit;opacity:.8">Pokémon GO Hub</a></p>
+    </div>
+
+    <!-- Currently active wild spawns ranked by stardust value -->
+    <div class="sd-now-panel" id="sd-now-panel">
+      <div class="sd-now-title">🌿 Currently Spawning – Best for Stardust</div>
+      <div class="sd-now-grid" id="sd-now-grid"></div>
     </div>
 
     <div class="controls-row">
@@ -6115,7 +6134,46 @@ function setSdSort(col) {
   renderStardust();
 }
 
+/** Render the "Currently Spawning – Best for Stardust" panel.
+ *  Shows all active wild spawns sorted by stardust value (highest first). */
+function renderStardustNow() {
+  const grid = document.getElementById('sd-now-grid');
+  if (!grid || grid.children.length > 0) return;   // already populated; cleared by fetchRemoteEvents on live update
+  const SPRITE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+  const sdClass = v => {
+    if (v >= 2100) return 'sd-val-2100';
+    if (v >= 1200) return 'sd-val-1200';
+    if (v >= 1000) return 'sd-val-1000';
+    if (v >= 950)  return 'sd-val-950';
+    if (v >= 750)  return 'sd-val-750';
+    if (v >= 700)  return 'sd-val-700';
+    if (v >= 500)  return 'sd-val-500';
+    if (v >= 300)  return 'sd-val-300';
+    return 'sd-val-100';
+  };
+  const active = CURRENT_EVENTS.wildnis
+    .filter(p => {
+      const from = parseDMY(p.from), to = parseDMY(p.to);
+      return from && to && isEventActiveToday(from, to);
+    })
+    .map(p => ({ ...p, sd: getStardust(p.num) }))
+    .sort((a, b) => b.sd - a.sd || a.num - b.num);
+  if (!active.length) {
+    grid.innerHTML = '<div class="sd-now-empty">No active wild spawns found.</div>';
+    return;
+  }
+  grid.innerHTML = active.map(p => `
+    <div class="sd-now-card">
+      <img class="sd-now-sprite" src="${SPRITE}${p.num}.png" alt="${escHtml(p.name)} – ${p.sd} stardust" loading="lazy" onerror="this.style.opacity=0.3">
+      <div class="sd-now-name">${escHtml(p.name)}</div>
+      <div class="sd-now-types">${p.types.map(t => typeBadge(t)).join('')}</div>
+      <div class="sd-now-sd ${sdClass(p.sd)}">${p.sd} ⭐</div>
+      ${p.note ? `<div class="sd-now-note" title="${escHtml(p.note)}">${escHtml(p.note)}</div>` : ''}
+    </div>`).join('');
+}
+
 function renderStardust() {
+  renderStardustNow();
   let data = POKEMON.slice().map(p => ({ ...p, sd: getStardust(p.num) }));
 
   if (sdTierFilter !== 'all') data = data.filter(p => p.sd === sdTierFilter);
@@ -6519,8 +6577,11 @@ window.addEventListener('scroll', () => {
     if (wildnisEl)  wildnisEl.innerHTML  = '';
     if (bonusEl)    bonusEl.innerHTML    = '';
     if (futureEl)   futureEl.innerHTML   = '';
+    const sdNowGrid = document.getElementById('sd-now-grid');
+    if (sdNowGrid)  sdNowGrid.innerHTML  = '';
 
     renderCurrentEvents();
+    renderStardustNow();   // refresh panel if stardust tab was already open
     checkEventDataFreshness();
 
     // Show a subtle "Live data loaded" indicator on the events panel
