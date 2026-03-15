@@ -1695,6 +1695,7 @@
   .sd-val-750  { color: #9cb8ff; }
   .sd-val-700  { color: #7ba5d0; }
   .sd-val-500  { color: #7ec880; }
+  .sd-val-300  { color: #8fcfe0; }
   .sd-val-100  { color: var(--text2); }
   /* inline stardust badge (shown only on mobile) */
   .sd-mobile-val { display: none; }
@@ -2448,6 +2449,7 @@
         <button class="pill" onclick="setSdTier(750)">⭐ 750</button>
         <button class="pill" onclick="setSdTier(700)">⭐ 700</button>
         <button class="pill" onclick="setSdTier(500)">500</button>
+        <button class="pill" onclick="setSdTier(300)">300</button>
         <button class="pill" onclick="setSdTier(100)">100</button>
       </div>
       <div class="search-wrap">
@@ -6034,9 +6036,17 @@ renderPokemon();
 
 // ── STARDUST DATA ─────────────────────────────────────────────────────────────
 // Species-specific catch stardust (without Star Piece, weather boost, or event bonuses).
-// Standard Pokémon give 100 (unevolved), 300 (1st evo), or 500 (2nd evo) by stage.
+// Standard rules: base/unevolved = 100, middle stage = 300, final stage = 500.
+// Special bonus Pokémon (below) override the stage-based default.
+// Any Pokémon not listed in SD_STAGE2/SD_STAGE3/STARDUST_BONUS defaults to 100 (base stage).
 // Sources: Pokémon GO Hub (pokemongohub.net), Sportskeeda, Bulbapedia (Stardust (GO))
-// All Pokémon not listed here give 100 stardust (default).
+
+// Middle-stage Pokémon (3-stage chains) → 300 stardust
+const SD_STAGE2 = new Set([2,5,8,11,14,17,30,33,42,44,57,61,64,67,70,75,82,93,112,117,122,125,126,148,153,156,159,176,180,188,217,221,233,247,253,256,259,264,266,268,271,274,281,288,291,294,305,315,329,356,364,367,372,375,388,391,394,397,404,418,444,496,499,502,507,520,525,533,536,541,544,552,575,578,583,600,603,608,611,625,634,651,654,657,662,665,670,680,705,723,726,729,732,737,762,783,790,811,814,817,822,825,838,841,857,860,886,907,910,913,922,929,933,943,946,947,948,955,960]);
+// Final-stage Pokémon (any chain) → 500 stardust (overridden by STARDUST_BONUS where applicable)
+const SD_STAGE3 = new Set([3,6,9,12,15,18,20,22,24,26,28,31,34,36,38,40,45,47,49,51,53,55,59,62,65,68,71,73,76,78,80,85,87,89,91,94,97,99,101,103,105,106,107,110,119,121,124,130,134,135,136,139,141,143,149,154,157,160,162,164,166,168,169,171,178,181,182,184,185,186,189,192,195,196,197,199,202,205,208,210,212,219,224,226,229,230,232,237,242,248,254,257,260,262,267,269,272,275,277,279,282,284,286,289,292,295,297,301,306,308,310,317,319,321,323,326,330,332,334,340,342,344,346,348,350,354,358,362,365,368,373,376,389,392,395,398,400,402,405,407,409,411,413,414,416,419,421,423,424,426,428,429,430,432,435,437,445,448,450,452,454,457,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,497,500,503,505,508,510,512,514,516,518,521,523,526,528,530,534,537,542,545,547,549,553,555,558,560,563,565,567,569,571,573,576,579,581,584,586,589,591,593,596,598,601,604,606,609,612,614,617,620,623,628,630,635,637,652,655,658,660,663,666,668,671,673,675,678,681,683,685,687,689,691,693,695,697,699,700,706,709,711,713,715,724,727,730,733,735,738,740,743,745,748,750,752,754,756,758,760,763,768,770,773,778,780,784,791,792,804,812,815,818,820,823,826,828,830,832,834,836,839,842,844,847,849,851,853,855,858,861,862,864,865,866,867,869,873,876,879,887,901,908,911,914,916,918,920,923,925,927,930,934,936,937,939,941,944,949,951,953,956,958,961,963,965,967,969,971,973,975,977,979,980,981,982,1006]);
+
+// Special bonus Pokémon – override stage-based defaults (base form bonuses or higher-than-normal rewards)
 const STARDUST_BONUS = {
   // ── 2100 ── Audino (highest stardust in the game)
   531:2100,                       // Audino
@@ -6076,7 +6086,10 @@ const STARDUST_BONUS = {
 };
 
 function getStardust(num) {
-  return STARDUST_BONUS[num] || 100;
+  if (STARDUST_BONUS[num]) return STARDUST_BONUS[num];
+  if (SD_STAGE3.has(num)) return 500;
+  if (SD_STAGE2.has(num)) return 300;
+  return 100;
 }
 
 let sdTierFilter = 'all';
@@ -6087,7 +6100,7 @@ function setSdTier(tier) {
   sdTierFilter = tier;
   document.querySelectorAll('#sd-tier-pills .pill').forEach(p => p.classList.remove('active'));
   const allPills = document.querySelectorAll('#sd-tier-pills .pill');
-  const labels   = ['all', 2100, 1200, 1000, 950, 750, 700, 500, 100];
+  const labels   = ['all', 2100, 1200, 1000, 950, 750, 700, 500, 300, 100];
   const idx      = labels.indexOf(tier);
   if (allPills[idx]) allPills[idx].classList.add('active');
   renderStardust();
@@ -6122,6 +6135,7 @@ function renderStardust() {
     if (v >= 750)  return 'sd-val-750';
     if (v >= 700)  return 'sd-val-700';
     if (v >= 500)  return 'sd-val-500';
+    if (v >= 300)  return 'sd-val-300';
     return 'sd-val-100';
   };
   const SPRITE  = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
