@@ -2748,7 +2748,7 @@ const MOVES = [
   {name:'Cut',            type:'normal',   cat:'fast',   power:12,  pvp:5},
   {name:'Bullet Seed',    type:'grass',    cat:'fast',   power:8,   pvp:9},
   {name:'Fire Fang',      type:'fire',     cat:'fast',   power:11,  pvp:8},
-  {name:'Splash',         type:'water',    cat:'fast',   power:0,   pvp:0},
+  {name:'Splash',         type:'normal',   cat:'fast',   power:0,   pvp:0},
   {name:'Struggle Bug',   type:'bug',      cat:'fast',   power:15,  pvp:9},
   // CHARGE MOVES
   {name:'Play Rough',        type:'fairy',    cat:'charge', power:90,  pvp:90},
@@ -2922,7 +2922,10 @@ const MOVES = [
   {name:'Wicked Blow',     type:'dark',     cat:'charge', power:70,  pvp:70},
   {name:'Wildbolt Storm',  type:'electric', cat:'charge', power:80,  pvp:80},
   {name:'Bleakwind Storm', type:'flying',   cat:'charge', power:80,  pvp:80},
-  {name:'Springtide Storm',type:'fairy',    cat:'charge', power:80,  pvp:80}
+  {name:'Springtide Storm',type:'fairy',    cat:'charge', power:80,  pvp:80},
+  {name:'Meteor Mash',     type:'steel',    cat:'charge', power:100, pvp:100, note:'(*) Community Day'},
+  {name:'Fire Punch',      type:'fire',     cat:'charge', power:55,  pvp:55},
+  {name:'Sacred Fire',     type:'fire',     cat:'charge', power:130, pvp:130, note:'(*) Exclusive'}
 ];
 
 // ── POKEMON DATA ───────────────────────────────────────────────────────────
@@ -4099,6 +4102,138 @@ const META_TEAMS = {
         }
       ],
       strategy: 'Altaria leads with Dragon Breath applying pressure on many types. Talonflame enters as aggressive sweeper using Incinerate for fast shields. Ferrothorn tanks Water and Rock attacks threatening Altaria and Talonflame.'
+    },
+    {
+      id: 'gl-5',
+      name: 'Steel Trap',
+      emoji: '🪤',
+      desc: 'Galarian Stunfisk dominates the GL meta – Steel/Ground with massive bulk and wide coverage',
+      members: [
+        {
+          num: 618, name: 'Galarian Stunfisk', types: ['ground','steel'],
+          ivs: '0/15/13', role: 'Lead',
+          fast: 'Mud Shot', charge1: 'Rock Slide', charge2: 'Earthquake',
+          counters: ['Electric','Poison','Rock','Flying','Dragon','Fairy'],
+          weakTo: ['Water','Fire','Fighting','Ground'],
+          tip: 'One of the best GL Leads. Mud Shot generates energy extremely quickly. Rock Slide applies cheap shield pressure. Earthquake for massive Ground damage. Immune to Poison and Electric.'
+        },
+        {
+          num: 308, name: 'Medicham', types: ['fighting','psychic'],
+          ivs: '1/14/14', role: 'Sweeper',
+          fast: 'Counter', charge1: 'Ice Punch', charge2: 'Psychic',
+          counters: ['Normal','Ice','Rock','Dark','Steel'],
+          weakTo: ['Flying','Psychic','Fairy'],
+          tip: 'Counter generates energy very quickly. Ice Punch covers Grass and Flying counters to Stunfisk. Psychic for Poison coverage.'
+        },
+        {
+          num: 184, name: 'Azumarill', types: ['water','fairy'],
+          ivs: '0/15/15', role: 'Anchor',
+          fast: 'Bubble', charge1: 'Play Rough', charge2: 'Ice Beam',
+          counters: ['Fighting','Dragon','Dark','Ground','Rock'],
+          weakTo: ['Grass','Electric','Poison'],
+          tip: 'Closes out against Dragon and Fighting types. Play Rough is extremely strong. Ice Beam covers Grass counters threatening the team.'
+        }
+      ],
+      strategy: 'Galarian Stunfisk leads with massive bulk and fast energy generation from Mud Shot. Medicham sweeps once shields are used. Azumarill anchors as the ultimate Closer covering Dragon and Ground threats.'
+    },
+    {
+      id: 'gl-6',
+      name: 'Poison Cloud',
+      emoji: '☠️',
+      desc: 'Nidoqueen Poison/Ground lead with Skarmory and Walrein – broad coverage and bulk',
+      members: [
+        {
+          num: 31, name: 'Nidoqueen', types: ['poison','ground'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Poison Jab', charge1: 'Poison Fang', charge2: 'Earth Power',
+          counters: ['Fairy','Fighting','Poison','Rock','Electric'],
+          weakTo: ['Ground','Water','Ice','Psychic'],
+          tip: 'Immune to Electric. Poison Fang applies a debuff cheaply. Earth Power for Ground coverage against Steel and Fire. Strong against Fairy and Fighting types.'
+        },
+        {
+          num: 227, name: 'Skarmory', types: ['steel','flying'],
+          ivs: '0/15/15', role: 'Safe Switch',
+          fast: 'Air Slash', charge1: 'Brave Bird', charge2: 'Flash Cannon',
+          counters: ['Grass','Normal','Poison','Bug','Dragon','Fairy'],
+          weakTo: ['Electric','Fire'],
+          tip: 'Immune to Ground and Poison. Air Slash generates good energy. Brave Bird for massive Flying damage. Flash Cannon covers Ice and Rock counters threatening the team.'
+        },
+        {
+          num: 365, name: 'Walrein', types: ['ice','water'],
+          ivs: '0/15/15', role: 'Closer',
+          fast: 'Powder Snow', charge1: 'Icicle Spear', charge2: 'Earthquake',
+          counters: ['Grass','Ground','Flying','Dragon','Fire'],
+          weakTo: ['Fighting','Rock','Electric','Grass'],
+          tip: 'Powder Snow + Icicle Spear generate shield pressure quickly. Earthquake surprises Steel counters. Covers Ground and Fire weakness of Nidoqueen as a Closer.'
+        }
+      ],
+      strategy: 'Nidoqueen leads as Poison type and hammers Fairy, Fighting and Steel. Skarmory safely switches and resists Poison and Ground attacks. Walrein closes with Ice and Water coverage completing the full team coverage.'
+    },
+    {
+      id: 'gl-7',
+      name: 'Ghost Forest',
+      emoji: '🌲',
+      desc: 'Trevenant as Ghost/Grass lead – unique type combination with great coverage',
+      members: [
+        {
+          num: 709, name: 'Trevenant', types: ['ghost','grass'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Shadow Claw', charge1: 'Shadow Ball', charge2: 'Seed Bomb',
+          counters: ['Normal','Fighting','Water','Ground','Electric'],
+          weakTo: ['Ghost','Fire','Flying','Ice','Dark'],
+          tip: 'Immune to Normal and Fighting. Shadow Claw generates energy quickly. Shadow Ball for massive Ghost damage. Seed Bomb for Grass coverage against Water and Ground types.'
+        },
+        {
+          num: 703, name: 'Carbink', types: ['rock','fairy'],
+          ivs: '0/15/15', role: 'Tank',
+          fast: 'Rock Throw', charge1: 'Rock Slide', charge2: 'Moonblast',
+          counters: ['Fighting','Flying','Fire','Bug','Dark','Dragon'],
+          weakTo: ['Steel','Water','Grass','Ground'],
+          tip: 'Immune to Dragon. Rock Throw generates good energy. Rock Slide as cheap shield bait. Moonblast against Dragon and Dark counters threatening Trevenant. Very bulky Rock/Fairy tank.'
+        },
+        {
+          num: 31, name: 'Nidoqueen', types: ['poison','ground'],
+          ivs: '0/15/15', role: 'Closer',
+          fast: 'Poison Jab', charge1: 'Poison Fang', charge2: 'Earth Power',
+          counters: ['Fairy','Fighting','Rock','Steel','Electric'],
+          weakTo: ['Ground','Water','Ice','Psychic'],
+          tip: 'Immune to Electric. Counters Ice types threatening Trevenant. Poison Fang applies debuffs cheaply. Earth Power strong against Steel and Fire. Perfect Closer for this team.'
+        }
+      ],
+      strategy: 'Trevenant leads as Ghost/Grass and is immune to Normal and Fighting. Carbink tanks as Rock/Fairy covering Ghost weaknesses. Nidoqueen closes with Poison/Ground coverage creating triple type synergy across the team.'
+    },
+    {
+      id: 'gl-8',
+      name: 'Dark Endgame',
+      emoji: '🌙',
+      desc: 'Umbreon tanks as Dark wall – near-invulnerable with only one weakness',
+      members: [
+        {
+          num: 197, name: 'Umbreon', types: ['dark'],
+          ivs: '0/15/15', role: 'Lead / Tank',
+          fast: 'Snarl', charge1: 'Foul Play', charge2: 'Dark Pulse',
+          counters: ['Ghost','Psychic'],
+          weakTo: ['Fighting','Bug','Fairy'],
+          tip: 'Immune to Psychic and Ghost. Snarl generates energy quickly. Foul Play and Dark Pulse provide strong Dark STAB. Extremely high bulk – one of the best GL tanks. Forces shields with cheap moves.'
+        },
+        {
+          num: 184, name: 'Azumarill', types: ['water','fairy'],
+          ivs: '0/15/15', role: 'Sweeper',
+          fast: 'Bubble', charge1: 'Play Rough', charge2: 'Ice Beam',
+          counters: ['Fighting','Dragon','Dark','Ground','Rock'],
+          weakTo: ['Grass','Electric','Poison'],
+          tip: 'Covers Fighting and Fairy weakness of Umbreon. Play Rough is extremely strong. Bubble generates energy very quickly. Ice Beam for Dragon and Grass coverage.'
+        },
+        {
+          num: 379, name: 'Registeel', types: ['steel'],
+          ivs: '0/14/15', role: 'Anchor',
+          fast: 'Lock-On', charge1: 'Flash Cannon', charge2: 'Focus Blast',
+          counters: ['Ice','Rock','Fairy','Poison','Normal'],
+          weakTo: ['Fire','Fighting','Ground'],
+          tip: 'Covers Bug and Fairy weakness of Umbreon. Lock-On generates energy very quickly. Massive bulk as Anchor. Focus Blast for a powerful final hit.'
+        }
+      ],
+      strategy: 'Umbreon leads as the ultimate Dark tank and is immune to Psychic and Ghost. Azumarill sweeps covering Fighting weakness. Registeel anchors as top Steel type covering Fairy and Bug threats to the team.'
     }
   ],
   ul: [
@@ -4233,6 +4368,138 @@ const META_TEAMS = {
         }
       ],
       strategy: 'Giratina leads dominating Ghost/Dragon matchups and is immune to Normal and Fighting. Metagross enters as Steel Safe Switch tanking Fairy attacks. Cresselia closes as Anchor tanking whatever remains.'
+    },
+    {
+      id: 'ul-5',
+      name: 'Emperor Steel',
+      emoji: '🐧',
+      desc: 'Empoleon as Water/Steel lead with broad type coverage and strong bulk',
+      members: [
+        {
+          num: 395, name: 'Empoleon', types: ['water','steel'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Waterfall', charge1: 'Hydro Cannon', charge2: 'Flash Cannon',
+          counters: ['Poison','Dragon','Ice','Flying','Rock','Fairy'],
+          weakTo: ['Fighting','Ground','Electric'],
+          tip: 'Immune to Poison. Hydro Cannon (Community Day) is extremely strong. Waterfall generates energy consistently. Flash Cannon for Steel STAB against Fairy and Ice. Resistant to Dragon.'
+        },
+        {
+          num: 862, name: 'Obstagoon', types: ['dark','normal'],
+          ivs: '0/15/15', role: 'Sweeper',
+          fast: 'Counter', charge1: 'Night Slash', charge2: 'Gunk Shot',
+          counters: ['Ghost','Psychic'],
+          weakTo: ['Fighting','Bug','Fairy'],
+          tip: 'Immune to Ghost and Psychic. Counter generates massive energy. Night Slash forces cheap shields and can boost attack. Gunk Shot covers Fairy threats. Very aggressive sweeper.'
+        },
+        {
+          num: 488, name: 'Cresselia', types: ['psychic'],
+          ivs: '0/15/15', role: 'Anchor',
+          fast: 'Psycho Cut', charge1: 'Moonblast', charge2: 'Grass Knot',
+          counters: ['Fighting','Poison','Dragon','Water','Ground'],
+          weakTo: ['Bug','Ghost','Dark'],
+          tip: 'Covers Fighting weakness of Empoleon and Obstagoon. Extreme bulk as Anchor. Moonblast against Dark counters. Grass Knot for Water/Ground coverage. Nearly unbeatable.'
+        }
+      ],
+      strategy: 'Empoleon leads with Water/Steel coverage resisting many attacks. Obstagoon sweeps with fast energy and aggressive move spam. Cresselia closes as the ultimate tank covering Fighting weakness of both teammates.'
+    },
+    {
+      id: 'ul-6',
+      name: 'Fairy Kingdom',
+      emoji: '🌸',
+      desc: 'Sylveon as Fairy lead with Giratina and Swampert – dominant type coverage',
+      members: [
+        {
+          num: 700, name: 'Sylveon', types: ['fairy'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Charm', charge1: 'Moonblast', charge2: 'Draining Kiss',
+          counters: ['Fighting','Dragon','Dark'],
+          weakTo: ['Poison','Steel'],
+          tip: 'Immune to Dragon. Charm is one of the strongest fast moves in PvP. Moonblast for Fairy STAB. Draining Kiss as cheap shield bait that restores HP. Dominates Dark and Dragon matchups.'
+        },
+        {
+          num: 487, name: 'Giratina', types: ['ghost','dragon'],
+          ivs: '0/15/15', role: 'Safe Switch',
+          fast: 'Shadow Claw', charge1: 'Shadow Ball', charge2: 'Dragon Claw',
+          counters: ['Psychic','Ghost','Dragon','Normal','Fighting'],
+          weakTo: ['Ice','Dragon','Dark','Ghost','Fairy'],
+          tip: 'Immune to Normal and Fighting. Shadow Claw generates energy quickly. Shadow Ball extremely powerful. Dragon Claw as cheap shield bait. Excellent switch against Steel types threatening Sylveon.'
+        },
+        {
+          num: 259, name: 'Swampert', types: ['water','ground'],
+          ivs: '0/15/15', role: 'Anchor',
+          fast: 'Mud Shot', charge1: 'Hydro Cannon', charge2: 'Earthquake',
+          counters: ['Fire','Electric','Steel','Rock','Poison'],
+          weakTo: ['Grass'],
+          tip: 'Only one weakness: Grass. Hydro Cannon is extremely strong. Mud Shot generates energy very quickly. Earthquake covers Steel and Poison threats to Sylveon. Perfect Closer.'
+        }
+      ],
+      strategy: 'Sylveon leads dominating Dragon and Dark types with Charm. Giratina is the perfect Safe Switch against Steel attacks threatening Sylveon. Swampert closes with only one weakness and covers Poison and Steel threats.'
+    },
+    {
+      id: 'ul-7',
+      name: 'Dark Striker',
+      emoji: '🎸',
+      desc: 'Obstagoon leads aggressively with fast energy – supported by Ice and Water/Fairy coverage',
+      members: [
+        {
+          num: 862, name: 'Obstagoon', types: ['dark','normal'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Counter', charge1: 'Night Slash', charge2: 'Gunk Shot',
+          counters: ['Ghost','Psychic'],
+          weakTo: ['Fighting','Bug','Fairy'],
+          tip: 'Immune to Ghost and Psychic. Counter generates massive energy. Night Slash cheaply forces shields and can boost attack. Gunk Shot covers Fairy types. Very fast and aggressive lead.'
+        },
+        {
+          num: 365, name: 'Walrein', types: ['ice','water'],
+          ivs: '0/15/15', role: 'Safe Switch',
+          fast: 'Powder Snow', charge1: 'Icicle Spear', charge2: 'Earthquake',
+          counters: ['Grass','Ground','Flying','Dragon','Fire'],
+          weakTo: ['Fighting','Rock','Electric','Grass'],
+          tip: 'Powder Snow + Icicle Spear force very fast shields. Covers Fighting weakness of Obstagoon partially. Earthquake for Steel coverage. Excellent Safe Switch in UL.'
+        },
+        {
+          num: 788, name: 'Tapu Fini', types: ['water','fairy'],
+          ivs: '0/15/15', role: 'Anchor',
+          fast: 'Waterfall', charge1: 'Hydro Cannon', charge2: 'Moonblast',
+          counters: ['Fighting','Dragon','Dark','Fire','Rock','Ground'],
+          weakTo: ['Grass','Electric','Poison'],
+          tip: 'Covers Bug and Fairy weakness of Obstagoon. Hydro Cannon is extremely strong. Moonblast against Dragon and Dark. High bulk Anchor with strong coverage.'
+        }
+      ],
+      strategy: 'Obstagoon leads aggressively with Counter + Night Slash for fast shield pressure. Walrein safely switches applying ice pressure. Tapu Fini anchors with Water + Fairy coverage closing out reliably.'
+    },
+    {
+      id: 'ul-8',
+      name: 'Dragon Ground',
+      emoji: '🦈',
+      desc: 'Garchomp as Dragon/Ground lead with Registeel support – reliable and powerful',
+      members: [
+        {
+          num: 445, name: 'Garchomp', types: ['dragon','ground'],
+          ivs: '0/15/15', role: 'Lead',
+          fast: 'Mud Shot', charge1: 'Outrage', charge2: 'Earthquake',
+          counters: ['Fire','Electric','Poison','Rock','Steel'],
+          weakTo: ['Ice','Dragon','Fairy'],
+          tip: 'Mud Shot generates energy extremely quickly. Outrage deals massive Dragon damage. Earthquake for Ground STAB against Steel and Electric. Excellent type coverage as Dragon/Ground.'
+        },
+        {
+          num: 379, name: 'Registeel', types: ['steel'],
+          ivs: '0/14/15', role: 'Safe Switch',
+          fast: 'Lock-On', charge1: 'Flash Cannon', charge2: 'Focus Blast',
+          counters: ['Ice','Rock','Fairy','Poison','Normal'],
+          weakTo: ['Fire','Fighting','Ground'],
+          tip: 'Covers Ice and Fairy weakness of Garchomp. Lock-On generates energy very quickly. Flash Cannon against Fairy. Focus Blast as a powerful finisher. Top Steel Safe Switch in UL.'
+        },
+        {
+          num: 488, name: 'Cresselia', types: ['psychic'],
+          ivs: '0/15/15', role: 'Anchor',
+          fast: 'Psycho Cut', charge1: 'Moonblast', charge2: 'Grass Knot',
+          counters: ['Fighting','Poison','Dragon','Water','Ground'],
+          weakTo: ['Bug','Ghost','Dark'],
+          tip: 'Covers Dragon weakness of Garchomp. Moonblast against Dragon types. Extreme bulk as Anchor. Grass Knot for Water/Ground coverage. Nearly unbeatable once in play.'
+        }
+      ],
+      strategy: 'Garchomp leads with Dragon/Ground coverage using Mud Shot for fast energy. Registeel is the perfect Safe Switch covering Ice and Fairy weaknesses. Cresselia closes as the ultimate Psychic Anchor with extreme bulk.'
     }
   ],
   ml: [
@@ -4334,6 +4601,138 @@ const META_TEAMS = {
         }
       ],
       strategy: 'Palkia leads using Dragon Tail for fast energy covering many matchups. Mewtwo enters as ace card when shields are exhausted. Ho-Oh closes as Fire/Flying Closer covering Ice types countering Palkia.'
+    },
+    {
+      id: 'ml-4',
+      name: 'Lugia Guard',
+      emoji: '🕊️',
+      desc: 'Lugia as defensive lead – extreme bulk with Psychic/Flying coverage and Zacian support',
+      members: [
+        {
+          num: 249, name: 'Lugia', types: ['psychic','flying'],
+          ivs: '15/15/15', role: 'Lead / Tank',
+          fast: 'Dragon Tail', charge1: 'Sky Attack', charge2: 'Hydro Pump',
+          counters: ['Fighting','Ground','Grass','Poison','Psychic'],
+          weakTo: ['Rock','Electric','Ice','Ghost','Dark'],
+          tip: 'One of the bulkiest ML Pokémon. Dragon Tail generates energy quickly. Sky Attack (Elite TM) forces shields cheaply. Hydro Pump for surprise Water coverage. Immune to Ground.'
+        },
+        {
+          num: 888, name: 'Zacian', types: ['fairy'],
+          ivs: '15/15/15', role: 'Sweeper',
+          fast: 'Snarl', charge1: 'Play Rough', charge2: 'Close Combat',
+          counters: ['Fighting','Dragon','Dark','Ice','Rock'],
+          weakTo: ['Poison','Steel'],
+          tip: 'Covers Dark weakness of Lugia. Play Rough is extremely strong Fairy STAB. Close Combat powerful against Steel. Snarl generates energy quickly. Only 2 weaknesses.'
+        },
+        {
+          num: 483, name: 'Dialga', types: ['steel','dragon'],
+          ivs: '15/15/15', role: 'Anchor',
+          fast: 'Dragon Breath', charge1: 'Iron Head', charge2: 'Draco Meteor',
+          counters: ['Ice','Rock','Fairy','Poison','Normal','Flying'],
+          weakTo: ['Fighting','Ground'],
+          tip: 'Covers Rock and Ice weakness of Lugia. Immune to Poison. Dragon Breath with top efficiency. Iron Head as cheap shield move. Draco Meteor as the ultimate finisher.'
+        }
+      ],
+      strategy: 'Lugia leads as the bulkiest ML Pokémon using Dragon Tail for fast energy. Zacian sweeps covering Dark threats targeting Lugia. Dialga anchors as the ultimate Steel/Dragon closer, immune to Poison and highly resistant.'
+    },
+    {
+      id: 'ml-5',
+      name: 'Thunder Dragon',
+      emoji: '⚡',
+      desc: 'Zekrom as Electric/Dragon lead – devastating Wild Charge with Primal duo support',
+      members: [
+        {
+          num: 644, name: 'Zekrom', types: ['electric','dragon'],
+          ivs: '15/15/15', role: 'Lead',
+          fast: 'Dragon Breath', charge1: 'Wild Charge', charge2: 'Outrage',
+          counters: ['Flying','Steel','Water','Fire'],
+          weakTo: ['Ice','Dragon','Ground','Fairy'],
+          tip: 'Dragon Breath generates energy efficiently. Wild Charge is extremely powerful with 100 PvP damage. Outrage as Dragon alternative. Counters Water and Flying types effectively.'
+        },
+        {
+          num: 383, name: 'Groudon', types: ['ground'],
+          ivs: '15/15/15', role: 'Ground Wall',
+          fast: 'Mud Shot', charge1: 'Precipice Blades', charge2: 'Fire Punch',
+          counters: ['Electric','Steel','Fire','Rock','Poison'],
+          weakTo: ['Water','Grass','Ice'],
+          tip: 'Precipice Blades is the strongest Ground move. Mud Shot generates energy very quickly. Fire Punch for Grass and Ice counters. Counters Electric types threatening Zekrom.'
+        },
+        {
+          num: 382, name: 'Kyogre', types: ['water'],
+          ivs: '15/15/15', role: 'Anchor',
+          fast: 'Waterfall', charge1: 'Surf', charge2: 'Origin Pulse',
+          counters: ['Fire','Ground','Rock','Steel'],
+          weakTo: ['Grass','Electric'],
+          tip: 'Best Water type in ML. Origin Pulse is enormously powerful. Surf as a cheaper alternative. Counters Ground types threatening Zekrom and Groudon. The classic Primal anchor.'
+        }
+      ],
+      strategy: 'Zekrom leads applying Electric + Dragon pressure. Groudon counters Electric types threatening Zekrom and provides Ground coverage. Kyogre anchors countering Ground threats and completing the coverage triangle with Groudon.'
+    },
+    {
+      id: 'ml-6',
+      name: 'Eternal Toxin',
+      emoji: '☄️',
+      desc: 'Eternatus leads as Poison/Dragon – unique type coverage with Mewtwo ace and Ho-Oh closer',
+      members: [
+        {
+          num: 890, name: 'Eternatus', types: ['poison','dragon'],
+          ivs: '15/15/15', role: 'Lead',
+          fast: 'Dragon Tail', charge1: 'Eternabeam', charge2: 'Sludge Bomb',
+          counters: ['Fire','Fighting','Grass','Fairy'],
+          weakTo: ['Ground','Ice','Dragon','Psychic'],
+          tip: 'Unique Poison/Dragon typing. Dragon Tail generates energy efficiently. Eternabeam is enormously powerful (160 PvP damage). Sludge Bomb for Poison STAB against Fairy. Resists many common types.'
+        },
+        {
+          num: 150, name: 'Mewtwo', types: ['psychic'],
+          ivs: '15/15/15', role: 'Ace',
+          fast: 'Psycho Cut', charge1: 'Psystrike', charge2: 'Shadow Ball',
+          counters: ['Fighting','Poison','Grass','Dragon','Ghost'],
+          weakTo: ['Bug','Ghost','Dark'],
+          tip: 'The legend of legends. Covers Psychic weakness of Eternatus. Psystrike (Elite TM) incredibly strong. Shadow Ball for Ghost coverage. Psycho Cut generates energy quickly.'
+        },
+        {
+          num: 250, name: 'Ho-Oh', types: ['fire','flying'],
+          ivs: '15/15/15', role: 'Closer',
+          fast: 'Incinerate', charge1: 'Brave Bird', charge2: 'Sacred Fire',
+          counters: ['Grass','Fighting','Bug','Steel','Ice'],
+          weakTo: ['Rock','Water','Electric'],
+          tip: 'Covers Ice and Dragon weakness of Eternatus. Sacred Fire (Exclusive) is very powerful. Incinerate generates energy extremely quickly. Brave Bird for massive Flying damage. Perfect Closer.'
+        }
+      ],
+      strategy: 'Eternatus leads with unique Poison/Dragon typing hammering Fairy and Dragon types. Mewtwo enters as the ace when shields are down. Ho-Oh closes as Fire/Flying Closer covering Ice and Dragon threats targeting Eternatus.'
+    },
+    {
+      id: 'ml-7',
+      name: 'Prism Light',
+      emoji: '🔮',
+      desc: 'Necrozma as Psychic lead with powerful Ground and Dark support',
+      members: [
+        {
+          num: 800, name: 'Necrozma', types: ['psychic'],
+          ivs: '15/15/15', role: 'Lead',
+          fast: 'Psycho Cut', charge1: 'Future Sight', charge2: 'Shadow Ball',
+          counters: ['Fighting','Poison'],
+          weakTo: ['Ghost','Dark','Bug'],
+          tip: 'Psycho Cut generates energy very quickly. Future Sight deals massive delayed damage forcing shield decisions. Shadow Ball for Ghost coverage. High attack stat makes every hit powerful.'
+        },
+        {
+          num: 383, name: 'Groudon', types: ['ground'],
+          ivs: '15/15/15', role: 'Ground Wall',
+          fast: 'Mud Shot', charge1: 'Precipice Blades', charge2: 'Fire Punch',
+          counters: ['Electric','Steel','Fire','Rock','Poison'],
+          weakTo: ['Water','Grass','Ice'],
+          tip: 'Counters Dark and Steel types threatening Necrozma. Precipice Blades is the strongest Ground move. Mud Shot generates energy very quickly. Fire Punch for Grass coverage.'
+        },
+        {
+          num: 717, name: 'Yveltal', types: ['dark','flying'],
+          ivs: '15/15/15', role: 'Safe Switch',
+          fast: 'Snarl', charge1: 'Dark Pulse', charge2: 'Oblivion Wing',
+          counters: ['Psychic','Ghost','Grass','Fighting','Bug'],
+          weakTo: ['Rock','Electric','Ice','Fairy'],
+          tip: 'Covers Ghost and Dark weakness of Necrozma by threatening those types back. Immune to Ground. Oblivion Wing heals HP and deals damage. Snarl with fast energy generation.'
+        }
+      ],
+      strategy: 'Necrozma leads using Psycho Cut for fast energy and Future Sight for large burst damage. Groudon is the Ground Wall countering Steel and Dark threats. Yveltal closes as Dark/Flying Safe Switch threatening Ghost and Dark types that counter Necrozma.'
     }
   ]
 };
