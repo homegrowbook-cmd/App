@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-12",
+  "lastUpdated": "2026-03-15",
   "autoUpdated": false,
   "sources": {
     "official": "https://pokemongo.com/news/",
@@ -10,22 +10,99 @@
   },
   "wildnis": [
     {
+      "num": 1,
+      "name": "Bulbasaur",
+      "types": ["grass", "poison"],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Frühlings-Saison (Spring Season)",
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
+    },
+    {
+      "num": 152,
+      "name": "Chikorita",
+      "types": ["grass"],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Frühlings-Saison (Spring Season)",
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
+    },
+    {
+      "num": 252,
+      "name": "Treecko",
+      "types": ["grass"],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Frühlings-Saison (Spring Season)",
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
+    },
+    {
+      "num": 387,
+      "name": "Turtwig",
+      "types": ["grass"],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Frühlings-Saison (Spring Season)",
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
+    },
+    {
+      "num": 495,
+      "name": "Snivy",
+      "types": ["grass"],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Frühlings-Saison (Spring Season)",
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
+    },
+    {
+      "num": 650,
+      "name": "Chespin",
+      "types": ["grass"],
+      "from": "01.03.2026",
+      "to": "31.03.2026",
+      "note": "Frühlings-Saison (Spring Season)",
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
+    },
+    {
+      "num": 810,
+      "name": "Grookey",
+      "types": ["grass"],
+      "from": "14.03.2026",
+      "to": "22.03.2026",
+      "note": "Community Day Woche",
+      "source": "https://pokemongo.com/news/community-day-march-2026/"
+    },
+    {
+      "num": 133,
+      "name": "Eevee",
+      "types": ["normal"],
+      "from": "14.03.2026",
+      "to": "17.03.2026",
+      "note": "Spotlight Hour",
+      "source": "https://pokemongo.com/news/spotlight-hour-march-2026/"
+    },
+    {
+      "num": 840,
+      "name": "Applin",
+      "types": ["grass", "dragon"],
+      "from": "03.03.2026",
+      "to": "02.06.2026",
+      "note": "Memories in Motion Saison",
+      "source": "https://pokemongo.com/news/memories-in-motion-season/"
+    },
+    {
       "num": 813,
       "name": "Scorbunny",
-      "types": [
-        "fire"
-      ],
+      "types": ["fire"],
       "from": "14.03.2026",
       "to": "14.03.2026",
-      "note": "Community Day – boosted spawns 14:00–17:00",
+      "note": "Community Day – verstärkte Spawns 14:00–17:00",
       "source": "https://pokemongohub.net/post/event/scorbunny-cd-march-2026/"
     },
     {
       "num": 265,
       "name": "Wurmple",
-      "types": [
-        "bug"
-      ],
+      "types": ["bug"],
       "from": "17.03.2026",
       "to": "23.03.2026",
       "note": "Bug Out 2026",
@@ -34,10 +111,7 @@
     {
       "num": 290,
       "name": "Nincada",
-      "types": [
-        "bug",
-        "ground"
-      ],
+      "types": ["bug", "ground"],
       "from": "17.03.2026",
       "to": "23.03.2026",
       "note": "Bug Out 2026",
@@ -46,36 +120,19 @@
     {
       "num": 347,
       "name": "Anorith",
-      "types": [
-        "rock",
-        "bug"
-      ],
+      "types": ["rock", "bug"],
       "from": "17.03.2026",
       "to": "23.03.2026",
       "note": "Bug Out 2026",
       "source": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
     },
     {
-      "num": 840,
-      "name": "Applin",
-      "types": [
-        "grass",
-        "dragon"
-      ],
-      "from": "03.03.2026",
-      "to": "02.06.2026",
-      "note": "Memories in Motion season",
-      "source": "https://pokemongo.com/news/memories-in-motion-season/"
-    },
-    {
       "num": 25,
       "name": "Pikachu",
-      "types": [
-        "electric"
-      ],
+      "types": ["electric"],
       "from": "03.03.2026",
       "to": "09.03.2026",
-      "note": "30th Anniversary – Gen 1 wild boost",
+      "note": "30. Jubiläum – Gen 1 verstärkt",
       "source": "https://pokemongohub.net/post/event/pokemon-go-march-2026-events/"
     }
   ],

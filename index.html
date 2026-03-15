@@ -1712,6 +1712,14 @@
   .sd-now-sd { font-family: 'Bangers', cursive; font-size: 15px; letter-spacing: 1px; margin-top: 2px; }
   .sd-now-note { font-size: 9px; color: var(--text3); line-height: 1.2; margin-top: 2px; max-width: 96px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .sd-now-empty { font-size: 13px; color: var(--text3); padding: 10px 0; }
+  .sd-now-section { margin-bottom: 16px; }
+  .sd-now-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text3); margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+  .sd-now-section-sub { font-weight: 400; font-style: italic; text-transform: none; opacity: 0.75; }
+  .sd-now-rate { font-size: 9px; line-height: 1.2; margin-top: 2px; padding: 1px 5px; border-radius: 4px; background: var(--bg3); color: var(--text3); white-space: nowrap; }
+  .sd-now-rate-häufig     { color: var(--green); }
+  .sd-now-rate-gelegentlich { color: #9cb8ff; }
+  .sd-now-rate-selten     { color: var(--gold); }
+  .sd-now-rate-sehr-selten { color: #ff8c42; }
 
   /* ── HERO GRADIENT ANIMATION ─────────────────────────────────── */
   @keyframes heroGradientShift {
@@ -2455,7 +2463,14 @@
     <!-- Currently active wild spawns ranked by stardust value -->
     <div class="sd-now-panel" id="sd-now-panel">
       <div class="sd-now-title">🌿 Currently Spawning – Best for Stardust</div>
-      <div class="sd-now-grid" id="sd-now-grid"></div>
+      <div class="sd-now-section">
+        <div class="sd-now-section-label">🗺️ Dauerhafte Spawns <span class="sd-now-section-sub">– immer verfügbar</span></div>
+        <div class="sd-now-grid" id="sd-now-grid-perm"></div>
+      </div>
+      <div class="sd-now-section">
+        <div class="sd-now-section-label">⚡ Event-Spawns <span class="sd-now-section-sub">– zeitlich begrenzt</span></div>
+        <div class="sd-now-grid" id="sd-now-grid"></div>
+      </div>
     </div>
 
     <div class="controls-row">
@@ -6104,6 +6119,44 @@ const STARDUST_BONUS = {
   755:500,                        // Morelull
 };
 
+// Pokémon that spawn permanently in the wild (year-round, outside of special events).
+// Rates: 'häufig' = common · 'gelegentlich' = occasional · 'selten' = rare · 'sehr selten' = very rare
+// Sources: Pokémon GO Hub spawn analysis & community research (pokemongohub.net/spawns)
+const PERMANENT_WILD_SPAWNS = [
+  // ── Stardust-bonus Pokémon always available ──
+  { num: 531, rate: 'selten'       },  // Audino – 2100 ⭐
+  { num: 91,  rate: 'sehr selten'  },  // Cloyster – 1200 ⭐
+  { num: 90,  rate: 'gelegentlich' },  // Shellder – 1000 ⭐
+  { num: 358, rate: 'selten'       },  // Chimecho – 1000 ⭐
+  { num: 121, rate: 'gelegentlich' },  // Starmie – 950 ⭐
+  { num: 416, rate: 'gelegentlich' },  // Vespiquen – 950 ⭐
+  { num: 569, rate: 'gelegentlich' },  // Garbodor – 950 ⭐
+  { num: 120, rate: 'gelegentlich' },  // Staryu – 750 ⭐
+  { num: 302, rate: 'gelegentlich' },  // Sableye – 750 ⭐
+  { num: 415, rate: 'gelegentlich' },  // Combee – 750 ⭐
+  { num: 568, rate: 'häufig'       },  // Trubbish – 750 ⭐
+  { num: 53,  rate: 'selten'       },  // Persian – 700 ⭐
+  { num: 47,  rate: 'gelegentlich' },  // Parasect – 700 ⭐
+  { num: 286, rate: 'selten'       },  // Breloom – 700 ⭐
+  { num: 591, rate: 'selten'       },  // Amoonguss – 700 ⭐
+  { num: 756, rate: 'selten'       },  // Shiinotic – 700 ⭐
+  { num: 52,  rate: 'häufig'       },  // Meowth – 500 ⭐
+  { num: 46,  rate: 'gelegentlich' },  // Paras – 500 ⭐
+  { num: 285, rate: 'gelegentlich' },  // Shroomish – 500 ⭐
+  { num: 590, rate: 'gelegentlich' },  // Foongus – 500 ⭐
+  { num: 755, rate: 'selten'       },  // Morelull – 500 ⭐
+  // ── Common regular wild spawns ──
+  { num: 16,  rate: 'häufig'       },  // Pidgey – 100 ⭐
+  { num: 19,  rate: 'häufig'       },  // Rattata – 100 ⭐
+  { num: 21,  rate: 'häufig'       },  // Spearow – 100 ⭐
+  { num: 63,  rate: 'gelegentlich' },  // Abra – 100 ⭐
+  { num: 92,  rate: 'gelegentlich' },  // Gastly – 100 ⭐
+  { num: 96,  rate: 'gelegentlich' },  // Drowzee – 100 ⭐
+  { num: 129, rate: 'häufig'       },  // Magikarp – 100 ⭐
+  { num: 133, rate: 'gelegentlich' },  // Eevee – 100 ⭐
+];
+
+
 function getStardust(num) {
   if (STARDUST_BONUS[num]) return STARDUST_BONUS[num];
   if (SD_STAGE3.has(num)) return 500;
@@ -6135,10 +6188,12 @@ function setSdSort(col) {
 }
 
 /** Render the "Currently Spawning – Best for Stardust" panel.
- *  Shows all active wild spawns sorted by stardust value (highest first). */
+ *  Shows permanent wild spawns and active event spawns sorted by stardust (highest first). */
 function renderStardustNow() {
-  const grid = document.getElementById('sd-now-grid');
-  if (!grid || grid.children.length > 0) return;   // already populated; cleared by fetchRemoteEvents on live update
+  const gridPerm  = document.getElementById('sd-now-grid-perm');
+  const gridEvent = document.getElementById('sd-now-grid');
+  if (!gridPerm || !gridEvent) return;
+  if (gridPerm.children.length > 0) return;  // already populated; cleared by fetchRemoteEvents on live update
   const SPRITE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
   const sdClass = v => {
     if (v >= 2100) return 'sd-val-2100';
@@ -6151,6 +6206,30 @@ function renderStardustNow() {
     if (v >= 300)  return 'sd-val-300';
     return 'sd-val-100';
   };
+  const rateClass = r => 'sd-now-rate sd-now-rate-' + r.replace(/ /g, '-');
+
+  // Build lookup map: Pokédex number → Pokémon data
+  const pokemonMap = new Map(POKEMON.map(p => [p.num, p]));
+
+  // ── Permanent spawns (sorted by stardust desc, then by Pokédex number) ──
+  const perm = PERMANENT_WILD_SPAWNS
+    .map(s => {
+      const p = pokemonMap.get(s.num);
+      return p ? { ...p, sd: getStardust(s.num), rate: s.rate } : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.sd - a.sd || a.num - b.num);
+
+  gridPerm.innerHTML = perm.map(p => `
+    <div class="sd-now-card">
+      <img class="sd-now-sprite" src="${SPRITE}${p.num}.png" alt="${escHtml(p.name)} – ${p.sd} stardust" loading="lazy" onerror="this.style.opacity=0.3">
+      <div class="sd-now-name">${escHtml(p.name)}</div>
+      <div class="sd-now-types">${p.types.map(t => typeBadge(t)).join('')}</div>
+      <div class="sd-now-sd ${sdClass(p.sd)}">${p.sd} ⭐</div>
+      <div class="${rateClass(p.rate)}">${escHtml(p.rate)}</div>
+    </div>`).join('');
+
+  // ── Event spawns (currently active, sorted by stardust desc) ──
   const active = CURRENT_EVENTS.wildnis
     .filter(p => {
       const from = parseDMY(p.from), to = parseDMY(p.to);
@@ -6158,11 +6237,12 @@ function renderStardustNow() {
     })
     .map(p => ({ ...p, sd: getStardust(p.num) }))
     .sort((a, b) => b.sd - a.sd || a.num - b.num);
+
   if (!active.length) {
-    grid.innerHTML = '<div class="sd-now-empty">No active wild spawns found.</div>';
+    gridEvent.innerHTML = '<div class="sd-now-empty">Keine aktiven Event-Spawns.</div>';
     return;
   }
-  grid.innerHTML = active.map(p => `
+  gridEvent.innerHTML = active.map(p => `
     <div class="sd-now-card">
       <img class="sd-now-sprite" src="${SPRITE}${p.num}.png" alt="${escHtml(p.name)} – ${p.sd} stardust" loading="lazy" onerror="this.style.opacity=0.3">
       <div class="sd-now-name">${escHtml(p.name)}</div>
@@ -6563,7 +6643,18 @@ window.addEventListener('scroll', () => {
     // Basic sanity-check: must have at least raids and lastUpdated
     if (!data || !data.raids || !data.lastUpdated) return;
 
-    // Merge remote data into CURRENT_EVENTS
+    // Merge remote data into CURRENT_EVENTS.
+    // For wildnis: combine remote entries with hardcoded ones (dedup by num+from+to)
+    // so remote data adds new entries rather than replacing the entire hardcoded list.
+    if (Array.isArray(data.wildnis) && data.wildnis.length) {
+      const existing = new Set(CURRENT_EVENTS.wildnis.map(p => `${p.num}|${p.from}|${p.to}`));
+      const merged   = [...CURRENT_EVENTS.wildnis];
+      for (const p of data.wildnis) {
+        if (!existing.has(`${p.num}|${p.from}|${p.to}`)) merged.push(p);
+      }
+      CURRENT_EVENTS.wildnis = merged;
+      delete data.wildnis;
+    }
     Object.assign(CURRENT_EVENTS, data);
 
     // Re-render the home tab with fresh data
@@ -6577,6 +6668,8 @@ window.addEventListener('scroll', () => {
     if (wildnisEl)  wildnisEl.innerHTML  = '';
     if (bonusEl)    bonusEl.innerHTML    = '';
     if (futureEl)   futureEl.innerHTML   = '';
+    const sdNowGridPerm = document.getElementById('sd-now-grid-perm');
+    if (sdNowGridPerm)  sdNowGridPerm.innerHTML = '';
     const sdNowGrid = document.getElementById('sd-now-grid');
     if (sdNowGrid)  sdNowGrid.innerHTML  = '';
 
